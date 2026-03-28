@@ -63,7 +63,7 @@ digraph brainstorming {
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.
+**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill directly. Before invoking writing-plans, check if any specification skills (e.g., feature-design) should run first — they define acceptance criteria that feed into the plan.
 
 ## The Process
 
@@ -132,8 +132,8 @@ Wait for the user's response. If they request changes, make them and re-run the 
 
 **Implementation:**
 
-- Invoke the writing-plans skill to create a detailed implementation plan
-- Do NOT invoke any other skill. writing-plans is the next step.
+- Before invoking writing-plans, check if any specification skills should run first (e.g., feature-design for creating acceptance criteria)
+- Then invoke the writing-plans skill to create a detailed implementation plan
 
 ## Key Principles
 
