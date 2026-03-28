@@ -1,102 +1,55 @@
-# Superpowers
+# Superflowers
 
-Superpowers is a complete software development workflow for your coding agents, built on top of a set of composable "skills" and some initial instructions that make sure your agent uses them.
+Custom fork of [Superpowers](https://github.com/obra/superpowers) - a complete software development workflow for coding agents, built on composable "skills".
 
-## How it works
-
-It starts from the moment you fire up your coding agent. As soon as it sees that you're building something, it *doesn't* just jump into trying to write code. Instead, it steps back and asks you what you're really trying to do. 
-
-Once it's teased a spec out of the conversation, it shows it to you in chunks short enough to actually read and digest. 
-
-After you've signed off on the design, your agent puts together an implementation plan that's clear enough for an enthusiastic junior engineer with poor taste, no judgement, no project context, and an aversion to testing to follow. It emphasizes true red/green TDD, YAGNI (You Aren't Gonna Need It), and DRY. 
-
-Next up, once you say "go", it launches a *subagent-driven-development* process, having agents work through each engineering task, inspecting and reviewing their work, and continuing forward. It's not uncommon for Claude to be able to work autonomously for a couple hours at a time without deviating from the plan you put together.
-
-There's a bunch more to it, but that's the core of the system. And because the skills trigger automatically, you don't need to do anything special. Your coding agent just has Superpowers.
-
-
-## Sponsorship
-
-If Superpowers has helped you do stuff that makes money and you are so inclined, I'd greatly appreciate it if you'd consider [sponsoring my opensource work](https://github.com/sponsors/obra).
-
-Thanks! 
-
-- Jesse
-
+Based on Superpowers v5.0.6 by [Jesse Vincent](https://github.com/obra).
 
 ## Installation
 
-**Note:** Installation differs by platform. Claude Code or Cursor have built-in plugin marketplaces. Codex and OpenCode require manual setup.
+### Claude Code (lokales Plugin)
 
-### Claude Code Official Marketplace
+**1. Plugin registrieren** in `~/.claude/plugins/installed_plugins.json`:
 
-Superpowers is available via the [official Claude plugin marketplace](https://claude.com/plugins/superpowers)
+Folgenden Eintrag zum `"plugins"` Objekt hinzufuegen:
 
-Install the plugin from Claude marketplace:
+```json
+"superflowers@local": [
+  {
+    "scope": "user",
+    "installPath": "/home/flo/superflowers",
+    "version": "0.1.0",
+    "installedAt": "2026-03-28T19:00:00.000Z",
+    "lastUpdated": "2026-03-28T19:00:00.000Z"
+  }
+]
+```
+
+**2. Plugin aktivieren** in `~/.claude/settings.json`:
+
+Im `"enabledPlugins"` Objekt:
+
+```json
+"superpowers@claude-plugins-official": false,
+"superflowers@local": true
+```
+
+**3. Verifizieren:**
+
+Neue Claude Code Session starten. Die Skills sollten mit dem `superflowers:` Praefix geladen werden.
+
+### Schnelltest (ohne dauerhafte Installation)
 
 ```bash
-/plugin install superpowers@claude-plugins-official
+claude --plugin-dir /home/flo/superflowers
 ```
 
-### Claude Code (via Plugin Marketplace)
-
-In Claude Code, register the marketplace first:
+### Updates vom Upstream holen
 
 ```bash
-/plugin marketplace add obra/superpowers-marketplace
+cd /home/flo/superflowers
+git fetch upstream
+git merge upstream/main
 ```
-
-Then install the plugin from this marketplace:
-
-```bash
-/plugin install superpowers@superpowers-marketplace
-```
-
-### Cursor (via Plugin Marketplace)
-
-In Cursor Agent chat, install from marketplace:
-
-```text
-/add-plugin superpowers
-```
-
-or search for "superpowers" in the plugin marketplace.
-
-### Codex
-
-Tell Codex:
-
-```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superflowers/refs/heads/main/.codex/INSTALL.md
-```
-
-**Detailed docs:** [docs/README.codex.md](docs/README.codex.md)
-
-### OpenCode
-
-Tell OpenCode:
-
-```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superflowers/refs/heads/main/.opencode/INSTALL.md
-```
-
-**Detailed docs:** [docs/README.opencode.md](docs/README.opencode.md)
-
-### Gemini CLI
-
-```bash
-gemini extensions install https://github.com/obra/superpowers
-```
-
-To update:
-
-```bash
-gemini extensions update superpowers
-```
-
-### Verify Installation
-
-Start a new session in your chosen platform and ask for something that should trigger a skill (for example, "help me plan this feature" or "let's debug this issue"). The agent should automatically invoke the relevant superpowers skill.
 
 ## The Basic Workflow
 
@@ -149,39 +102,12 @@ Start a new session in your chosen platform and ask for something that should tr
 - **Complexity reduction** - Simplicity as primary goal
 - **Evidence over claims** - Verify before declaring success
 
-Read more: [Superpowers for Claude Code](https://blog.fsck.com/2025/10/09/superflowers/)
-
-## Contributing
-
-Skills live directly in this repository. To contribute:
-
-1. Fork the repository
-2. Create a branch for your skill
-3. Follow the `writing-skills` skill for creating and testing new skills
-4. Submit a PR
-
-See `skills/writing-skills/SKILL.md` for the complete guide.
-
-## Updating
-
-Skills update automatically when you update the plugin:
-
-```bash
-/plugin update superpowers
-```
+Read more: [Superpowers for Claude Code](https://blog.fsck.com/2025/10/09/superpowers/) (original project)
 
 ## License
 
 MIT License - see LICENSE file for details
 
-## Community
+## Credits
 
-Superpowers is built by [Jesse Vincent](https://blog.fsck.com) and the rest of the folks at [Prime Radiant](https://primeradiant.com).
-
-For community support, questions, and sharing what you're building with Superpowers, join us on [Discord](https://discord.gg/Jd8Vphy9jq).
-
-## Support
-
-- **Discord**: [Join us on Discord](https://discord.gg/Jd8Vphy9jq)
-- **Issues**: https://github.com/obra/superflowers/issues
-- **Marketplace**: https://github.com/obra/superpowers-marketplace
+Based on [Superpowers](https://github.com/obra/superpowers) by [Jesse Vincent](https://blog.fsck.com) and [Prime Radiant](https://primeradiant.com).
