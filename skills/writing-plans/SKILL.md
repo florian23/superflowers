@@ -22,20 +22,6 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
 
-## Feature File Integration
-
-If .feature files exist in the project (created by superflowers:feature-design), the plan MUST:
-
-1. **Include a BDD setup task** as the FIRST task: install BDD framework, configure test runner, generate step definition stubs. Use superflowers:bdd-testing for framework detection.
-2. **Include BDD step definition tasks** for each feature file: implement the step definitions that wire Gherkin scenarios to real test code. These come BEFORE the corresponding implementation tasks (red-green: tests fail first, then implement).
-3. **Reference scenarios in implementation tasks:** Each task that implements behavioral requirements must list which .feature scenarios it should make pass.
-4. **Include a final BDD verification task** as the LAST task: run ALL scenarios end-to-end, verify everything is green.
-5. **List all .feature files** in the plan header under "Feature Files:"
-
-**If .feature files exist but a requirement has no corresponding scenario:** Flag this as a gap. Either the scenario is missing (go back to feature-design) or the requirement was added after feature design (add the scenario now).
-
-**REQUIRED SUB-SKILL:** Use superflowers:bdd-testing for BDD framework setup, step definition generation, and test execution during implementation.
-
 ## File Structure
 
 Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
@@ -70,8 +56,6 @@ This structure informs the task decomposition. Each task should produce self-con
 **Architecture:** [2-3 sentences about approach]
 
 **Tech Stack:** [Key technologies/libraries]
-
-**Feature Files:** [List .feature files if they exist, or "N/A"]
 
 ---
 ```

@@ -17,17 +17,6 @@ Do NOT invoke any implementation skill, write any code, scaffold any project, or
 
 Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.
 
-## Anti-Pattern: "This Doesn't Need Feature Files"
-
-After spec approval, you MUST invoke feature-design. Do NOT rationalize skipping it:
-
-| Excuse | Reality |
-|--------|---------|
-| "This is just infrastructure, no BDD needed" | Infrastructure has observable behavior: state changes, error responses, API contracts. Write scenarios. |
-| "Feature-design will slow us down" | 2 minutes for simple features. Skipping costs hours of rework from misunderstood requirements. |
-| "I'll go straight to the plan, it's clearer" | Plans without scenarios lack acceptance criteria. You'll build the wrong thing. |
-| "The spec is detailed enough" | Specs describe intent. Scenarios prove understanding. They are not the same. |
-
 ## Checklist
 
 You MUST create a task for each of these items and complete them in order:
@@ -40,9 +29,7 @@ You MUST create a task for each of these items and complete them in order:
 6. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Write feature files** — invoke superflowers:feature-design to create Gherkin .feature files from the approved spec. This is the DEFAULT next step after spec approval. Only skip if the user explicitly confirms there are NO user-observable behaviors (pure infra/config).
-10. **Verify feature files** — dispatch a fresh subagent to verify .feature files are consistent with the spec (coverage check, no contradictions, valid Gherkin)
-11. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
 ## Process Flow
 
@@ -72,16 +59,11 @@ digraph brainstorming {
     "Write design doc" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
     "User reviews spec?" -> "Write design doc" [label="changes requested"];
-    "Invoke feature-design skill" [shape=doublecircle];
-
-    "User reviews spec?" -> "Invoke feature-design skill" [label="approved"];
-    "Invoke feature-design skill" -> "Invoke writing-plans skill";
+    "User reviews spec?" -> "Invoke writing-plans skill" [label="approved"];
 }
 ```
 
-**After spec approval, ALWAYS invoke superflowers:feature-design next.** Feature-design is the default path — not an optional detour. Only skip if the user explicitly confirms there are no user-observable behaviors (pure infrastructure/config). When in doubt, invoke feature-design. It takes 2 minutes for simple features.
-
-**The terminal state is invoking writing-plans.** But you MUST invoke feature-design FIRST. The sequence is always: spec approved → feature-design → writing-plans.
+**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.
 
 ## The Process
 
@@ -139,8 +121,6 @@ After writing the spec document, look at it with fresh eyes:
 3. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
 4. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
 
-5. **Feature file consistency (if .feature files exist):** Do the scenarios match the spec requirements? Are there scenarios without matching spec sections or vice versa?
-
 Fix any issues inline. No need to re-review — just fix and move on.
 
 **User Review Gate:**
@@ -150,19 +130,10 @@ After the spec review loop passes, ask the user to review the written spec befor
 
 Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
 
-**Feature Design:**
-
-After the user approves the spec:
-1. ALWAYS invoke superflowers:feature-design to create Gherkin .feature files
-2. Dispatch a fresh subagent to verify feature files are consistent with the spec (coverage, no contradictions, no ambiguity)
-3. Only proceed to writing-plans after feature files are approved by the user
-
 **Implementation:**
 
-- ALWAYS invoke feature-design after spec approval
-- feature-design handles the decision internally — for truly pure infra, it will be quick
-- Then invoke writing-plans
-- Do NOT go directly from spec approval to writing-plans.
+- Invoke the writing-plans skill to create a detailed implementation plan
+- Do NOT invoke any other skill. writing-plans is the next step.
 
 ## Key Principles
 

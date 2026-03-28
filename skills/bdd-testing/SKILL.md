@@ -1,6 +1,6 @@
 ---
 name: bdd-testing
-description: Use when .feature files exist in the project and you need executable BDD tests during implementation or before claiming work is complete - auto-detects language and BDD framework
+description: Use when .feature files (Gherkin) exist in the project - during implementation to create executable step definitions, after each task to verify scenarios pass, and before claiming work is complete as a verification gate. Auto-detects language and BDD framework.
 ---
 
 # BDD Testing

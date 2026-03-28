@@ -1,6 +1,6 @@
 ---
 name: feature-design
-description: Use when requirements are gathered from brainstorming and you need to define acceptance criteria before writing implementation plans - converts requirements into Gherkin feature files that become the specification
+description: Use AFTER brainstorming completes and BEFORE writing-plans begins - whenever a design spec or requirements exist and you are about to plan implementation, invoke this first to create Gherkin feature files as executable acceptance criteria
 ---
 
 # Feature Design
