@@ -22,6 +22,22 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 If the spec covers multiple independent subsystems, it should have been broken into sub-project specs during brainstorming. If it wasn't, suggest breaking this into separate plans — one per subsystem. Each plan should produce working, testable software on its own.
 
+## Specification Skills Integration
+
+If specification skills were used before this plan, the plan MUST reference their outputs:
+
+**architecture-assessment** (architecture.md exists):
+- Plan tasks should respect architecture characteristics and constraints
+- Include fitness function implementation tasks for new characteristics
+- Reference architecture decisions that affect implementation choices
+
+**feature-design** (.feature files exist):
+- Each behavioral task references the specific scenario(s) it satisfies
+- Include BDD step definition tasks before implementation tasks
+- Verification steps include running BDD scenarios
+
+**RECOMMENDED SUB-SKILL:** Use superflowers:bdd-testing for BDD execution and superflowers:fitness-functions for architecture verification during implementation.
+
 ## File Structure
 
 Before defining tasks, map out which files will be created or modified and what each one is responsible for. This is where decomposition decisions get locked in.
@@ -56,6 +72,12 @@ This structure informs the task decomposition. Each task should produce self-con
 **Architecture:** [2-3 sentences about approach]
 
 **Tech Stack:** [Key technologies/libraries]
+
+**Architecture:** [Reference architecture.md characteristics if it exists, or "N/A"]
+
+**Feature Files:** [List .feature files if they exist, or "N/A"]
+
+**Fitness Functions:** [List architecture characteristics needing fitness functions, or "N/A"]
 
 ---
 ```
@@ -94,6 +116,11 @@ def function(input):
 
 Run: `pytest tests/path/test.py::test_name -v`
 Expected: PASS
+
+- [ ] **Step 4b: Verify specification compliance (if applicable)**
+
+If .feature files exist: Run relevant BDD scenarios
+If architecture.md exists: Verify task respects architecture constraints
 
 - [ ] **Step 5: Commit**
 
