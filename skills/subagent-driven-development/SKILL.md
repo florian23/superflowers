@@ -78,11 +78,30 @@ digraph process {
     "Implementer subagent fixes quality issues" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="re-review"];
     "Code quality reviewer subagent approves?" -> "Mark task complete in TodoWrite" [label="yes"];
     "Mark task complete in TodoWrite" -> "More tasks remain?";
+    "Run specification verification\n(BDD + fitness functions)" [shape=box];
+    "All specification checks pass?" [shape=diamond];
+    "Fix violations\n(re-dispatch implementer)" [shape=box];
+
     "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
     "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
-    "Dispatch final code reviewer subagent for entire implementation" -> "Use superflowers:finishing-a-development-branch";
+    "Dispatch final code reviewer subagent for entire implementation" -> "Run specification verification\n(BDD + fitness functions)";
+    "Run specification verification\n(BDD + fitness functions)" -> "All specification checks pass?";
+    "All specification checks pass?" -> "Use superflowers:finishing-a-development-branch" [label="yes"];
+    "All specification checks pass?" -> "Fix violations\n(re-dispatch implementer)" [label="no"];
+    "Fix violations\n(re-dispatch implementer)" -> "Run specification verification\n(BDD + fitness functions)";
 }
 ```
+
+## Specification Verification Gate
+
+After the final code review and BEFORE finishing-a-development-branch, run specification checks:
+
+1. **BDD scenarios** (if .feature files exist): Dispatch superflowers:bdd-testing agent to run ALL scenarios
+2. **Fitness functions** (if architecture.md exists): Dispatch superflowers:fitness-functions agent to run ALL fitness functions
+3. ALL checks must pass — partial passage is failure
+4. If checks fail: re-dispatch implementer to fix, then re-run
+
+This gate is NOT optional when specification artifacts exist.
 
 ## Model Selection
 

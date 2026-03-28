@@ -32,6 +32,8 @@ For each task:
 ### Step 3: Complete Development
 
 After all tasks complete and verified:
+- If .feature files exist: verify ALL BDD scenarios pass (superflowers:bdd-testing)
+- If architecture.md exists: verify ALL fitness functions pass (superflowers:fitness-functions)
 - Announce: "I'm using the finishing-a-development-branch skill to complete this work."
 - **REQUIRED SUB-SKILL:** Use superflowers:finishing-a-development-branch
 - Follow that skill to verify tests, present options, execute choice
