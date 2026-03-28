@@ -7,7 +7,7 @@ Guide for using Superpowers with OpenAI Codex via native skill discovery.
 Tell Codex:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.codex/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/obra/superflowers/refs/heads/main/.codex/INSTALL.md
 ```
 
 ## Manual Installation
@@ -27,7 +27,7 @@ Fetch and follow instructions from https://raw.githubusercontent.com/obra/superp
 2. Create the skills symlink:
    ```bash
    mkdir -p ~/.agents/skills
-   ln -s ~/.codex/superpowers/skills ~/.agents/skills/superpowers
+   ln -s ~/.codex/superflowers/skills ~/.agents/skills/superpowers
    ```
 
 3. Restart Codex.
@@ -52,17 +52,17 @@ cmd /c mklink /J "$env:USERPROFILE\.agents\skills\superpowers" "$env:USERPROFILE
 Codex has native skill discovery — it scans `~/.agents/skills/` at startup, parses SKILL.md frontmatter, and loads skills on demand. Superpowers skills are made visible through a single symlink:
 
 ```
-~/.agents/skills/superpowers/ → ~/.codex/superpowers/skills/
+~/.agents/skills/superflowers/ → ~/.codex/superflowers/skills/
 ```
 
-The `using-superpowers` skill is discovered automatically and enforces skill usage discipline — no additional configuration needed.
+The `using-superflowers` skill is discovered automatically and enforces skill usage discipline — no additional configuration needed.
 
 ## Usage
 
 Skills are discovered automatically. Codex activates them when:
 - You mention a skill by name (e.g., "use brainstorming")
 - The task matches a skill's description
-- The `using-superpowers` skill directs Codex to use one
+- The `using-superflowers` skill directs Codex to use one
 
 ### Personal Skills
 
@@ -113,7 +113,7 @@ Optionally delete the clone: `rm -rf ~/.codex/superpowers` (Windows: `Remove-Ite
 ### Skills not showing up
 
 1. Verify the symlink: `ls -la ~/.agents/skills/superpowers`
-2. Check skills exist: `ls ~/.codex/superpowers/skills`
+2. Check skills exist: `ls ~/.codex/superflowers/skills`
 3. Restart Codex — skills are discovered at startup
 
 ### Windows junction issues
@@ -122,5 +122,5 @@ Junctions normally work without special permissions. If creation fails, try runn
 
 ## Getting Help
 
-- Report issues: https://github.com/obra/superpowers/issues
+- Report issues: https://github.com/obra/superflowers/issues
 - Main documentation: https://github.com/obra/superpowers

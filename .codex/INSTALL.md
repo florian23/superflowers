@@ -16,7 +16,7 @@ Enable superpowers skills in Codex via native skill discovery. Just clone and sy
 2. **Create the skills symlink:**
    ```bash
    mkdir -p ~/.agents/skills
-   ln -s ~/.codex/superpowers/skills ~/.agents/skills/superpowers
+   ln -s ~/.codex/superflowers/skills ~/.agents/skills/superpowers
    ```
 
    **Windows (PowerShell):**

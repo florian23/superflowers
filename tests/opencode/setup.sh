@@ -14,16 +14,16 @@ export OPENCODE_CONFIG_DIR="$TEST_HOME/.config/opencode"
 
 # Install plugin to test location
 mkdir -p "$HOME/.config/opencode/superpowers"
-cp -r "$REPO_ROOT/lib" "$HOME/.config/opencode/superpowers/"
-cp -r "$REPO_ROOT/skills" "$HOME/.config/opencode/superpowers/"
+cp -r "$REPO_ROOT/lib" "$HOME/.config/opencode/superflowers/"
+cp -r "$REPO_ROOT/skills" "$HOME/.config/opencode/superflowers/"
 
 # Copy plugin directory
-mkdir -p "$HOME/.config/opencode/superpowers/.opencode/plugins"
-cp "$REPO_ROOT/.opencode/plugins/superpowers.js" "$HOME/.config/opencode/superpowers/.opencode/plugins/"
+mkdir -p "$HOME/.config/opencode/superflowers/.opencode/plugins"
+cp "$REPO_ROOT/.opencode/plugins/superpowers.js" "$HOME/.config/opencode/superflowers/.opencode/plugins/"
 
 # Register plugin via symlink
 mkdir -p "$HOME/.config/opencode/plugins"
-ln -sf "$HOME/.config/opencode/superpowers/.opencode/plugins/superpowers.js" \
+ln -sf "$HOME/.config/opencode/superflowers/.opencode/plugins/superpowers.js" \
        "$HOME/.config/opencode/plugins/superpowers.js"
 
 # Create test skills in different locations for testing
@@ -57,7 +57,7 @@ PROJECT_SKILL_MARKER_67890
 EOF
 
 echo "Setup complete: $TEST_HOME"
-echo "Plugin installed to: $HOME/.config/opencode/superpowers/.opencode/plugins/superpowers.js"
+echo "Plugin installed to: $HOME/.config/opencode/superflowers/.opencode/plugins/superpowers.js"
 echo "Plugin registered at: $HOME/.config/opencode/plugins/superpowers.js"
 echo "Test project at: $TEST_HOME/test-project"
 

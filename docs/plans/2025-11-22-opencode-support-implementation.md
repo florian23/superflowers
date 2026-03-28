@@ -1,6 +1,6 @@
 # OpenCode Support Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superflowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Add full superpowers support for OpenCode.ai with a native JavaScript plugin that shares core functionality with the existing Codex implementation.
 
@@ -191,17 +191,17 @@ Add before `module.exports`:
  * Resolve a skill name to its file path, handling shadowing
  * (personal skills override superpowers skills).
  *
- * @param {string} skillName - Name like "superpowers:brainstorming" or "my-skill"
+ * @param {string} skillName - Name like "superflowers:brainstorming" or "my-skill"
  * @param {string} superpowersDir - Path to superpowers skills directory
  * @param {string} personalDir - Path to personal skills directory
  * @returns {{skillFile: string, sourceType: string, skillPath: string} | null}
  */
 function resolveSkillPath(skillName, superpowersDir, personalDir) {
-    // Strip superpowers: prefix if present
-    const forceSuperpowers = skillName.startsWith('superpowers:');
-    const actualSkillName = forceSuperpowers ? skillName.replace(/^superpowers:/, '') : skillName;
+    // Strip superflowers: prefix if present
+    const forceSuperpowers = skillName.startsWith('superflowers:');
+    const actualSkillName = forceSuperpowers ? skillName.replace(/^superflowers:/, '') : skillName;
 
-    // Try personal skills first (unless explicitly superpowers:)
+    // Try personal skills first (unless explicitly superflowers:)
     if (!forceSuperpowers && personalDir) {
         const personalPath = path.join(personalDir, actualSkillName);
         const personalSkillFile = path.join(personalPath, 'SKILL.md');
@@ -469,7 +469,7 @@ const fs = require('fs');
 const os = require('os');
 
 const homeDir = os.homedir();
-const superpowersSkillsDir = path.join(homeDir, '.config/opencode/superpowers/skills');
+const superpowersSkillsDir = path.join(homeDir, '.config/opencode/superflowers/skills');
 const personalSkillsDir = path.join(homeDir, '.config/opencode/skills');
 
 /**
@@ -516,7 +516,7 @@ export const SuperpowersPlugin = async ({ project, client, $, directory, worktre
         name: 'use_skill',
         description: 'Load and read a specific skill to guide your work. Skills contain proven workflows, mandatory processes, and expert techniques.',
         schema: z.object({
-          skill_name: z.string().describe('Name of the skill to load (e.g., "superpowers:brainstorming" or "my-custom-skill")')
+          skill_name: z.string().describe('Name of the skill to load (e.g., "superflowers:brainstorming" or "my-custom-skill")')
         }),
         execute: async ({ skill_name }) => {
           // Resolve skill path (handles shadowing: personal > superpowers)
@@ -617,13 +617,13 @@ Add after the use_skill tool definition, before closing the tools array:
           const allSkills = [...personalSkills, ...superpowersSkills];
 
           if (allSkills.length === 0) {
-            return 'No skills found. Install superpowers skills to ~/.config/opencode/superpowers/skills/';
+            return 'No skills found. Install superpowers skills to ~/.config/opencode/superflowers/skills/';
           }
 
           let output = 'Available skills:\n\n';
 
           for (const skill of allSkills) {
-            const namespace = skill.sourceType === 'personal' ? '' : 'superpowers:';
+            const namespace = skill.sourceType === 'personal' ? '' : 'superflowers:';
             const skillName = skill.name || path.basename(skill.path);
 
             output += `${namespace}${skillName}\n`;
@@ -663,9 +663,9 @@ After the tools array, add:
 
 ```javascript
     'session.started': async () => {
-      // Read using-superpowers skill content
+      // Read using-superflowers skill content
       const usingSuperpowersPath = skillsCore.resolveSkillPath(
-        'using-superpowers',
+        'using-superflowers',
         superpowersSkillsDir,
         personalSkillsDir
       );
@@ -712,7 +712,7 @@ When skills reference tools you don't have, substitute OpenCode equivalents:
 - Utilities and helpers specific to that skill
 
 **Skills naming:**
-- Superpowers skills: \`superpowers:skill-name\` (from ~/.config/opencode/superpowers/skills/)
+- Superpowers skills: \`superflowers:skill-name\` (from ~/.config/opencode/superflowers/skills/)
 - Personal skills: \`skill-name\` (from ~/.config/opencode/skills/)
 - Personal skills override superpowers skills when names match
 `;
@@ -731,7 +731,7 @@ When skills reference tools you don't have, substitute OpenCode equivalents:
         context: `<EXTREMELY_IMPORTANT>
 You have superpowers.
 
-**Below is the full content of your 'superpowers:using-superpowers' skill - your introduction to using skills. For all other skills, use the 'use_skill' tool:**
+**Below is the full content of your 'superflowers:using-superflowers' skill - your introduction to using skills. For all other skills, use the 'use_skill' tool:**
 
 ${usingSuperpowersContent}
 
@@ -788,14 +788,14 @@ git clone https://github.com/obra/superpowers.git ~/.config/opencode/superpowers
 The plugin is included in the superpowers repository you just cloned.
 
 OpenCode will automatically discover it from:
-- `~/.config/opencode/superpowers/.opencode/plugin/superpowers.js`
+- `~/.config/opencode/superflowers/.opencode/plugin/superpowers.js`
 
 Or you can link it to the project-local plugin directory:
 
 ```bash
 # In your OpenCode project
 mkdir -p .opencode/plugin
-ln -s ~/.config/opencode/superpowers/.opencode/plugin/superpowers.js .opencode/plugin/superpowers.js
+ln -s ~/.config/opencode/superflowers/.opencode/plugin/superpowers.js .opencode/plugin/superpowers.js
 ```
 
 ### 3. Restart OpenCode
@@ -821,7 +821,7 @@ use find_skills tool
 Use the `use_skill` tool to load a specific skill:
 
 ```
-use use_skill tool with skill_name: "superpowers:brainstorming"
+use use_skill tool with skill_name: "superflowers:brainstorming"
 ```
 
 ### Personal Skills
@@ -858,13 +858,13 @@ git pull
 
 ### Plugin not loading
 
-1. Check plugin file exists: `ls ~/.config/opencode/superpowers/.opencode/plugin/superpowers.js`
+1. Check plugin file exists: `ls ~/.config/opencode/superflowers/.opencode/plugin/superpowers.js`
 2. Check OpenCode logs for errors
 3. Verify Node.js is installed: `node --version`
 
 ### Skills not found
 
-1. Verify skills directory exists: `ls ~/.config/opencode/superpowers/skills`
+1. Verify skills directory exists: `ls ~/.config/opencode/superflowers/skills`
 2. Use `find_skills` tool to see what's discovered
 3. Check file structure: each skill should have a `SKILL.md` file
 
@@ -878,7 +878,7 @@ When a skill references a Claude Code tool you don't have:
 
 ## Getting Help
 
-- Report issues: https://github.com/obra/superpowers/issues
+- Report issues: https://github.com/obra/superflowers/issues
 - Documentation: https://github.com/obra/superpowers
 ```
 
@@ -991,7 +991,7 @@ Expected: Shows list of skills with names and descriptions
 
 **Step 2: Test use-skill command**
 
-Run: `.codex/superpowers-codex use-skill superpowers:brainstorming | head -20`
+Run: `.codex/superpowers-codex use-skill superflowers:brainstorming | head -20`
 Expected: Shows brainstorming skill content
 
 **Step 3: Test bootstrap command**

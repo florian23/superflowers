@@ -1,6 +1,6 @@
 # Visual Brainstorming Refactor Implementation Plan
 
-> **For agentic workers:** REQUIRED: Use superpowers:subagent-driven-development (if subagents available) or superpowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED: Use superflowers:subagent-driven-development (if subagents available) or superflowers:executing-plans to implement this plan. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Refactor visual brainstorming from blocking TUI feedback model to non-blocking "Browser Displays, Terminal Commands" architecture.
 
@@ -8,7 +8,7 @@
 
 **Tech Stack:** Node.js (Express, ws, chokidar), vanilla HTML/CSS/JS
 
-**Spec:** `docs/superpowers/specs/2026-02-19-visual-brainstorming-refactor-design.md`
+**Spec:** `docs/superflowers/specs/2026-02-19-visual-brainstorming-refactor-design.md`
 
 ---
 
@@ -360,7 +360,7 @@ git commit -m "Update brainstorm server tests for new template structure and hel
 
 Search the codebase:
 ```bash
-grep -r "wait-for-feedback" /Users/drewritter/prime-rad/superpowers/ --include="*.js" --include="*.md" --include="*.sh" --include="*.json"
+grep -r "wait-for-feedback" /Users/drewritter/prime-rad/superflowers/ --include="*.js" --include="*.md" --include="*.sh" --include="*.json"
 ```
 
 Expected references: only `visual-companion.md` (rewritten in Task 6) and possibly release notes (historical, leave as-is).
@@ -510,7 +510,7 @@ lib/brainstorm-server/stop-server.sh <screen_dir from start output>
 - [ ] **Step 3: Verify no stale references remain**
 
 ```bash
-grep -r "wait-for-feedback\|sendToClaude\|feedback-footer\|send-to-claude\|TaskOutput.*block.*true" /Users/drewritter/prime-rad/superpowers/ --include="*.js" --include="*.md" --include="*.sh" --include="*.html" | grep -v node_modules | grep -v RELEASE-NOTES | grep -v "\.md:.*spec\|plan"
+grep -r "wait-for-feedback\|sendToClaude\|feedback-footer\|send-to-claude\|TaskOutput.*block.*true" /Users/drewritter/prime-rad/superflowers/ --include="*.js" --include="*.md" --include="*.sh" --include="*.html" | grep -v node_modules | grep -v RELEASE-NOTES | grep -v "\.md:.*spec\|plan"
 ```
 
 Expected: No hits outside of release notes and the spec/plan docs (which are historical).

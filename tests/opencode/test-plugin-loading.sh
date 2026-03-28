@@ -32,7 +32,7 @@ fi
 
 # Test 2: Verify skills directory is populated
 echo "Test 2: Checking skills directory..."
-skill_count=$(find "$HOME/.config/opencode/superpowers/skills" -name "SKILL.md" | wc -l)
+skill_count=$(find "$HOME/.config/opencode/superflowers/skills" -name "SKILL.md" | wc -l)
 if [ "$skill_count" -gt 0 ]; then
     echo "  [PASS] Found $skill_count skills installed"
 else
@@ -40,18 +40,18 @@ else
     exit 1
 fi
 
-# Test 4: Check using-superpowers skill exists (critical for bootstrap)
-echo "Test 4: Checking using-superpowers skill (required for bootstrap)..."
-if [ -f "$HOME/.config/opencode/superpowers/skills/using-superpowers/SKILL.md" ]; then
-    echo "  [PASS] using-superpowers skill exists"
+# Test 4: Check using-superflowers skill exists (critical for bootstrap)
+echo "Test 4: Checking using-superflowers skill (required for bootstrap)..."
+if [ -f "$HOME/.config/opencode/superflowers/skills/using-superflowers/SKILL.md" ]; then
+    echo "  [PASS] using-superflowers skill exists"
 else
-    echo "  [FAIL] using-superpowers skill not found (required for bootstrap)"
+    echo "  [FAIL] using-superflowers skill not found (required for bootstrap)"
     exit 1
 fi
 
 # Test 5: Verify plugin JavaScript syntax (basic check)
 echo "Test 5: Checking plugin JavaScript syntax..."
-plugin_file="$HOME/.config/opencode/superpowers/.opencode/plugins/superpowers.js"
+plugin_file="$HOME/.config/opencode/superflowers/.opencode/plugins/superpowers.js"
 if node --check "$plugin_file" 2>/dev/null; then
     echo "  [PASS] Plugin JavaScript syntax is valid"
 else

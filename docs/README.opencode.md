@@ -125,6 +125,6 @@ Skills written for Claude Code are automatically adapted for OpenCode:
 
 ## Getting Help
 
-- Report issues: https://github.com/obra/superpowers/issues
+- Report issues: https://github.com/obra/superflowers/issues
 - Main documentation: https://github.com/obra/superpowers
 - OpenCode docs: https://opencode.ai/docs/
