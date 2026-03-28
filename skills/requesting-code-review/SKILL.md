@@ -40,6 +40,11 @@ Use Task tool with superflowers:code-reviewer type, fill template at `code-revie
 - `{HEAD_SHA}` - Ending commit
 - `{DESCRIPTION}` - Brief summary
 
+**Include in review context (if applicable):**
+- Architecture characteristics from architecture.md
+- BDD acceptance criteria from .feature files
+- Fitness function requirements
+
 **3. Act on feedback:**
 - Fix Critical issues immediately
 - Fix Important issues before proceeding

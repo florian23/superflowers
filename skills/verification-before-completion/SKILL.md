@@ -47,6 +47,8 @@ Skip any step = lying, not verifying
 | Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
 | Regression test works | Red-green cycle verified | Test passes once |
 | Agent completed | VCS diff shows changes | Agent reports "success" |
+| BDD scenarios pass | BDD run command: all scenarios green | "Unit tests pass" / "Most scenarios pass" |
+| Fitness functions pass | Fitness function run: all checks green | "Code looks clean" / "Architecture is fine" |
 | Requirements met | Line-by-line checklist | Tests passing |
 
 ## Red Flags - STOP
@@ -93,6 +95,18 @@ Skip any step = lying, not verifying
 ❌ "Linter passed" (linter doesn't check compilation)
 ```
 
+**BDD Scenarios (when .feature files exist):**
+```
+✅ [Run BDD command] [See: 12 scenarios, 12 passed] "All BDD scenarios pass"
+❌ "Unit tests pass so features work" / "Most scenarios pass"
+```
+
+**Fitness Functions (when architecture.md exists):**
+```
+✅ [Run fitness functions] [See: 5/5 checks passed] "Architecture compliance verified"
+❌ "Code follows the architecture" / "Looks structurally sound"
+```
+
 **Requirements:**
 ```
 ✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
@@ -117,6 +131,8 @@ From 24 failure memories:
 ## When To Apply
 
 **ALWAYS before:**
+- Claiming features are implemented (when .feature files exist, ALL scenarios must pass)
+- Claiming architecture compliance (when architecture.md exists, ALL fitness functions must pass)
 - ANY variation of success/completion claims
 - ANY expression of satisfaction
 - ANY positive statement about work state

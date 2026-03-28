@@ -17,25 +17,29 @@ Guide completion of development work by presenting clear options and handling ch
 
 ### Step 1: Verify Tests
 
-**Before presenting options, verify tests pass:**
+**Before presenting options, verify ALL tests pass:**
 
 ```bash
 # Run project's test suite
 npm test / cargo test / pytest / go test ./...
 ```
 
-**If tests fail:**
+**Additionally, if specification artifacts exist:**
+- If .feature files exist: verify ALL BDD scenarios pass (superflowers:bdd-testing)
+- If architecture.md exists: verify ALL fitness functions pass (superflowers:fitness-functions)
+
+**If ANY verification fails:**
 ```
-Tests failing (<N> failures). Must fix before completing:
+Verification failing. Must fix before completing:
 
-[Show failures]
+[Show failures — unit tests, BDD scenarios, and/or fitness functions]
 
-Cannot proceed with merge/PR until tests pass.
+Cannot proceed with merge/PR until ALL checks pass.
 ```
 
 Stop. Don't proceed to Step 2.
 
-**If tests pass:** Continue to Step 2.
+**If ALL verifications pass:** Continue to Step 2.
 
 ### Step 2: Determine Base Branch
 
