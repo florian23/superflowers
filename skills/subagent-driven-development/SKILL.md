@@ -77,7 +77,16 @@ digraph process {
     "Code quality reviewer subagent approves?" -> "Implementer subagent fixes quality issues" [label="no"];
     "Implementer subagent fixes quality issues" -> "Dispatch code quality reviewer subagent (./code-quality-reviewer-prompt.md)" [label="re-review"];
     "Code quality reviewer subagent approves?" -> "Mark task complete in TodoWrite" [label="yes"];
-    "Mark task complete in TodoWrite" -> "More tasks remain?";
+    "Feature files for this task?" [shape=diamond];
+    "Dispatch BDD agent\n(superflowers:bdd-testing)" [shape=box];
+    "BDD scenarios pass?" [shape=diamond];
+
+    "Mark task complete in TodoWrite" -> "Feature files for this task?";
+    "Feature files for this task?" -> "Dispatch BDD agent\n(superflowers:bdd-testing)" [label="yes"];
+    "Feature files for this task?" -> "More tasks remain?" [label="no"];
+    "Dispatch BDD agent\n(superflowers:bdd-testing)" -> "BDD scenarios pass?";
+    "BDD scenarios pass?" -> "More tasks remain?" [label="yes"];
+    "BDD scenarios pass?" -> "Implementer subagent fixes spec gaps" [label="no — escalate"];
     "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
     "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
     "Dispatch final code reviewer subagent for entire implementation" -> "Use superflowers:finishing-a-development-branch";

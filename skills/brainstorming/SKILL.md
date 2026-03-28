@@ -29,6 +29,7 @@ You MUST create a task for each of these items and complete them in order:
 6. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
+8b. **(If behavioral requirements) Write feature files** — invoke superflowers:feature-design to create Gherkin .feature files from the approved spec
 9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
 ## Process Flow
@@ -59,11 +60,19 @@ digraph brainstorming {
     "Write design doc" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
     "User reviews spec?" -> "Write design doc" [label="changes requested"];
-    "User reviews spec?" -> "Invoke writing-plans skill" [label="approved"];
+    "Behavioral requirements?" [shape=diamond];
+    "Invoke feature-design skill" [shape=doublecircle];
+
+    "User reviews spec?" -> "Behavioral requirements?" [label="approved"];
+    "Behavioral requirements?" -> "Invoke feature-design skill" [label="yes"];
+    "Behavioral requirements?" -> "Invoke writing-plans skill" [label="no — infra/config only"];
+    "Invoke feature-design skill" -> "Invoke writing-plans skill";
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.
+**RECOMMENDED SUB-SKILL:** If the spec describes behavioral requirements (user-facing features, observable behavior), invoke superflowers:feature-design to create .feature files before writing-plans. Skip for pure infrastructure, configuration, or tooling changes with no observable behavior.
+
+**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skills you invoke after brainstorming are feature-design (if behavioral) then writing-plans.
 
 ## The Process
 
