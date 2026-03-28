@@ -87,11 +87,31 @@ digraph process {
     "Dispatch BDD agent\n(superflowers:bdd-testing)" -> "BDD scenarios pass?";
     "BDD scenarios pass?" -> "More tasks remain?" [label="yes"];
     "BDD scenarios pass?" -> "Implementer subagent fixes spec gaps" [label="no — escalate"];
+    "Run ALL BDD scenarios\n(superflowers:bdd-testing)" [shape=box];
+    "ALL BDD scenarios green?" [shape=diamond];
+    "Fix failing scenarios\n(re-dispatch implementer)" [shape=box];
+
     "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
     "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
-    "Dispatch final code reviewer subagent for entire implementation" -> "Use superflowers:finishing-a-development-branch";
+    "Dispatch final code reviewer subagent for entire implementation" -> "Run ALL BDD scenarios\n(superflowers:bdd-testing)";
+    "Run ALL BDD scenarios\n(superflowers:bdd-testing)" -> "ALL BDD scenarios green?";
+    "ALL BDD scenarios green?" -> "Use superflowers:finishing-a-development-branch" [label="yes"];
+    "ALL BDD scenarios green?" -> "Fix failing scenarios\n(re-dispatch implementer)" [label="no"];
+    "Fix failing scenarios\n(re-dispatch implementer)" -> "Run ALL BDD scenarios\n(superflowers:bdd-testing)";
 }
 ```
+
+## BDD Final Verification Gate
+
+**When .feature files exist in the project:** After the final code review and BEFORE invoking finishing-a-development-branch, you MUST run ALL BDD scenarios as a final gate.
+
+1. Dispatch the BDD agent (superflowers:bdd-testing) to run the complete scenario suite
+2. ALL scenarios must pass — partial passage is failure
+3. If scenarios fail: re-dispatch an implementer to fix the issues, then re-run BDD
+4. Only proceed to finishing-a-development-branch when ALL scenarios are green
+5. Report the full BDD test output as evidence
+
+**This gate is NOT optional.** Do not skip it because unit tests pass. BDD scenarios verify requirements, unit tests verify implementation — both must pass.
 
 ## Model Selection
 

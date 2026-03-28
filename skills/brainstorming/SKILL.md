@@ -29,7 +29,8 @@ You MUST create a task for each of these items and complete them in order:
 6. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
-8b. **(If behavioral requirements) Write feature files** — invoke superflowers:feature-design to create Gherkin .feature files from the approved spec
+8b. **(If behavioral requirements) Write feature files** — invoke superflowers:feature-design to create Gherkin .feature files from the approved spec. This is REQUIRED for any user-facing feature.
+8c. **Verify feature files** — dispatch a fresh subagent to verify .feature files are consistent with the spec (coverage check, no contradictions, valid Gherkin)
 9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
 ## Process Flow
@@ -70,9 +71,9 @@ digraph brainstorming {
 }
 ```
 
-**RECOMMENDED SUB-SKILL:** If the spec describes behavioral requirements (user-facing features, observable behavior), invoke superflowers:feature-design to create .feature files before writing-plans. Skip for pure infrastructure, configuration, or tooling changes with no observable behavior.
+**REQUIRED SUB-SKILL:** If the spec describes behavioral requirements (user-facing features, observable behavior), you MUST invoke superflowers:feature-design to create .feature files before writing-plans. Only skip for pure infrastructure, configuration, or tooling changes with no observable behavior.
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skills you invoke after brainstorming are feature-design (if behavioral) then writing-plans.
+**The terminal state is invoking writing-plans.** For behavioral requirements, you MUST invoke feature-design FIRST, then writing-plans. Do NOT skip feature-design — if the feature has any user-observable behavior, feature files are required.
 
 ## The Process
 
@@ -130,6 +131,8 @@ After writing the spec document, look at it with fresh eyes:
 3. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
 4. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
 
+5. **Feature file consistency (if .feature files exist):** Do the scenarios match the spec requirements? Are there scenarios without matching spec sections or vice versa?
+
 Fix any issues inline. No need to re-review — just fix and move on.
 
 **User Review Gate:**
@@ -139,10 +142,18 @@ After the spec review loop passes, ask the user to review the written spec befor
 
 Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
 
+**Feature Design (for behavioral requirements):**
+
+If the spec describes user-facing features or observable behavior:
+1. Invoke superflowers:feature-design to create Gherkin .feature files
+2. Dispatch a fresh subagent to verify feature files are consistent with the spec (coverage, no contradictions, no ambiguity)
+3. Only proceed to writing-plans after feature files are approved by the user
+
 **Implementation:**
 
-- Invoke the writing-plans skill to create a detailed implementation plan
-- Do NOT invoke any other skill. writing-plans is the next step.
+- If behavioral requirements: invoke feature-design first, THEN writing-plans
+- If infrastructure/config only: invoke writing-plans directly
+- Do NOT skip feature-design for behavioral requirements.
 
 ## Key Principles
 

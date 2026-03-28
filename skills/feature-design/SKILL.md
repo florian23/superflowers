@@ -128,6 +128,19 @@ After writing scenarios, review with fresh eyes:
 4. **Boundaries:** Are edge cases and error paths covered?
 5. **Language:** Does it use the domain's ubiquitous language (DDD)?
 
+## Feature File Verification (Fresh Agent)
+
+After self-review, dispatch a **fresh subagent** to independently verify the feature files against the spec. The fresh context prevents blind spots from your own writing.
+
+The verification agent checks:
+1. **Spec-to-scenario traceability:** Every spec requirement has at least one scenario
+2. **Scenario-to-spec traceability:** Every scenario traces back to a spec requirement (no invented requirements)
+3. **Consistency:** No contradictions between scenarios and spec
+4. **Gherkin validity:** Syntax is correct, no malformed steps
+5. **Completeness:** Error paths, edge cases, boundary conditions covered
+
+If the verification agent finds gaps, fix them before presenting to the user.
+
 ## Red Flags — STOP and Revisit
 
 - Scenarios that describe UI interactions step-by-step (too coupled to implementation)

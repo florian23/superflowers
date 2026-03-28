@@ -24,15 +24,17 @@ If the spec covers multiple independent subsystems, it should have been broken i
 
 ## Feature File Integration
 
-If .feature files exist in the project (created by superflowers:feature-design), the plan MUST reference them:
+If .feature files exist in the project (created by superflowers:feature-design), the plan MUST:
 
-1. Each plan task that implements a behavioral requirement should reference the specific .feature file and scenario(s) it satisfies
-2. Verification steps should include running BDD scenarios (not just unit tests)
-3. The plan header should list all .feature files under "Feature Files:"
+1. **Include a BDD setup task** as the FIRST task: install BDD framework, configure test runner, generate step definition stubs. Use superflowers:bdd-testing for framework detection.
+2. **Include BDD step definition tasks** for each feature file: implement the step definitions that wire Gherkin scenarios to real test code. These come BEFORE the corresponding implementation tasks (red-green: tests fail first, then implement).
+3. **Reference scenarios in implementation tasks:** Each task that implements behavioral requirements must list which .feature scenarios it should make pass.
+4. **Include a final BDD verification task** as the LAST task: run ALL scenarios end-to-end, verify everything is green.
+5. **List all .feature files** in the plan header under "Feature Files:"
 
 **If .feature files exist but a requirement has no corresponding scenario:** Flag this as a gap. Either the scenario is missing (go back to feature-design) or the requirement was added after feature design (add the scenario now).
 
-**RECOMMENDED SUB-SKILL:** Use superflowers:bdd-testing for BDD framework setup and test execution during implementation.
+**REQUIRED SUB-SKILL:** Use superflowers:bdd-testing for BDD framework setup, step definition generation, and test execution during implementation.
 
 ## File Structure
 
