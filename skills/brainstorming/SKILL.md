@@ -26,10 +26,12 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
-7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
-8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+6. **Architecture assessment** — invoke superflowers:architecture-assessment to identify/review architecture characteristics. Architecture informs the spec.
+7. **Write feature files** — invoke superflowers:feature-design to create BDD acceptance criteria as Gherkin scenarios. Scenarios inform the spec.
+8. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit. Spec references architecture.md and .feature files.
+9. **Spec self-review** — check for placeholders, contradictions, ambiguity, scope, architecture alignment, scenario coverage (see below)
+10. **User reviews written spec** — ask user to review the spec file before proceeding
+11. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
 ## Process Flow
 
@@ -55,7 +57,12 @@ digraph brainstorming {
     "Propose 2-3 approaches" -> "Present design sections";
     "Present design sections" -> "User approves design?";
     "User approves design?" -> "Present design sections" [label="no, revise"];
-    "User approves design?" -> "Write design doc" [label="yes"];
+    "Invoke architecture-assessment" [shape=doublecircle];
+    "Invoke feature-design" [shape=doublecircle];
+
+    "User approves design?" -> "Invoke architecture-assessment" [label="yes"];
+    "Invoke architecture-assessment" -> "Invoke feature-design";
+    "Invoke feature-design" -> "Write design doc";
     "Write design doc" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
     "User reviews spec?" -> "Write design doc" [label="changes requested"];
@@ -63,7 +70,13 @@ digraph brainstorming {
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill directly. Before invoking writing-plans, check if any specification skills (e.g., architecture-assessment, feature-design) should run first — they define acceptance criteria that feed into the plan.
+**After design approval, invoke specification skills BEFORE writing the spec:**
+1. superflowers:architecture-assessment — identify/review architecture characteristics
+2. superflowers:feature-design — create BDD acceptance criteria as Gherkin scenarios
+3. Then write the design doc (spec references architecture.md and .feature files)
+4. Then invoke writing-plans
+
+Do NOT invoke frontend-design, mcp-builder, or any other implementation skill directly.
 
 ## The Process
 
@@ -120,6 +133,8 @@ After writing the spec document, look at it with fresh eyes:
 2. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
 3. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
 4. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
+5. **Architecture alignment:** Does the spec align with the characteristics in architecture.md?
+6. **Scenario coverage:** Does the spec cover all BDD scenarios from the .feature files? Are there spec sections without matching scenarios or vice versa?
 
 Fix any issues inline. No need to re-review — just fix and move on.
 
@@ -132,8 +147,8 @@ Wait for the user's response. If they request changes, make them and re-run the 
 
 **Implementation:**
 
-- Before invoking writing-plans, check if any specification skills should run first (e.g., feature-design for creating acceptance criteria)
-- Then invoke the writing-plans skill to create a detailed implementation plan
+- Architecture and feature files should already exist at this point (created before the spec in steps 6-7)
+- Invoke the writing-plans skill to create a detailed implementation plan
 
 ## Key Principles
 
