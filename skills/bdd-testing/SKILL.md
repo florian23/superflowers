@@ -144,6 +144,20 @@ Distinguish between:
 - **Implementation bug:** The application code is wrong → Escalate to implementer
 - **Scenario bug:** The scenario itself is wrong → Escalate to user (scenarios are the spec)
 
+## Immutability of Tests
+
+<HARD-GATE>
+During verification, existing BDD tests are IMMUTABLE:
+- Do NOT modify .feature files to make tests pass
+- Do NOT modify existing step definitions to weaken assertions
+- Do NOT delete scenarios or step definitions
+- Do NOT skip or ignore failing scenarios
+
+If a scenario fails, the IMPLEMENTATION must be fixed — not the test.
+The only exception: the user explicitly requests a scenario change because
+the requirement itself changed. This requires user approval, not agent judgment.
+</HARD-GATE>
+
 ## Red Flags — STOP
 
 - Step definitions containing business logic (too coupled)
@@ -152,6 +166,8 @@ Distinguish between:
 - Skipping BDD agent because "unit tests cover it" (different concern)
 - .feature files modified to match implementation (scenarios are the spec, not tests)
 - Step definitions that duplicate application logic instead of calling it
+- Existing step definitions weakened to make failing tests pass
+- Scenarios deleted or commented out to reduce failure count
 
 ## Rationalization Prevention
 
@@ -161,6 +177,8 @@ Distinguish between:
 | "Most scenarios pass, close enough" | Partial = incomplete. Would you ship with 80% of unit tests passing? |
 | "Setting up BDD framework is overhead" | One-time cost. BDD agent handles setup automatically. |
 | "Scenarios are wrong, not the code" | Scenarios are the spec. If the spec is wrong, fix it with the user, don't silently adjust. |
+| "I'll just adjust this assertion" | Tests are immutable during verification. Fix the code, not the test. |
+| "This scenario is outdated" | Only the user decides that. Escalate, don't delete. |
 | "BDD is redundant with integration tests" | BDD scenarios are stakeholder-readable. Integration tests aren't. |
 | "I'll run BDD tests later" | Later = never. Run them now. |
 
@@ -171,6 +189,8 @@ Distinguish between:
 - [ ] ALL scenarios pass (green)
 - [ ] Step definitions are thin (delegate to real code)
 - [ ] No .feature files were modified to make tests pass
+- [ ] No existing step definitions were weakened or deleted
+- [ ] ALL previously passing scenarios still pass (no regressions)
 - [ ] Full test run output captured as evidence
 
 ## Integration

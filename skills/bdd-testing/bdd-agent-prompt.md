@@ -70,10 +70,13 @@ Report your results with full evidence.
 ## Rules
 
 1. Never modify .feature files. Scenarios are the spec.
-2. Never put business logic in step definitions.
-3. Never mock away the entire application. Steps must exercise real code.
-4. Always run the FULL suite after changes, not just the scenario you fixed.
-5. Always report with complete test output — no summaries without evidence.
+2. Never modify existing step definitions to weaken assertions or change expected behavior.
+3. Never delete scenarios or step definitions.
+4. Never put business logic in step definitions.
+5. Never mock away the entire application. Steps must exercise real code.
+6. Always run the FULL suite after changes, not just the scenario you fixed.
+7. All previously passing scenarios must still pass after your changes (no regressions).
+8. Always report with complete test output — no summaries without evidence.
 
 ---
 
