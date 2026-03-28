@@ -63,7 +63,7 @@ digraph brainstorming {
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill directly. Before invoking writing-plans, check if any specification skills (e.g., feature-design) should run first — they define acceptance criteria that feed into the plan.
+**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill directly. Before invoking writing-plans, check if any specification skills (e.g., architecture-assessment, feature-design) should run first — they define acceptance criteria that feed into the plan.
 
 ## The Process
 
