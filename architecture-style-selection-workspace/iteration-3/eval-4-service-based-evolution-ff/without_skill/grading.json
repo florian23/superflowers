@@ -1,0 +1,13 @@
+{
+  "eval_id": 4,
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "A0: Agent produced both output files with real content", "passed": true, "evidence": "analysis.md (128 lines) and architecture.md (311 lines) both contain substantive content"},
+    {"text": "A1: Correct architecture recommendation (Service-Based with evolution)", "passed": true, "evidence": "Selected: Service-Based Architecture. Includes detailed 3-phase evolution path with concrete triggers."},
+    {"text": "A2: Ranked comparison of ALL 8 styles", "passed": false, "evidence": "Only 3 styles evaluated in detail: Modular Monolith, Service-Based, Microservices. Missing: Layered, Microkernel, Service-Oriented, Event-Driven, Space-Based. Analysis.md is in German but the structural gap remains."},
+    {"text": "A3: Fitness function table with style-specific structural FFs (not just characteristic FFs)", "passed": false, "evidence": "7 FFs are almost entirely characteristic/DORA metrics: FF-1 Deployment Frequency (>=10/week), FF-2 Deployment Lead Time (<15min), FF-4 Change Failure Rate (<5%), FF-5 Feature Cycle Time (<3 days), FF-6 Response Time P95 (<200ms), FF-7 Horizontal Scalability ratio. Only FF-3 (Service Coupling, max 2 dependencies) is borderline structural. These measure outcomes, not structural invariants. Missing: service count bounds, database sharing discipline, service boundary alignment, no cross-service internal access."},
+    {"text": "A4: Style fitness functions are specific to the selected style (service-based)", "passed": false, "evidence": "FFs are generic software delivery metrics (DORA metrics, latency, scalability ratio) applicable to any architecture style. No service-based-specific structural invariants like service count limits, shared DB access scoping, or coarse-grained boundary enforcement."},
+    {"text": "A5: Fitness functions include Tool/Approach or implementation guidance", "passed": true, "evidence": "Detailed implementation scripts for every FF: bash scripts for deployment metrics, Python script for coupling analysis, PromQL for latency alerts, k6 load test scripts. Exceeds minimum."},
+    {"text": "A6: Fitness functions scoped to current phase, future FFs mentioned but not mandatory", "passed": false, "evidence": "FFs are labeled 'Phase 1' but future phase fitness functions are not mentioned at all. Phase transition triggers exist (user count, latency, team count) but no indication of what fitness functions Phase 2 or Phase 3 would add. The requirement is that future phase FFs should be mentioned but not mandatory now."}
+  ]
+}

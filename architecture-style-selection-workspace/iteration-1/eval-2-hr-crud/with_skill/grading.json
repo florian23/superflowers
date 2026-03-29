@@ -1,0 +1,36 @@
+{
+  "eval_id": 2,
+  "variant": "with_skill",
+  "expectations": [
+    {
+      "text": "Recommends Layered or Modular Monolith or Microkernel as the top candidate",
+      "passed": true,
+      "evidence": "Recommends Microkernel (11/15, $). Also mentions Modular Monolith as solid fallback."
+    },
+    {
+      "text": "Shows a ranked table with fit scores for all 8 architecture styles",
+      "passed": true,
+      "evidence": "Full ranked table with all 8 styles, star ratings, fit scores, and cost."
+    },
+    {
+      "text": "Explicitly warns against or deprioritizes Microservices, Event-Driven, or Space-Based",
+      "passed": true,
+      "evidence": "Red Flag Check section explicitly eliminates distributed architectures. States microservices at $$$$$ is 'absurd for a 50-user internal tool'."
+    },
+    {
+      "text": "Highlights low cost as advantage given budget constraints",
+      "passed": true,
+      "evidence": "Explicitly notes Microkernel costs $ vs Service-Based $$ vs Microservices $$$$$."
+    },
+    {
+      "text": "Updates architecture.md with Selected Architecture Style section",
+      "passed": true,
+      "evidence": "architecture.md has full Selected Architecture Style section with rationale, tradeoffs, evolution path."
+    },
+    {
+      "text": "Identifies a clear winner without extensive qualifying questions",
+      "passed": true,
+      "evidence": "No qualifying context questions needed. Direct recommendation based on matrix scoring and red flag checks."
+    }
+  ]
+}

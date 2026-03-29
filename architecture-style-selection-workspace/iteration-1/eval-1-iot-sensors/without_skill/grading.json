@@ -1,0 +1,36 @@
+{
+  "eval_id": 1,
+  "variant": "without_skill",
+  "expectations": [
+    {
+      "text": "Recommends Event-Driven or Space-Based as the top candidate",
+      "passed": true,
+      "evidence": "Recommends Event-Driven Architecture. Correctly identifies it as natural fit for IoT streaming."
+    },
+    {
+      "text": "Shows a ranked table with fit scores for all 8 architecture styles",
+      "passed": false,
+      "evidence": "No ranked table. Only discusses 3 alternatives (Microservices, Space-Based) in prose. Does not score all 8 styles."
+    },
+    {
+      "text": "Includes tradeoff analysis for at least 2 top candidates",
+      "passed": true,
+      "evidence": "Discusses Microservices and Space-Based as alternatives with reasons for rejection."
+    },
+    {
+      "text": "Mentions cost difference between candidates",
+      "passed": false,
+      "evidence": "No cost analysis. Does not mention $ ratings or compare infrastructure costs."
+    },
+    {
+      "text": "Updates architecture.md with Selected Architecture Style section",
+      "passed": true,
+      "evidence": "architecture.md has Selected Architecture Style section with style and rationale."
+    },
+    {
+      "text": "Does NOT recommend Layered, Modular Monolith, or Microkernel",
+      "passed": true,
+      "evidence": "Recommends Event-Driven. Simple architectures not mentioned."
+    }
+  ]
+}

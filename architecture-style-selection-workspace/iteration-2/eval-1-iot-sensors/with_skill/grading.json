@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "variant": "with_skill",
+  "expectations": [
+    {"text": "A0: Agent produced output files (both analysis.md and architecture.md exist and have content)", "passed": true, "evidence": "Both files exist with substantial content. analysis.md has full scoring table, tradeoff analysis, and recommendation. architecture.md has characteristics, selection rationale, tradeoffs, and evolution path."},
+    {"text": "A1: Recommends Event-Driven or Space-Based (both score 15/15 or near-top)", "passed": true, "evidence": "Recommends Event-Driven Architecture with 15/15 fit score. 'Event-Driven Architecture is the clear winner.' Space-Based scored 13/15 and was discussed as candidate #3."},
+    {"text": "A2: Shows ranked table/comparison of ALL 8 architecture styles", "passed": true, "evidence": "Table shows all 8 styles ranked: Event-Driven, Microservices, Space-Based, Service-Based, Service-Oriented, Layered, Modular Monolith, Microkernel with scores and cost."},
+    {"text": "A3: Includes tradeoff analysis for at least 2 candidates (strengths + weaknesses)", "passed": true, "evidence": "Detailed tradeoff analysis for 3 candidates: Event-Driven (15/15), Microservices (15/15), and Space-Based (13/15), each with explicit strengths, weaknesses, cost implications, and partitioning."},
+    {"text": "A4: Discusses cost as decision factor ($ symbols or explicit cost comparison)", "passed": true, "evidence": "Uses $ symbols throughout ($$$ for Event-Driven, $$$$$ for Microservices, etc.). Cost is the key differentiator: 'Microservices was eliminated on cost: it provides no advantage on the driving characteristics while costing significantly more.'"},
+    {"text": "A5: architecture.md has 'Selected Architecture Style' section with rationale + tradeoffs + evolution path", "passed": true, "evidence": "architecture.md has 'Selected Architecture Style' section with Style, Partitioning, Cost Category, Selection Rationale, Tradeoffs Accepted, and Evolution Path subsections."}
+  ]
+}

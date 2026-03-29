@@ -1,0 +1,64 @@
+{
+  "skill_name": "architecture-style-selection",
+  "iteration": 2,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "evals": [
+        {"eval_name": "iot-sensors", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0},
+        {"eval_name": "hr-crud", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0},
+        {"eval_name": "ecommerce", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0},
+        {"eval_name": "unmapped-chars", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0},
+        {"eval_name": "conflicting-chars", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0}
+      ],
+      "aggregate": {
+        "mean_pass_rate": 1.0,
+        "stddev_pass_rate": 0.0,
+        "total_passed": 30,
+        "total_assertions": 30
+      }
+    },
+    {
+      "name": "without_skill",
+      "evals": [
+        {"eval_name": "iot-sensors", "assertions_passed": 3, "assertions_total": 6, "pass_rate": 0.5},
+        {"eval_name": "hr-crud", "assertions_passed": 3, "assertions_total": 6, "pass_rate": 0.5},
+        {"eval_name": "ecommerce", "assertions_passed": 3, "assertions_total": 6, "pass_rate": 0.5},
+        {"eval_name": "unmapped-chars", "assertions_passed": 2, "assertions_total": 6, "pass_rate": 0.33},
+        {"eval_name": "conflicting-chars", "assertions_passed": 3, "assertions_total": 6, "pass_rate": 0.5}
+      ],
+      "aggregate": {
+        "mean_pass_rate": 0.47,
+        "stddev_pass_rate": 0.07,
+        "total_passed": 14,
+        "total_assertions": 30
+      }
+    }
+  ],
+  "delta": {
+    "pass_rate_improvement": 0.53,
+    "assertions_gained": 16
+  },
+  "analysis": {
+    "key_findings": [
+      "with_skill: 30/30 (100%) vs without_skill: 14/30 (47%) — +53% improvement",
+      "ALL 10 agents completed successfully (0 failures) — up from ~50% in iteration 1",
+      "Baseline NEVER evaluates all 8 styles (0/5) — consistently covers only 3-5",
+      "Baseline rarely uses cost as systematic decision factor (2/5)",
+      "Baseline produces inconsistent architecture.md structure (1/5 with full format)",
+      "Both make reasonable architecture recommendations — skill advantage is rigor and structure"
+    ],
+    "non_discriminating_assertions": [
+      "A0 (agent completion): 10/10 — all agents succeeded in iteration 2",
+      "A1 (correct recommendation): Both variants make defensible choices"
+    ],
+    "skill_advantages": [
+      "Systematic evaluation of ALL 8 styles every time",
+      "Cost as first-class decision axis ($-$$$$$)",
+      "Handling unmapped characteristics via mapping table",
+      "Standardized architecture.md output (rationale, tradeoffs, evolution path)",
+      "Red flag detection (premature distribution, resume-driven architecture)",
+      "Qualifying context questions when scores are close"
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "A0: Agent produced both output files with real content", "passed": true, "evidence": "analysis.md (57 lines) and architecture.md (180 lines) both contain substantive content"},
+    {"text": "A1: Correct architecture recommendation (Modular Monolith/Microkernel)", "passed": true, "evidence": "Selected: Modular Monolith. Scored highest (15/15) across all three priority characteristics."},
+    {"text": "A2: Ranked comparison of ALL 8 styles", "passed": false, "evidence": "Only 4 styles evaluated: Modular Monolith, Layered Monolith, Microservices, Event-Driven. Missing: Microkernel, Service-Based, Service-Oriented, Space-Based."},
+    {"text": "A3: Fitness function table with style-specific structural FFs (not just characteristic FFs)", "passed": true, "evidence": "Structural FFs present: FF-1 Module Boundary Enforcement (0 cross-module internal imports), FF-2 No Circular Module Dependencies (0 cycles), FF-5 Shared Kernel Size Limit (<=15 types). At least 3 style-specific structural FFs that enforce modular monolith invariants."},
+    {"text": "A4: Style fitness functions are specific to the selected style (modular monolith)", "passed": true, "evidence": "FFs are modular-monolith-specific: module boundary enforcement via public/internal package separation, circular dependency detection between modules, shared kernel size cap. These would not apply to microservices or event-driven architectures."},
+    {"text": "A5: Fitness functions include Tool/Approach or implementation guidance", "passed": true, "evidence": "Each FF has an Implementation field with specific tools: ArchUnit, Madge, custom dependency scanner, coverage tools (JaCoCo, Istanbul, coverage.py), line-counting scripts. Plus detailed pseudocode for test logic."},
+    {"text": "A6: N/A - not an evolution path scenario", "passed": true, "evidence": "Eval 2 is not an evolution path scenario (evals 4 and 5 only)"}
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "skill_name": "architecture-style-selection",
+  "iteration": 1,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "evals": [
+        {
+          "eval_name": "iot-sensors",
+          "assertions_passed": 6,
+          "assertions_total": 6,
+          "pass_rate": 1.0
+        },
+        {
+          "eval_name": "hr-crud",
+          "assertions_passed": 6,
+          "assertions_total": 6,
+          "pass_rate": 1.0
+        },
+        {
+          "eval_name": "ecommerce",
+          "assertions_passed": 6,
+          "assertions_total": 6,
+          "pass_rate": 1.0
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 1.0,
+        "stddev_pass_rate": 0.0,
+        "total_passed": 18,
+        "total_assertions": 18
+      }
+    },
+    {
+      "name": "without_skill",
+      "evals": [
+        {
+          "eval_name": "iot-sensors",
+          "assertions_passed": 4,
+          "assertions_total": 6,
+          "pass_rate": 0.67
+        },
+        {
+          "eval_name": "hr-crud",
+          "assertions_passed": 4,
+          "assertions_total": 6,
+          "pass_rate": 0.67
+        },
+        {
+          "eval_name": "ecommerce",
+          "assertions_passed": 4,
+          "assertions_total": 6,
+          "pass_rate": 0.67
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 0.67,
+        "stddev_pass_rate": 0.0,
+        "total_passed": 12,
+        "total_assertions": 18
+      }
+    }
+  ],
+  "delta": {
+    "pass_rate_improvement": 0.33,
+    "assertions_gained": 6
+  },
+  "analysis": {
+    "key_findings": [
+      "With-skill achieves 100% pass rate (18/18) vs baseline 67% (12/18)",
+      "Skill consistently adds: ranked table with ALL 8 styles, cost comparison as decision axis",
+      "Baseline consistently misses: comprehensive style coverage (evaluates 3-4 not 8), cost analysis",
+      "Both correctly identify the right architecture recommendation",
+      "Skill adds structured output (architecture.md sections with rationale, tradeoffs, evolution path)"
+    ],
+    "non_discriminating_assertions": [
+      "correct-recommendation: Both with_skill and without_skill make sensible recommendations",
+      "architecture-md-updated: Both update architecture.md (though skill version is more structured)"
+    ],
+    "skill_advantages": [
+      "Evaluates ALL 8 styles systematically, not just obvious candidates",
+      "Cost as explicit decision axis ($ to $$$$$)",
+      "Red flag detection (premature distribution, resume-driven architecture)",
+      "Structured architecture.md output with rationale, tradeoffs accepted, evolution path",
+      "Qualifying context questions when scores are close"
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "variant": "with_skill",
+  "expectations": [
+    {"text": "A0: Agent produced both output files with real content", "passed": true, "evidence": "analysis.md (109 lines) and architecture.md (57 lines) both contain substantive content"},
+    {"text": "A1: Correct architecture recommendation (Modular Monolith/Microkernel)", "passed": true, "evidence": "Selected: Modular Monolith. Justified by simplicity (#1 priority), solo developer, minimal budget. Microkernel considered but rejected because compliance domain doesn't naturally decompose into core+plugins."},
+    {"text": "A2: Ranked comparison of ALL 8 styles", "passed": true, "evidence": "Table in Step 2 ranks all 8: Service-Based, Microkernel, Modular Monolith, Layered, Event-Driven, Microservices, Space-Based, Service-Oriented"},
+    {"text": "A3: Fitness function table with style-specific structural FFs (not just characteristic FFs)", "passed": true, "evidence": "4 structural FFs: No circular module dependencies, Module boundary enforcement (cross-module access only through public API), Single deployment artifact, Database schema per module (no cross-module direct table access). All are structural invariants of a modular monolith."},
+    {"text": "A4: Style fitness functions are specific to the selected style (modular monolith)", "passed": true, "evidence": "FFs enforce modular-monolith-specific invariants: module boundary enforcement (no internal imports across modules), circular dependency prevention, single deployment artifact (not applicable to microservices), schema-per-module. These differ fundamentally from microservices FFs."},
+    {"text": "A5: Fitness functions include Tool/Approach column", "passed": true, "evidence": "Tool/Approach column present: dependency-cruiser/ArchUnit, Package visibility rules/lint rules, Build script check, SQL analysis or ORM config check"},
+    {"text": "A6: N/A - not an evolution path scenario", "passed": true, "evidence": "Eval 2 is not an evolution path scenario (evals 4 and 5 only)"}
+  ]
+}

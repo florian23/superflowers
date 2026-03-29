@@ -1,0 +1,13 @@
+{
+  "eval_id": 3,
+  "variant": "with_skill",
+  "expectations": [
+    {"text": "A0: Agent produced both output files with real content", "passed": true, "evidence": "analysis.md (107 lines) and architecture.md (59 lines) both contain substantive content"},
+    {"text": "A1: Correct architecture recommendation (Event-Driven)", "passed": true, "evidence": "Selected: Event-Driven with 15/15 fit score. Perfect score on Responsiveness, Elasticity, and Fault Tolerance."},
+    {"text": "A2: Ranked comparison of ALL 8 styles", "passed": true, "evidence": "Table in Step 2 ranks all 8: Event-Driven, Space-Based, Microservices, Service-Based, Service-Oriented, Layered, Modular Monolith, Microkernel"},
+    {"text": "A3: Fitness function table with style-specific structural FFs (not just characteristic FFs)", "passed": true, "evidence": "5 structural FFs: No synchronous coupling (fire-and-forget/async only), Event schema registry (all events versioned), Consumer idempotency, No event orchestration leaks (mediator vs broker topology enforcement), Dead letter handling. All are structural invariants of event-driven architecture."},
+    {"text": "A4: Style fitness functions are specific to the selected style (event-driven)", "passed": true, "evidence": "FFs are event-driven-specific: no sync coupling between producers/consumers, event schema registry, consumer idempotency, orchestration topology enforcement (mediator vs broker), dead letter queue handling. These would not apply to modular monolith or microservices."},
+    {"text": "A5: Fitness functions include Tool/Approach column", "passed": true, "evidence": "Tool/Approach column present: Code analysis for sync calls, Schema registry check, Test for idempotent processing, Architecture pattern check, DLQ configuration check"},
+    {"text": "A6: N/A - not an evolution path scenario", "passed": true, "evidence": "Eval 3 is not an evolution path scenario (evals 4 and 5 only)"}
+  ]
+}

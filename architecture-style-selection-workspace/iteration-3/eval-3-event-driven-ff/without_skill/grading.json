@@ -1,0 +1,13 @@
+{
+  "eval_id": 3,
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "A0: Agent produced both output files with real content", "passed": true, "evidence": "analysis.md (78 lines) and architecture.md (216 lines) both contain substantive content"},
+    {"text": "A1: Correct architecture recommendation (Event-Driven)", "passed": true, "evidence": "Selected: Event-Driven Architecture with CQRS + Event Sourcing. Scored 15/15."},
+    {"text": "A2: Ranked comparison of ALL 8 styles", "passed": false, "evidence": "Only 5 styles evaluated: Event-Driven, Microservices, Space-Based, Service-Based, Modular Monolith. Missing: Layered, Microkernel, Service-Oriented."},
+    {"text": "A3: Fitness function table with style-specific structural FFs (not just characteristic FFs)", "passed": false, "evidence": "All 5 FFs are characteristic fitness functions measuring quality attributes: FF-1 notification latency p99<100ms (responsiveness metric), FF-2 scale-out time and consumer lag (elasticity metric), FF-3 message loss count (fault tolerance metric), FF-4 complete event chains (auditability metric), FF-5 bet throughput at p99 (performance metric). ZERO structural style invariants. No 'no synchronous coupling', no 'event schema registry', no 'consumer idempotency', no 'dead letter handling as structural requirement'."},
+    {"text": "A4: Style fitness functions are specific to the selected style (event-driven)", "passed": false, "evidence": "FFs are generic performance/reliability metrics (latency, throughput, message loss, scaling time) that could apply to any distributed architecture. None enforce event-driven structural invariants like async-only communication, schema versioning, or topology constraints."},
+    {"text": "A5: Fitness functions include Tool/Approach or implementation guidance", "passed": true, "evidence": "Exceptionally detailed implementation guidance: Prometheus alert YAML, K8s HPA configs, Kafka producer/consumer configs, Chaos Mesh test procedures, SQL reconciliation queries. Far exceeds minimum."},
+    {"text": "A6: N/A - not an evolution path scenario", "passed": true, "evidence": "Eval 3 is not an evolution path scenario (evals 4 and 5 only)"}
+  ]
+}

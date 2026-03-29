@@ -1,0 +1,12 @@
+{
+  "eval_id": 2,
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "A0: Agent produced output files", "passed": true, "evidence": "Both analysis.md and architecture.md exist with substantial content."},
+    {"text": "A1: Recommends a simple architecture (Layered, Modular Monolith, or Microkernel) — NOT microservices or event-driven", "passed": true, "evidence": "Recommends Modular Monolith. 'Modular Monolith is the clear best fit.' This is one of the approved simple styles."},
+    {"text": "A2: Shows ranked comparison of ALL 8 styles", "passed": false, "evidence": "Only evaluates 5 styles: Modular Monolith, Layered Monolith, Microservices, Service-Based, Serverless/FaaS. Missing Microkernel, Event-Driven, Space-Based, and Service-Oriented. Also includes 'Serverless/FaaS' which is not one of the 8 standard styles."},
+    {"text": "A3: Explicitly warns against overengineering (microservices/event-driven for 50 users)", "passed": true, "evidence": "'Microservices: Actively harmful for this context. Would triple operational complexity for zero benefit.' Also: 'Distributed system complexity is unjustifiable for 50 users and 2 developers.'"},
+    {"text": "A4: Discusses cost — highlights low cost of recommended style", "passed": false, "evidence": "Cost is mentioned briefly per style ('Cost: Minimal', 'Cost: High', 'Cost: Moderate') but there is no $ symbol comparison, no cost category for the recommended style, and cost is not used as a decision factor in the recommendation section."},
+    {"text": "A5: architecture.md has structured selection section", "passed": false, "evidence": "architecture.md has 'Recommended Architecture Style: Modular Monolith' with 'Why Modular Monolith?', 'Suggested Module Structure', 'Key Decisions', and 'Trade-offs Accepted'. But there is NO evolution path section. The structure is informal rather than following a standardized format."}
+  ]
+}
