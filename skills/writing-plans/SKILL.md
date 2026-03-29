@@ -32,9 +32,12 @@ If specification skills were used before this plan, the plan MUST reference thei
 - Reference architecture decisions that affect implementation choices
 
 **feature-design** (.feature files exist):
-- Each behavioral task references the specific scenario(s) it satisfies
-- Include BDD step definition tasks before implementation tasks
-- Verification steps include running BDD scenarios
+- The plan MUST include explicit **Step Definition Tasks** that wire .feature scenarios to the implementation. These are NOT optional — without them, BDD tests cannot run.
+- Step definition tasks come AFTER the implementation task they test (the implementation must exist for steps to call it)
+- Each step definition task references the specific .feature file and scenarios it covers
+- After each step definition task: run `npx cucumber-js --dry-run` (or equivalent) to verify zero undefined steps
+- After ALL step definition tasks: run the full BDD suite to verify all scenarios pass
+- The plan's final task MUST be a BDD verification task that runs the complete suite
 
 **RECOMMENDED SUB-SKILL:** Use superflowers:bdd-testing for BDD execution and superflowers:fitness-functions for architecture verification during implementation.
 
@@ -117,17 +120,79 @@ def function(input):
 Run: `pytest tests/path/test.py::test_name -v`
 Expected: PASS
 
-- [ ] **Step 4b: Verify specification compliance (if applicable)**
-
-If .feature files exist: Run relevant BDD scenarios
-If architecture.md exists: Verify task respects architecture constraints
-
 - [ ] **Step 5: Commit**
 
 ```bash
 git add tests/path/test.py src/path/file.py
 git commit -m "feat: add specific feature"
 ```
+````
+
+### BDD Step Definition Task (when .feature files exist)
+
+For EACH .feature file, the plan MUST include a step definition task. Place it AFTER the implementation task it tests.
+
+````markdown
+### Task N: Wire BDD step definitions for [feature-name].feature
+
+**Feature file:** `features/[feature-name].feature`
+**Scenarios covered:** [list scenario names]
+
+**Files:**
+- Create: `features/step_definitions/[feature-name]-steps.js`
+
+- [ ] **Step 1: Generate step definition stubs**
+
+Read `features/[feature-name].feature` and create stub step definitions for every Given/When/Then step that doesn't already have a definition.
+
+- [ ] **Step 2: Implement step definitions**
+
+Wire each stub to the actual application code. Steps are THIN glue — they call application code, they do NOT contain business logic.
+
+- [ ] **Step 3: Dry-run validation**
+
+Run: `npx cucumber-js --dry-run features/[feature-name].feature`
+Expected: ZERO undefined or pending steps
+
+- [ ] **Step 4: Run scenarios**
+
+Run: `npx cucumber-js features/[feature-name].feature`
+Expected: ALL scenarios PASS (exit code 0)
+
+- [ ] **Step 5: Verify no feature files changed**
+
+Run: `git diff -- '*.feature'`
+Expected: NO changes to any .feature file
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add features/step_definitions/[feature-name]-steps.js
+git commit -m "test: add BDD step definitions for [feature-name]"
+```
+````
+
+### Final BDD Verification Task
+
+The LAST task in every plan with .feature files MUST be a full BDD suite run:
+
+````markdown
+### Task N (FINAL): Full BDD Suite Verification
+
+- [ ] **Step 1: Run complete BDD suite**
+
+Run: `npx cucumber-js`
+Expected: ALL scenarios pass, exit code 0
+
+- [ ] **Step 2: Verify coverage**
+
+Run: `npx cucumber-js --dry-run`
+Expected: ZERO undefined or pending steps across ALL feature files
+
+- [ ] **Step 3: Verify feature file integrity**
+
+Run: `git diff -- '*.feature'`
+Expected: NO modifications to any .feature file during implementation
 ````
 
 ## No Placeholders
