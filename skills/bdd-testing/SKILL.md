@@ -120,6 +120,49 @@ Only run scenarios tagged for the current task, not the full suite (save full su
 
 Before invoking finishing-a-development-branch, dispatch the BDD agent to run ALL scenarios as a comprehensive verification. This is the final gate.
 
+## Mandatory Code Verification
+
+Verification is NOT a checklist the agent self-reports. It is verified by RUNNING CODE.
+
+### Step 1: Coverage Check — Every Feature File Has Step Definitions
+
+Run the BDD framework in dry-run/validation mode to detect undefined steps:
+
+```bash
+# cucumber-js
+npx cucumber-js --dry-run 2>&1 | grep -E "undefined|pending"
+
+# behave
+behave --dry-run 2>&1 | grep -E "undefined|not implemented"
+
+# godog
+godog --no-colors 2>&1 | grep "undefined"
+```
+
+**If ANY undefined or pending steps exist: STOP. Implementation is NOT complete.**
+The agent MUST implement the missing step definitions before proceeding.
+
+### Step 2: Full Test Run — Every Scenario Passes
+
+Run the complete BDD suite and capture the exit code:
+
+```bash
+# cucumber-js
+npx cucumber-js --format progress 2>&1; echo "EXIT_CODE=$?"
+
+# behave
+behave 2>&1; echo "EXIT_CODE=$?"
+```
+
+**If exit code is not 0: STOP. Implementation is NOT complete.**
+Parse the output to identify which scenarios failed and why.
+
+### Step 3: Regression Check — Previously Passing Scenarios Still Pass
+
+Compare current results against last known good run. If any previously passing scenario now fails, this is a regression — the implementation broke existing behavior.
+
+**All 3 steps must succeed. No exceptions. No "looks good to me". Only code output counts as evidence.**
+
 ## Step Definition Best Practices
 
 - **Thin step definitions:** Parse Gherkin parameters, delegate to real code. Steps are glue, not logic.
@@ -198,17 +241,23 @@ Feature files are NEVER silently modified — every change requires explicit use
 | "This scenario is outdated" | Only the user decides that. Escalate, don't delete. |
 | "BDD is redundant with integration tests" | BDD scenarios are stakeholder-readable. Integration tests aren't. |
 | "I'll run BDD tests later" | Later = never. Run them now. |
+| "Step definitions are not needed yet" | Undefined steps = untested features. If the .feature file exists, the steps must exist too. |
+| "The dry-run passed so we're good" | Dry-run only checks step existence. Full run checks behavior. Both are required. |
+| "I verified the tests manually" | Manual verification is not verification. Run the command. Show the output. |
 
-## Verification Checklist
+## Verification Checklist (Code-Verified, Not Self-Reported)
 
-- [ ] BDD framework installed and configured
-- [ ] Step definitions exist for ALL scenarios (no pending/undefined steps)
-- [ ] ALL scenarios pass (green)
-- [ ] Step definitions are thin (delegate to real code)
-- [ ] No .feature files were modified to make tests pass
-- [ ] No existing step definitions were weakened or deleted
-- [ ] ALL previously passing scenarios still pass (no regressions)
-- [ ] Full test run output captured as evidence
+Every item below MUST be verified by running a command and checking its output.
+"I checked and it looks fine" is NOT verification. Show the command and its output.
+
+- [ ] BDD framework installed: `npx cucumber-js --version` (or equivalent) returns version number
+- [ ] Dry-run shows ZERO undefined/pending steps: `npx cucumber-js --dry-run` output contains no "undefined" or "pending"
+- [ ] Full test run passes: `npx cucumber-js` exits with code 0
+- [ ] Scenario count matches feature file count: output shows N scenarios, N passed (no skipped)
+- [ ] No .feature files were modified: `git diff -- '*.feature'` shows no changes
+- [ ] No existing step definitions were weakened: `git diff -- '*steps*'` shows only additions, no modified assertions
+- [ ] Regression check: all previously passing scenarios still pass
+- [ ] Full test run output pasted as evidence in the verification report
 
 ## Integration
 

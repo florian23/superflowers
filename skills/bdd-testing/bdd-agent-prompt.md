@@ -42,21 +42,36 @@ For each stub, write real test code that:
 
 **Critical:** Step definitions are THIN. They are glue between Gherkin and application code. Never put business logic in step definitions.
 
-### 4. Run All Scenarios
+### 4. Dry-Run Validation
 
-Execute the full BDD test suite. Capture complete output including:
+Before running tests, execute a dry-run to verify ALL steps have definitions:
+
+```bash
+npx cucumber-js --dry-run   # or framework equivalent
+```
+
+Parse the output. If ANY step is "undefined" or "pending", go back to step 3 and implement the missing step definitions. Do NOT proceed to the full test run with undefined steps.
+
+### 5. Run All Scenarios
+
+Execute the full BDD test suite. Capture COMPLETE output including:
+- Exact command run
 - Number of scenarios run
-- Number passing / failing / pending
+- Number passing / failing / pending / undefined
 - Failure details with stack traces
-- Exit code
+- Exit code (MUST be 0 for success)
 
-### 5. Fix Step Definition Failures
+### 6. Fix Step Definition Failures
 
-If scenarios fail due to step definition bugs (wrong selectors, incorrect assertions, missing state setup), fix them and re-run.
+If scenarios fail due to step definition bugs (wrong selectors, incorrect assertions, missing state setup), fix them and re-run from step 4.
 
 If scenarios fail due to application code bugs (missing functionality, wrong behavior), DO NOT fix the application code. This is not your job.
 
-### 6. Report
+### 7. Verify No Feature Files Changed
+
+Run `git diff -- '*.feature'` and confirm no .feature files were modified. If any were modified, revert immediately and report the violation.
+
+### 8. Report
 
 Report your results with full evidence.
 
