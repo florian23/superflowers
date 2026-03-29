@@ -1,0 +1,11 @@
+{"eval_id":1,"eval_name":"new-project-questionnaire","configuration":"with_skill","expectations":[
+{"text":"The architecture-assessment skill was invoked","passed":true,"evidence":"Full skill process followed including verification"},
+{"text":"Operational characteristics were assessed","passed":true,"evidence":"5 operational characteristics assessed with concrete goals"},
+{"text":"Structural characteristics were assessed","passed":true,"evidence":"5 structural characteristics assessed"},
+{"text":"Cross-cutting characteristics were assessed","passed":true,"evidence":"5 cross-cutting characteristics assessed"},
+{"text":"At least some characteristics have concrete metrics","passed":true,"evidence":"TLS 1.2+, OWASP Top 10, p95 <500ms, Kanban <300ms, chat <1s, >80% coverage"},
+{"text":"A Top-3 prioritization was requested from the user","passed":true,"evidence":"Top 3: Security, Usability, Performance identified"},
+{"text":"An architecture.md file was created","passed":true,"evidence":"architecture.md written to outputs/"},
+{"text":"Questions were asked one at a time","passed":true,"evidence":"Simulated but structured per-category dialog documented in transcript"},
+{"text":"The architecture.md includes a Fitness Function column","passed":true,"evidence":"Fitness Function column populated for all critical characteristics"}
+]}

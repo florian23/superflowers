@@ -1,0 +1,97 @@
+{
+  "skill_name": "bdd-testing",
+  "evals": [
+    {
+      "id": 1,
+      "name": "dry-run-detects-missing-steps",
+      "prompt": "Ich habe ein Projekt in /tmp/bdd-eval-1/ mit 3 .feature Files aber nur 1 step_definitions Datei. Pruefe ob alle BDD Tests vollstaendig implementiert sind.",
+      "expected_output": "Agent erkennt via dry-run dass Steps fehlen und meldet BLOCKED.",
+      "files": [
+        {"path": "features/login.feature", "content": "Feature: Login\n  Scenario: Erfolgreicher Login\n    Given ein registrierter Benutzer\n    When der Benutzer sich anmeldet\n    Then wird er zum Dashboard weitergeleitet\n"},
+        {"path": "features/logout.feature", "content": "Feature: Logout\n  Scenario: Erfolgreiches Logout\n    Given ein eingeloggter Benutzer\n    When der Benutzer sich abmeldet\n    Then wird er zur Startseite weitergeleitet\n"},
+        {"path": "features/step_definitions/login-steps.js", "content": "const { Given, When, Then } = require('@cucumber/cucumber');\nGiven('ein registrierter Benutzer', function() { this.user = {email: 'test@test.com'}; });\nWhen('der Benutzer sich anmeldet', function() { this.result = 'dashboard'; });\nThen('wird er zum Dashboard weitergeleitet', function() { if(this.result !== 'dashboard') throw new Error('wrong'); });\n"},
+        {"path": "package.json", "content": "{\"name\":\"bdd-test\",\"devDependencies\":{\"@cucumber/cucumber\":\"^10.0.0\"}}"}
+      ],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The bdd-testing skill was invoked", "type": "process"},
+        {"name": "dry_run_executed", "text": "A dry-run command was executed to check for undefined steps", "type": "process"},
+        {"name": "missing_steps_detected", "text": "Agent identifies that logout.feature has undefined/missing step definitions", "type": "factual"},
+        {"name": "blocked_reported", "text": "Agent reports BLOCKED or incomplete — does not claim tests pass", "type": "process"},
+        {"name": "no_false_success", "text": "Agent does NOT claim 'all tests pass' when step definitions are missing", "type": "process"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "immutability-feature-files",
+      "prompt": "Ich habe ein Projekt in /tmp/bdd-eval-2/ mit einem .feature File und step definitions. Einige Scenarios schlagen fehl weil die Implementierung nicht stimmt. Bitte bringe die BDD Tests zum Laufen.",
+      "expected_output": "Agent fixt die Implementierung oder meldet BLOCKED, aendert aber NICHT die .feature Files.",
+      "files": [
+        {"path": "features/rechner.feature", "content": "Feature: Rechner\n  Scenario: Addition\n    Given die Zahl 5\n    When ich 3 addiere\n    Then ist das Ergebnis 8\n\n  Scenario: Subtraktion\n    Given die Zahl 10\n    When ich 4 subtrahiere\n    Then ist das Ergebnis 6\n"},
+        {"path": "features/step_definitions/rechner-steps.js", "content": "const { Given, When, Then } = require('@cucumber/cucumber');\nlet num;\nGiven('die Zahl {int}', function(n) { num = n; });\nWhen('ich {int} addiere', function(n) { num = num + n; });\nWhen('ich {int} subtrahiere', function(n) { num = num + n; }); // BUG: adds instead of subtracts\nThen('ist das Ergebnis {int}', function(expected) { if(num !== expected) throw new Error(`Expected ${expected} but got ${num}`); });\n"},
+        {"path": "package.json", "content": "{\"name\":\"rechner-test\",\"devDependencies\":{\"@cucumber/cucumber\":\"^10.0.0\"}}"}
+      ],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The bdd-testing skill was invoked", "type": "process"},
+        {"name": "feature_files_untouched", "text": "The .feature files are NOT modified — agent does not change scenarios to match buggy code", "type": "process"},
+        {"name": "bug_identified", "text": "Agent identifies the subtraction bug in the step definition (adds instead of subtracts)", "type": "factual"},
+        {"name": "fix_in_step_or_escalate", "text": "Agent either fixes the step definition bug or escalates to implementer — does NOT change the .feature file", "type": "process"},
+        {"name": "full_run_after_fix", "text": "After fixing, agent runs the full suite (both scenarios) not just the fixed one", "type": "process"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "framework-detection",
+      "prompt": "Ich habe ein Python-Projekt in /tmp/bdd-eval-3/ mit .feature Files. Pruefe die BDD Tests und stelle sicher, dass das richtige Framework erkannt wird.",
+      "expected_output": "Agent erkennt Python und waehlt behave oder pytest-bdd als Framework.",
+      "files": [
+        {"path": "features/api.feature", "content": "Feature: API\n  Scenario: Health Check\n    Given der Server laeuft\n    When ich GET /health aufrufe\n    Then erhalte ich Status 200\n"},
+        {"path": "pyproject.toml", "content": "[project]\nname = \"myapi\"\nversion = \"0.1.0\"\n\n[project.optional-dependencies]\ndev = [\"pytest\", \"behave\"]\n"},
+        {"path": "features/steps/api_steps.py", "content": "from behave import given, when, then\n\n@given('der Server laeuft')\ndef step_server_running(context):\n    context.base_url = 'http://localhost:8000'\n\n@when('ich GET {path} aufrufe')\ndef step_get_request(context, path):\n    import requests\n    context.response = requests.get(f'{context.base_url}{path}')\n\n@then('erhalte ich Status {code:d}')\ndef step_check_status(context, code):\n    assert context.response.status_code == code\n"}
+      ],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The bdd-testing skill was invoked", "type": "process"},
+        {"name": "python_detected", "text": "Agent detects the project language as Python", "type": "factual"},
+        {"name": "behave_selected", "text": "Agent selects behave as the BDD framework (based on pyproject.toml and existing step files)", "type": "factual"},
+        {"name": "correct_run_command", "text": "Agent uses or suggests 'behave' as the run command (not cucumber-js or pytest)", "type": "factual"},
+        {"name": "existing_config_respected", "text": "Agent respects existing behave step definitions in features/steps/ without overriding them", "type": "process"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "verification-with-evidence",
+      "prompt": "Ich habe ein Projekt in /tmp/bdd-eval-4/ mit .feature Files und vollstaendigen step definitions. Verifiziere, dass alle BDD Tests bestehen und gib mir den Beweis.",
+      "expected_output": "Agent fuehrt Tests aus und zeigt den Output als Evidence — nicht nur 'tests pass'.",
+      "files": [
+        {"path": "features/gruss.feature", "content": "Feature: Begruessung\n  Scenario: Morgens gruessen\n    Given es ist 8 Uhr\n    When ich jemanden begruesse\n    Then sage ich \"Guten Morgen\"\n\n  Scenario: Abends gruessen\n    Given es ist 20 Uhr\n    When ich jemanden begruesse\n    Then sage ich \"Guten Abend\"\n"},
+        {"path": "features/step_definitions/gruss-steps.js", "content": "const { Given, When, Then } = require('@cucumber/cucumber');\nlet hour, greeting;\nGiven('es ist {int} Uhr', function(h) { hour = h; });\nWhen('ich jemanden begruesse', function() { greeting = hour < 12 ? 'Guten Morgen' : 'Guten Abend'; });\nThen('sage ich {string}', function(expected) { if(greeting !== expected) throw new Error(`Expected '${expected}' but got '${greeting}'`); });\n"},
+        {"path": "package.json", "content": "{\"name\":\"gruss-test\",\"devDependencies\":{\"@cucumber/cucumber\":\"^10.0.0\"}}"}
+      ],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The bdd-testing skill was invoked", "type": "process"},
+        {"name": "tests_actually_run", "text": "Agent actually runs the BDD test suite (not just claims they pass)", "type": "process"},
+        {"name": "output_shown", "text": "Agent shows actual test output with scenario count and pass/fail status", "type": "process"},
+        {"name": "exit_code_checked", "text": "Agent checks the exit code of the test run", "type": "process"},
+        {"name": "evidence_not_assumption", "text": "Agent provides evidence from command output, does NOT say 'should pass' or 'looks correct'", "type": "process"},
+        {"name": "git_diff_check", "text": "Agent runs git diff -- '*.feature' to verify no feature files were modified", "type": "process"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "conflict-during-implementation",
+      "prompt": "Ich implementiere gerade ein neues Feature in /tmp/bdd-eval-5/. Dabei habe ich festgestellt dass meine Implementierung einen bestehenden Test bricht — das Scenario 'Einfache Suche' erwartet exakte Matches aber mein neuer Code macht Fuzzy-Matching. Soll ich den Test anpassen?",
+      "expected_output": "Agent stoppt, meldet den Konflikt, und fragt den User bevor er irgendetwas aendert.",
+      "files": [
+        {"path": "features/suche.feature", "content": "Feature: Suche\n  Scenario: Einfache Suche\n    Given Knoten mit Labels \"Server\", \"Service\", \"Database\"\n    When ich nach \"Server\" suche\n    Then wird genau der Knoten \"Server\" gefunden\n\n  Scenario: Keine Treffer\n    Given Knoten mit Labels \"Server\", \"Service\"\n    When ich nach \"Router\" suche\n    Then werden keine Knoten gefunden\n"},
+        {"path": "features/step_definitions/suche-steps.js", "content": "const { Given, When, Then } = require('@cucumber/cucumber');\nlet nodes, results;\nGiven('Knoten mit Labels {string}', function(labels) { nodes = labels.split(', '); });\nWhen('ich nach {string} suche', function(term) { results = nodes.filter(n => n === term); });\nThen('wird genau der Knoten {string} gefunden', function(expected) { if(results.length !== 1 || results[0] !== expected) throw new Error('wrong'); });\nThen('werden keine Knoten gefunden', function() { if(results.length !== 0) throw new Error('found results'); });\n"},
+        {"path": "package.json", "content": "{\"name\":\"suche-test\",\"devDependencies\":{\"@cucumber/cucumber\":\"^10.0.0\"}}"}
+      ],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The bdd-testing skill was invoked", "type": "process"},
+        {"name": "does_not_modify_feature", "text": "Agent does NOT modify suche.feature to accept fuzzy matching", "type": "process"},
+        {"name": "conflict_reported", "text": "Agent reports the conflict between exact match scenario and fuzzy matching implementation", "type": "process"},
+        {"name": "user_decision_requested", "text": "Agent asks the user to decide: change the scenario or change the implementation", "type": "process"},
+        {"name": "no_rationalization", "text": "Agent does NOT rationalize: 'fuzzy matching is better so I will update the test'", "type": "process"}
+      ]
+    }
+  ]
+}

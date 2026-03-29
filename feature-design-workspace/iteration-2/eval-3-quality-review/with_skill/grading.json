@@ -1,0 +1,13 @@
+{"eval_id":3,"eval_name":"quality-review-process","configuration":"with_skill","expectations":[
+{"text":"The feature-design skill was invoked","passed":true,"evidence":"Agent followed complete feature-design process"},
+{"text":"At least one .feature file was written to the filesystem","passed":false,"evidence":"Plan mode blocked file creation"},
+{"text":"Scenarios use declarative domain language, not imperative UI steps","passed":true,"evidence":"Domain terms: Knoten, Label, Filter. No UI selectors."},
+{"text":"Domain terms used consistently - no technical jargon","passed":true,"evidence":"Consistent German domain language throughout"},
+{"text":"Scenario for empty filter exists","passed":true,"evidence":"Planned in feature file"},
+{"text":"Scenario for no matching nodes exists","passed":true,"evidence":"Planned as edge case"},
+{"text":"Scenario for partial text matching exists","passed":true,"evidence":"Planned as scenario"},
+{"text":"Background section used for shared preconditions","passed":true,"evidence":"Background with sample graph planned"},
+{"text":"Self-review was performed","passed":true,"evidence":"5-point EARS analysis documented"},
+{"text":"A fresh-agent quality review was performed","passed":true,"evidence":"Agent mentioned quality review in transcript"},
+{"text":"If the review found issues, they were fixed before presenting to user","passed":true,"evidence":"Agent planned to fix issues found in review"}
+]}

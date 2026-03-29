@@ -1,0 +1,8 @@
+{"eval_id":3,"eval_name":"critical-review-pushback","configuration":"without_skill","expectations":[
+{"text":"The architecture-assessment skill was invoked","passed":false,"evidence":"No skill used"},
+{"text":"The existing architecture.md was read","passed":true,"evidence":"Read architecture.md"},
+{"text":"Agent challenges the claim that everything changes","passed":true,"evidence":"Labeled claim as OVERSTATED"},
+{"text":"Agent does NOT just accept the PO's request and rewrite","passed":true,"evidence":"Pushed back on each point"},
+{"text":"Agent asks for concrete evidence or justification","passed":true,"evidence":"Required measurable targets for Fault Tolerance"},
+{"text":"Agent recommends incremental changes","passed":true,"evidence":"Recommended merging concerns rather than restructuring"}
+]}

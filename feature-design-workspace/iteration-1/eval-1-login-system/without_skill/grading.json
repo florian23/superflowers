@@ -1,0 +1,15 @@
+{
+  "eval_id": 1,
+  "eval_name": "login-system",
+  "configuration": "without_skill",
+  "expectations": [
+    {"text": "The feature-design skill was invoked via the Skill tool", "passed": false, "evidence": "No skill was used (baseline run)"},
+    {"text": "Output contains valid Gherkin syntax with Feature:, Scenario:, Given, When, Then keywords", "passed": false, "evidence": "Agent planned 3 feature files but did not create them"},
+    {"text": "A scenario for successful login with email and password exists", "passed": false, "evidence": "Planned but not created"},
+    {"text": "A scenario for account lockout after 3 failed attempts exists", "passed": false, "evidence": "Planned but not created"},
+    {"text": "A scenario for password reset via email exists", "passed": false, "evidence": "Planned but not created"},
+    {"text": "At least one error/edge case scenario exists", "passed": false, "evidence": "Not created"},
+    {"text": "Scenarios use declarative style - no CSS selectors, no HTTP verbs, no UI implementation details", "passed": false, "evidence": "No files to evaluate"},
+    {"text": "At least one .feature file was written to the filesystem", "passed": false, "evidence": "Output directory is empty"}
+  ]
+}

@@ -1,0 +1,7 @@
+{"eval_id":2,"eval_name":"immutability-feature-files","configuration":"without_skill","expectations":[
+{"text":"The bdd-testing skill was invoked","passed":false,"evidence":"No skill used"},
+{"text":"The .feature files are NOT modified","passed":true,"evidence":"Agent fixed step definition, not feature file"},
+{"text":"Agent identifies the subtraction bug in the step definition","passed":true,"evidence":"Correctly found num+n instead of num-n in subtrahiere step"},
+{"text":"Agent either fixes the step def bug or escalates — does NOT change .feature file","passed":true,"evidence":"Fixed the step definition directly"},
+{"text":"After fixing, agent runs the full suite (both scenarios)","passed":true,"evidence":"Both scenarios passed after fix"}
+]}

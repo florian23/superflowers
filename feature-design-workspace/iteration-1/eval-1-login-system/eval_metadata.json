@@ -1,0 +1,15 @@
+{
+  "eval_id": 1,
+  "eval_name": "login-system",
+  "prompt": "Wir haben gerade ein Design fuer ein Benutzer-Login-System besprochen und abgenommen. Die Anforderungen sind: Benutzer koennen sich mit Email und Passwort anmelden, nach 3 Fehlversuchen wird das Konto gesperrt, es gibt eine Passwort-vergessen Funktion per Email. Erstelle bitte die Feature Files dafuer.",
+  "assertions": [
+    {"name": "skill_triggered", "text": "The feature-design skill was invoked via the Skill tool", "type": "process"},
+    {"name": "gherkin_syntax", "text": "Output contains valid Gherkin syntax with Feature:, Scenario:, Given, When, Then keywords", "type": "factual"},
+    {"name": "login_scenario", "text": "A scenario for successful login with email and password exists", "type": "factual"},
+    {"name": "lockout_scenario", "text": "A scenario for account lockout after 3 failed attempts exists", "type": "factual"},
+    {"name": "password_reset_scenario", "text": "A scenario for password reset via email exists", "type": "factual"},
+    {"name": "error_cases", "text": "At least one error/edge case scenario exists", "type": "factual"},
+    {"name": "declarative_style", "text": "Scenarios use declarative style - no CSS selectors, no HTTP verbs, no UI implementation details", "type": "quality"},
+    {"name": "feature_file_created", "text": "At least one .feature file was written to the filesystem", "type": "factual"}
+  ]
+}

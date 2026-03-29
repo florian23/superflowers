@@ -1,0 +1,14 @@
+{
+  "eval_id": 3,
+  "eval_name": "filter-quality",
+  "prompt": "Anforderungen fuer einen Schnellfilter: Benutzer koennen Knoten nach Label filtern, Textfeld in der Toolbar, beim Tippen werden nicht-matchende Knoten ausgegraut, bei leerem Filter alle normal. Erstelle Feature Files mit hoher Qualitaet.",
+  "assertions": [
+    {"name": "skill_triggered", "text": "The feature-design skill was invoked via the Skill tool", "type": "process"},
+    {"name": "declarative_not_imperative", "text": "Scenarios describe behavior declaratively, not imperatively", "type": "quality"},
+    {"name": "empty_filter_scenario", "text": "A scenario for empty filter (all nodes visible) exists", "type": "factual"},
+    {"name": "partial_match_scenario", "text": "A scenario for partial text matching exists", "type": "factual"},
+    {"name": "no_match_scenario", "text": "A scenario for no matching nodes exists", "type": "factual"},
+    {"name": "domain_language", "text": "Scenarios use domain language (Knoten, Label, Filter) not technical jargon", "type": "quality"},
+    {"name": "quality_review_happened", "text": "A quality review of the feature files was performed", "type": "process"}
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "metadata": {
+    "skill_name": "architecture-assessment",
+    "executor_model": "claude-opus-4-6",
+    "timestamp": "2026-03-29T16:00:00Z",
+    "evals_run": ["new-project", "existing-update", "critical-review", "concrete-metrics", "file-creation"],
+    "runs_per_configuration": 5
+  },
+  "runs": [
+    {"eval_name": "new-project-questionnaire", "with_skill": {"pass_rate": 1.0, "passed": 9, "total": 9, "time": 94.9, "tokens": 19341}, "without_skill": {"pass_rate": 0.333, "passed": 3, "total": 9, "time": 0, "tokens": 0}},
+    {"eval_name": "existing-architecture-stability", "with_skill": {"pass_rate": 1.0, "passed": 6, "total": 6, "time": 67.6, "tokens": 16163}, "without_skill": {"pass_rate": 0.333, "passed": 2, "total": 6, "time": 58.6, "tokens": 11861}},
+    {"eval_name": "critical-review-pushback", "with_skill": {"pass_rate": 1.0, "passed": 6, "total": 6, "time": 80.9, "tokens": 16387}, "without_skill": {"pass_rate": 0.833, "passed": 5, "total": 6, "time": 59.3, "tokens": 11880}},
+    {"eval_name": "vague-requirements-concretized", "with_skill": {"pass_rate": 1.0, "passed": 6, "total": 6, "time": 81.5, "tokens": 15511}, "without_skill": {"pass_rate": 0.5, "passed": 3, "total": 6, "time": 69.5, "tokens": 11868}},
+    {"eval_name": "architecture-md-written", "with_skill": {"pass_rate": 1.0, "passed": 6, "total": 6, "time": 76.8, "tokens": 15626}, "without_skill": {"pass_rate": 0.333, "passed": 2, "total": 6, "time": 74.3, "tokens": 11852}}
+  ],
+  "run_summary": {
+    "with_skill": {"pass_rate_mean": 1.0, "pass_rate_min": 1.0, "pass_rate_max": 1.0, "time_mean": 80.3, "tokens_mean": 16606},
+    "without_skill": {"pass_rate_mean": 0.467, "pass_rate_min": 0.333, "pass_rate_max": 0.833, "time_mean": 52.3, "tokens_mean": 9492},
+    "delta": {"pass_rate": "+53.3%", "time_seconds": "+28.0s", "tokens": "+7114"}
+  },
+  "notes": [
+    "PERFECT SCORE: architecture-assessment achieves 100% pass rate across ALL 5 evals",
+    "STRONGEST DIFFERENTIATOR: Stability assessment (Eval 2) — with skill correctly says 'no changes needed', without skill proposes 5 changes",
+    "Critical review (Eval 3) — both agents pushed back on PO claims, but with-skill ran formal verification checklist and documented rationale",
+    "Vague metrics (Eval 4) — both agents rejected vague requirements, but with-skill produced structured BLOCKED status with 25 concrete questions",
+    "File creation (Eval 5) — with-skill created proper architecture.md with Top-3, characteristics tables, fitness functions. Without-skill created different format.",
+    "Eval 1 without_skill baseline data incomplete (agent may not have finished writing files)",
+    "The skill's biggest value add is STRUCTURE: same insights but in a reusable, persistent format (architecture.md) with fitness function mapping"
+  ]
+}

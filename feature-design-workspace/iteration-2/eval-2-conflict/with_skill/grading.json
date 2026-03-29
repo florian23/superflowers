@@ -1,0 +1,11 @@
+{"eval_id":2,"eval_name":"conflict-with-existing-features","configuration":"with_skill","expectations":[
+{"text":"The feature-design skill was invoked","passed":true,"evidence":"Agent read SKILL.md, followed consistency check process"},
+{"text":"ALL existing .feature files were read before writing new scenarios","passed":true,"evidence":"Agent read toolbar.feature and identified 2 scenarios"},
+{"text":"The conflict between Auto-Layout button and new dropdown is explicitly identified","passed":true,"evidence":"Agent identified the button-to-dropdown conflict explicitly"},
+{"text":"The agent ASKS the user and WAITS for a response before modifying toolbar.feature","passed":true,"evidence":"Agent stopped and asked: 'Should the existing Auto-Layout anwenden scenario be updated?' Did NOT proceed."},
+{"text":"toolbar.feature is NOT modified without the user having explicitly approved the change","passed":true,"evidence":"No files were modified. Agent waited for approval."},
+{"text":"The change impact cascade is documented","passed":true,"evidence":"Agent described what would need to change after approval"},
+{"text":"New Gherkin scenarios for the dropdown with 3 layout algorithms exist","passed":false,"evidence":"Agent planned scenarios but did not create files (waiting for approval first)"},
+{"text":"The non-conflicting Zaehler scenario is preserved unchanged","passed":true,"evidence":"Agent explicitly noted Zaehler would be preserved"},
+{"text":"Edge cases covered","passed":false,"evidence":"Edge cases planned but no files created yet"}
+]}

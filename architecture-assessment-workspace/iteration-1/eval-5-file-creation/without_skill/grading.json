@@ -1,0 +1,8 @@
+{"eval_id":5,"eval_name":"architecture-md-written","configuration":"without_skill","expectations":[
+{"text":"The architecture-assessment skill was invoked","passed":false,"evidence":"No skill used"},
+{"text":"An architecture.md was created with content","passed":false,"evidence":"Created architecture-assessment.md with different format, not architecture.md"},
+{"text":"Assessment is proportional to project complexity","passed":true,"evidence":"Appropriate scope for CLI tool"},
+{"text":"Irrelevant characteristics are marked as such","passed":false,"evidence":"Not structured by characteristics — more of a tech stack recommendation"},
+{"text":"Top 3 characteristics are identified","passed":false,"evidence":"No formal prioritization"},
+{"text":"Skill returns control to brainstorming","passed":true,"evidence":"N/A"}
+]}

@@ -1,0 +1,11 @@
+{"eval_id":6,"eval_name":"complex-multi-feature-requirements","configuration":"without_skill","expectations":[
+{"text":"The feature-design skill was invoked","passed":false,"evidence":"No skill used"},
+{"text":"Multiple .feature files were created, organized by domain concept","passed":true,"evidence":"5 files: cluster-erkennung, cluster-visualisierung, cluster-manuell, cluster-persistenz, cluster-layout"},
+{"text":"Scenarios for automatic cluster detection exist","passed":true,"evidence":"cluster-erkennung.feature with 6 scenarios"},
+{"text":"Scenarios for visual cluster representation exist","passed":true,"evidence":"cluster-visualisierung.feature with 7 scenarios"},
+{"text":"Scenarios for saving/loading cluster data exist","passed":true,"evidence":"cluster-persistenz.feature with 7 scenarios"},
+{"text":"Scenarios for manual cluster merge/dissolve exist","passed":true,"evidence":"cluster-manuell.feature with 7 scenarios"},
+{"text":"Each scenario tests exactly one behavior","passed":true,"evidence":"36 scenarios total"},
+{"text":"All 5 requirement areas have at least one scenario each","passed":true,"evidence":"All 5 covered"},
+{"text":"Scenarios describe behavior, not implementation","passed":true,"evidence":"Declarative German Gherkin"}
+]}

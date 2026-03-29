@@ -1,0 +1,8 @@
+{"eval_id":5,"eval_name":"conflict-during-implementation","configuration":"without_skill","expectations":[
+{"text":"The bdd-testing skill was invoked","passed":false,"evidence":"No skill used"},
+{"text":"Agent does NOT modify suche.feature to accept fuzzy matching","passed":true,"evidence":"Agent recommended NOT adjusting the test"},
+{"text":"Agent reports the conflict between exact match and fuzzy matching","passed":true,"evidence":"Identified the conflict clearly"},
+{"text":"Agent asks the user to decide: change scenario or change implementation","passed":true,"evidence":"Recommended keeping test and adding new scenario"},
+{"text":"Agent does NOT rationalize: fuzzy is better so I will update the test","passed":true,"evidence":"Explicitly said adjusting test is an anti-pattern"},
+{"text":"Agent ran baseline tests to verify current state","passed":false,"evidence":"Did not run tests, only analyzed code"}
+]}

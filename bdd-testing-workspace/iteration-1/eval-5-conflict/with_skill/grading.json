@@ -1,0 +1,8 @@
+{"eval_id":5,"eval_name":"conflict-during-implementation","configuration":"with_skill","expectations":[
+{"text":"The bdd-testing skill was invoked","passed":true,"evidence":"Agent read SKILL.md, cited Conflict Resolution Protocol and HARD-GATE"},
+{"text":"Agent does NOT modify suche.feature to accept fuzzy matching","passed":true,"evidence":"Feature file untouched, agent explicitly refused to change it"},
+{"text":"Agent reports the conflict between exact match and fuzzy matching","passed":true,"evidence":"Identified genau as exact match requirement conflicting with fuzzy"},
+{"text":"Agent asks the user to decide: change scenario or change implementation","passed":true,"evidence":"Presented 3 options (a,b,c) from Conflict Resolution Protocol"},
+{"text":"Agent does NOT rationalize: fuzzy is better so I will update the test","passed":true,"evidence":"No rationalization. Clear recommendation for option B (no conflict design)."},
+{"text":"Agent ran baseline tests to verify current state","passed":true,"evidence":"Ran full suite: 2 scenarios passed, confirmed current tests are green"}
+]}

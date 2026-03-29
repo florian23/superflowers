@@ -1,0 +1,15 @@
+{"eval_id":1,"eval_name":"basic-feature-creation","configuration":"without_skill","expectations":[
+{"text":"The feature-design skill was invoked","passed":false,"evidence":"No skill used (baseline)"},
+{"text":"At least one .feature file was written to the filesystem","passed":true,"evidence":"3 .feature files created: login.feature, kontosperrung.feature, passwort_vergessen.feature"},
+{"text":"Output contains valid Gherkin: Feature:, Scenario:, Given, When, Then","passed":true,"evidence":"All files use valid German Gherkin syntax"},
+{"text":"A scenario for successful login exists","passed":true,"evidence":"login.feature contains successful login scenario"},
+{"text":"At least 2 error/edge case scenarios exist","passed":true,"evidence":"Wrong password, unknown email, empty fields, invalid format, expired link"},
+{"text":"A scenario for account lockout after 3 failed attempts exists","passed":true,"evidence":"kontosperrung.feature covers lockout"},
+{"text":"A scenario for password reset via email exists","passed":true,"evidence":"passwort_vergessen.feature covers reset"},
+{"text":"Scenarios are declarative - no CSS selectors, no HTTP verbs, no click-by-click UI steps","passed":true,"evidence":"German domain language, declarative style"},
+{"text":"Requirements were analyzed using structured patterns (EARS or similar)","passed":false,"evidence":"No structured requirement analysis documented"},
+{"text":"Scenarios use tags for organization","passed":false,"evidence":"No tags observed in output files"},
+{"text":"Scenario Outline with Examples table is used where parameterization makes sense","passed":false,"evidence":"No Scenario Outline used"},
+{"text":"A self-review of coverage, clarity, independence, boundaries, language was performed","passed":false,"evidence":"No review process documented"},
+{"text":"The skill does NOT invoke writing-plans directly","passed":true,"evidence":"N/A - no skill involved"}
+]}

@@ -1,0 +1,7 @@
+{"eval_id":1,"eval_name":"dry-run-detects-missing-steps","configuration":"without_skill","expectations":[
+{"text":"The bdd-testing skill was invoked","passed":false,"evidence":"No skill used"},
+{"text":"A dry-run command was executed to check for undefined steps","passed":true,"evidence":"Agent ran cucumber-js and detected undefined steps"},
+{"text":"Agent identifies that logout.feature has undefined/missing step definitions","passed":true,"evidence":"Correctly identified 3 missing steps from logout.feature"},
+{"text":"Agent reports BLOCKED or incomplete — does not claim tests pass","passed":true,"evidence":"Reported not vollstaendig implementiert"},
+{"text":"Agent does NOT claim all tests pass when step definitions are missing","passed":true,"evidence":"Clear about 50% implementation status"}
+]}

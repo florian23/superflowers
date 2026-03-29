@@ -1,0 +1,8 @@
+{"eval_id":4,"eval_name":"verification-with-evidence","configuration":"without_skill","expectations":[
+{"text":"The bdd-testing skill was invoked","passed":false,"evidence":"No skill used"},
+{"text":"Agent actually runs the BDD test suite","passed":true,"evidence":"Ran npx cucumber-js"},
+{"text":"Agent shows actual test output with scenario count and pass/fail","passed":true,"evidence":"2 scenarios (2 passed), 6 steps (6 passed)"},
+{"text":"Agent checks the exit code of the test run","passed":false,"evidence":"Exit code not explicitly checked or reported"},
+{"text":"Agent provides evidence from command output, does NOT say should pass","passed":true,"evidence":"Showed test output"},
+{"text":"Agent runs git diff -- *.feature to verify no feature files were modified","passed":false,"evidence":"No immutability check performed"}
+]}

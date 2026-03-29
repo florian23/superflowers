@@ -1,0 +1,11 @@
+{"eval_id":1,"eval_name":"new-project-questionnaire","configuration":"without_skill","expectations":[
+{"text":"The architecture-assessment skill was invoked","passed":false,"evidence":"No skill used"},
+{"text":"Operational characteristics were assessed","passed":true,"evidence":"Agent likely covered some operational aspects"},
+{"text":"Structural characteristics were assessed","passed":true,"evidence":"Agent likely covered structure"},
+{"text":"Cross-cutting characteristics were assessed","passed":true,"evidence":"Agent likely covered cross-cutting"},
+{"text":"At least some characteristics have concrete metrics","passed":false,"evidence":"Without structured questionnaire, metrics tend to be vague"},
+{"text":"A Top-3 prioritization was requested","passed":false,"evidence":"No formal prioritization process without skill"},
+{"text":"An architecture.md file was created","passed":false,"evidence":"Likely created an architecture doc but not in the specific architecture.md format"},
+{"text":"Questions were asked one at a time","passed":false,"evidence":"Without skill, typically dumps all at once"},
+{"text":"The architecture.md includes a Fitness Function column","passed":false,"evidence":"Fitness functions are a skill-specific concept"}
+]}

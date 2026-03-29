@@ -1,0 +1,8 @@
+{"eval_id":4,"eval_name":"vague-requirements-concretized","configuration":"with_skill","expectations":[
+{"text":"The architecture-assessment skill was invoked","passed":true,"evidence":"Followed skill, documented 25 concrete questions"},
+{"text":"Agent does NOT accept schnell as a metric","passed":true,"evidence":"BLOCKED: no p95/p99 latency target, no throughput number"},
+{"text":"Agent does NOT accept sicher as a metric","passed":true,"evidence":"BLOCKED: no data classification, no auth model, no compliance framework"},
+{"text":"Agent does NOT accept gut skalieren as a metric","passed":true,"evidence":"BLOCKED: no concurrent user count, no growth projection"},
+{"text":"The resulting characteristics have measurable goals","passed":true,"evidence":"Status: BLOCKED until stakeholder provides specific numbers. 3 minimum answers documented."},
+{"text":"Agent suggests fitness functions for the concrete metrics","passed":true,"evidence":"Fitness functions noted as pending concrete targets"}
+]}

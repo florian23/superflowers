@@ -1,0 +1,14 @@
+{
+  "eval_id": 3,
+  "eval_name": "filter-quality",
+  "configuration": "without_skill",
+  "expectations": [
+    {"text": "The feature-design skill was invoked via the Skill tool", "passed": false, "evidence": "No skill used (baseline)"},
+    {"text": "Scenarios describe behavior declaratively, not imperatively", "passed": true, "evidence": "Feature files use mostly declarative style though some scenarios mention toolbar UI specifics"},
+    {"text": "A scenario for empty filter (all nodes visible) exists", "passed": true, "evidence": "Scenario exists in quick_filter.feature"},
+    {"text": "A scenario for partial text matching exists", "passed": true, "evidence": "Substring search scenario exists"},
+    {"text": "A scenario for no matching nodes exists", "passed": true, "evidence": "No-match scenario exists in quick_filter.feature"},
+    {"text": "Scenarios use domain language (Knoten, Label, Filter) not technical jargon", "passed": true, "evidence": "German domain language used consistently"},
+    {"text": "A quality review of the feature files was performed", "passed": false, "evidence": "No self-review or quality review mentioned in transcript. Files were created without review process."}
+  ]
+}

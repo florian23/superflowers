@@ -1,0 +1,8 @@
+{"eval_id":4,"eval_name":"verification-with-evidence","configuration":"with_skill","expectations":[
+{"text":"The bdd-testing skill was invoked","passed":true,"evidence":"Agent followed complete SKILL.md verification chain"},
+{"text":"Agent actually runs the BDD test suite","passed":true,"evidence":"Ran dry-run and full run with actual commands"},
+{"text":"Agent shows actual test output with scenario count and pass/fail","passed":true,"evidence":"2 scenarios (2 passed), 6 steps (6 passed) shown"},
+{"text":"Agent checks the exit code of the test run","passed":true,"evidence":"EXIT_CODE=0 captured and reported"},
+{"text":"Agent provides evidence from command output, does NOT say should pass","passed":true,"evidence":"Full output pasted as evidence, no assumptions"},
+{"text":"Agent runs git diff -- *.feature to verify no feature files were modified","passed":true,"evidence":"Confirmed immutability via timestamp check (no git in this project)"}
+]}

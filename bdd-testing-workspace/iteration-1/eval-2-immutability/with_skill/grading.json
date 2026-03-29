@@ -1,0 +1,7 @@
+{"eval_id":2,"eval_name":"immutability-feature-files","configuration":"with_skill","expectations":[
+{"text":"The bdd-testing skill was invoked","passed":true,"evidence":"Agent read SKILL.md, followed verification chain"},
+{"text":"The .feature files are NOT modified","passed":true,"evidence":"Agent confirmed no .feature files modified, immutability preserved"},
+{"text":"Agent identifies the subtraction bug in the step definition","passed":false,"evidence":"Bug was already fixed by baseline agent (test isolation issue — both agents shared /tmp/bdd-eval-2/). Agent found no bug."},
+{"text":"Agent either fixes the step def bug or escalates — does NOT change .feature file","passed":true,"evidence":"Agent did not change feature file. Ran verification chain correctly."},
+{"text":"After fixing, agent runs the full suite (both scenarios)","passed":true,"evidence":"Full run: 2 scenarios passed, 6 steps passed, exit code 0"}
+]}
