@@ -11,7 +11,7 @@ Turn requirements into executable specifications using BDD Given-When-Then scena
 
 **Announce at start:** "I'm using the feature-design skill to create BDD feature files from the requirements."
 
-**This skill CREATES FILES.** Do not just plan or describe scenarios — write them to .feature files on the filesystem. The output of this skill is committed .feature files, not a description of what they could contain.
+**This skill CREATES FILES.** Do not just plan or describe scenarios — use the Write tool to write them to .feature files on the filesystem. The output of this skill is committed .feature files, not a description of what they could contain. If you finish without having written .feature files, you have not completed this skill.
 
 ## The Iron Law
 
@@ -84,18 +84,16 @@ digraph feature_design {
 
 ## Advisory Extension Point
 
-**RECOMMENDED SUB-SKILL:** Before finalizing scenarios, invoke any available advisory skill for feasibility review. Advisory skills read the draft .feature files and return concerns or suggestions. Feature-design incorporates feedback, then proceeds.
+After drafting scenarios and before self-review, check if advisory context is available:
 
-Examples of advisory skills that can plug in here:
-- Architecture advisor (shift-left feasibility review)
-- Security advisor (threat scenarios)
-- Performance advisor (load/stress scenarios)
+1. **If `architecture.md` exists:** Tell the user: "I found architecture characteristics in architecture.md. The scenarios I drafted are consistent with [list relevant characteristics]. Would you like an architecture review of these scenarios before we proceed?"
+2. **If other advisory skills are available** (security, performance): Mention them to the user.
 
-This is a generic extension point — no changes to feature-design required when new advisory skills are added.
+This is a generic extension point — new advisory skills plug in here without changing feature-design.
 
 ## Architecture Awareness
 
-If `architecture.md` exists in the project (from superflowers:architecture-assessment), read it before writing scenarios. Architecture characteristics should inform scenario design:
+If `architecture.md` exists in the project (from superflowers:architecture-assessment), read it BEFORE writing scenarios. Architecture characteristics should inform scenario design:
 
 - **Performance characteristics** → scenarios should reflect expected response behavior (e.g., "results appear immediately" for a search feature with <200ms requirement)
 - **Security characteristics** → scenarios should include authorization/authentication edge cases

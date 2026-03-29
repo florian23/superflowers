@@ -1,0 +1,130 @@
+{
+  "skill_name": "feature-design",
+  "version": "v2 - comprehensive eval set",
+  "evals": [
+    {
+      "id": 1,
+      "name": "basic-feature-creation",
+      "prompt": "Wir haben gerade ein Design fuer ein Benutzer-Login-System besprochen und abgenommen. Die Anforderungen sind: Benutzer koennen sich mit Email und Passwort anmelden, nach 3 Fehlversuchen wird das Konto gesperrt, es gibt eine Passwort-vergessen Funktion per Email. Erstelle bitte die Feature Files dafuer.",
+      "expected_output": "Gherkin .feature Dateien mit Given/When/Then Szenarien fuer Login, Kontosperrung und Passwort-Reset.",
+      "files": [],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The feature-design skill was invoked", "type": "process"},
+        {"name": "feature_files_created", "text": "At least one .feature file was written to the filesystem", "type": "factual"},
+        {"name": "valid_gherkin", "text": "Output contains valid Gherkin: Feature:, Scenario:, Given, When, Then", "type": "factual"},
+        {"name": "happy_path", "text": "A scenario for successful login exists", "type": "factual"},
+        {"name": "error_cases", "text": "At least 2 error/edge case scenarios exist (wrong password, locked account, expired link, etc.)", "type": "factual"},
+        {"name": "lockout_rule", "text": "A scenario for account lockout after 3 failed attempts exists", "type": "factual"},
+        {"name": "password_reset", "text": "A scenario for password reset via email exists", "type": "factual"},
+        {"name": "declarative_style", "text": "Scenarios are declarative (WHAT not HOW): no CSS selectors, no HTTP verbs, no click-by-click UI steps", "type": "quality"},
+        {"name": "ears_mapping", "text": "Requirements were analyzed or mapped using structured patterns (EARS or similar) before writing scenarios", "type": "process"},
+        {"name": "tags_used", "text": "Scenarios use tags for organization (@critical, @edge-case, @smoke or similar)", "type": "quality"},
+        {"name": "scenario_outline", "text": "Scenario Outline with Examples table is used where parameterization makes sense (e.g., different login failure reasons)", "type": "quality"},
+        {"name": "self_review", "text": "A self-review of coverage, clarity, independence, boundaries, language was performed", "type": "process"},
+        {"name": "returns_to_brainstorming", "text": "The skill does NOT invoke writing-plans directly. It returns control to brainstorming for spec writing.", "type": "process"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "conflict-with-existing-features",
+      "prompt": "Wir haben ein bestehendes Projekt mit einer toolbar.feature die ein Szenario hat: 'Scenario: Auto-Layout anwenden / Given die Knoten sind unuebersichtlich positioniert / When ich den Auto-Layout-Button klicke / Then werden die Knoten automatisch uebersichtlich angeordnet'. Jetzt wollen wir ein neues Feature: statt einem Button soll es ein Dropdown-Menue geben mit verschiedenen Layout-Algorithmen (kraftbasiert, hierarchisch, kreisfoermig). Erstelle die Feature Files fuer das neue Layout-System.",
+      "expected_output": "Konflikterkennung, User-Approval abwarten, Change Impact Cascade dokumentieren.",
+      "files": [
+        {
+          "path": "features/toolbar.feature",
+          "content": "Feature: Toolbar\n  Die Toolbar bietet Schnellzugriff auf wichtige Aktionen.\n\n  Background:\n    Given ein Wissensgraph mit Knoten und Kanten ist geoeffnet\n\n  @critical\n  Scenario: Auto-Layout anwenden\n    Given die Knoten sind unuebersichtlich positioniert\n    When ich den \"Auto-Layout\"-Button klicke\n    Then werden die Knoten automatisch uebersichtlich angeordnet\n\n  Scenario: Zaehler zeigt aktuelle Anzahl\n    Then zeigt der Zaehler die korrekte Anzahl Knoten an\n"
+        }
+      ],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The feature-design skill was invoked", "type": "process"},
+        {"name": "existing_files_read", "text": "ALL existing .feature files were read before writing new scenarios", "type": "process"},
+        {"name": "conflict_identified", "text": "The conflict between Auto-Layout button and new dropdown is explicitly identified and reported", "type": "process"},
+        {"name": "user_approval_requested", "text": "The agent ASKS the user how to resolve the conflict and WAITS for a response before modifying toolbar.feature", "type": "process"},
+        {"name": "no_silent_modification", "text": "toolbar.feature is NOT modified without the user having explicitly approved the change", "type": "process"},
+        {"name": "change_impact_documented", "text": "The change impact cascade is documented: which step definitions break, which code needs updating", "type": "process"},
+        {"name": "new_scenarios_planned", "text": "New Gherkin scenarios for the dropdown with 3 layout algorithms are planned or created (creation may be blocked until user approves conflict resolution)", "type": "factual"},
+        {"name": "non_conflicting_preserved", "text": "The non-conflicting Zaehler scenario is identified as preserved unchanged", "type": "factual"},
+        {"name": "edge_cases_planned", "text": "Edge cases are planned or created (empty graph, single node, etc.)", "type": "factual"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "quality-review-process",
+      "prompt": "Hier sind die Anforderungen fuer einen Schnellfilter: Benutzer koennen Knoten nach Label filtern, der Filter ist ein Textfeld in der Toolbar, beim Tippen werden nicht-matchende Knoten ausgegraut, bei leerem Filter werden alle Knoten wieder normal angezeigt. Bitte erstelle Feature Files.",
+      "expected_output": "Hochwertige Feature Files mit Self-Review und Quality Review.",
+      "files": [],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The feature-design skill was invoked", "type": "process"},
+        {"name": "feature_files_created", "text": "At least one .feature file was written to the filesystem", "type": "factual"},
+        {"name": "declarative_style", "text": "Scenarios use declarative domain language, not imperative UI steps", "type": "quality"},
+        {"name": "domain_language", "text": "Domain terms used consistently (Knoten, Label, Filter) — no technical jargon (DOM, CSS, event handler)", "type": "quality"},
+        {"name": "empty_filter", "text": "Scenario for empty filter (all nodes visible) exists", "type": "factual"},
+        {"name": "no_match", "text": "Scenario for no matching nodes exists", "type": "factual"},
+        {"name": "partial_match", "text": "Scenario for partial text matching exists", "type": "factual"},
+        {"name": "background_used", "text": "Background section used for shared preconditions across scenarios", "type": "quality"},
+        {"name": "self_review_performed", "text": "Self-review was performed checking coverage, clarity, independence, boundaries, language", "type": "process"},
+        {"name": "quality_review_performed", "text": "A fresh-agent quality review was performed and found or confirmed quality aspects", "type": "process"},
+        {"name": "issues_found_and_fixed", "text": "If the review found issues (conjunctive scenarios, missing edge cases, etc.), they were fixed before presenting to user", "type": "process"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "architecture-aware-scenarios",
+      "prompt": "Wir haben eine architecture.md die Performance als kritische Charakteristik definiert (API Response <200ms p95) und Modularity als wichtig. Jetzt sollen Feature Files fuer eine Suchfunktion erstellt werden: Benutzer geben einen Suchbegriff ein, das System durchsucht alle Knoten-Labels und Metadaten-Felder, Ergebnisse werden sofort angezeigt. Beruecksichtige die Architektur-Anforderungen in den Szenarien.",
+      "expected_output": "Feature Files die Performance-Anforderungen aus architecture.md in Szenarien reflektieren.",
+      "files": [
+        {
+          "path": "architecture.md",
+          "content": "# Architecture Characteristics\n\n## Top 3 Priority Characteristics\n1. Performance — API <200ms p95\n2. Modularity — No circular dependencies\n3. Testability — >80% coverage\n\n## All Characteristics\n### Operational\n| Characteristic | Priority | Concrete Goal | Fitness Function |\n|---|---|---|---|\n| Performance | Critical | API <200ms p95 | Yes - load test |\n| Availability | Nice-to-have | 99% uptime | No |\n\n### Structural\n| Characteristic | Priority | Concrete Goal | Fitness Function |\n|---|---|---|---|\n| Modularity | Important | No circular deps | Yes - dependency check |\n| Testability | Important | >80% coverage | Yes - coverage gate |\n"
+        }
+      ],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The feature-design skill was invoked", "type": "process"},
+        {"name": "architecture_read", "text": "The architecture.md was read and its characteristics acknowledged", "type": "process"},
+        {"name": "performance_scenario", "text": "At least one scenario references or reflects the performance requirement (e.g., results appear immediately, response within acceptable time)", "type": "factual"},
+        {"name": "search_happy_path", "text": "Scenario for successful search with matching results exists", "type": "factual"},
+        {"name": "search_no_results", "text": "Scenario for search with no matching results exists", "type": "factual"},
+        {"name": "search_edge_cases", "text": "Edge cases covered (empty search, special characters, very long input)", "type": "factual"},
+        {"name": "advisory_offered", "text": "The advisory extension point was acknowledged or offered (architecture advisor, etc.)", "type": "process"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "immutability-under-pressure",
+      "prompt": "Wir implementieren gerade ein neues Feature und der Agent hat festgestellt, dass die bestehende navigation.feature nicht ganz zum neuen Design passt. Die navigation.feature sagt 'When ich auf einen Knoten doppelklicke / Then oeffnet sich das Bearbeitungsfenster' aber unser neues Design will, dass Doppelklick den Knoten umbenennt statt ein Fenster zu oeffnen. Passe die Feature Files an.",
+      "expected_output": "Der Skill erkennt, dass dies eine Anforderungsaenderung ist und fragt den User bevor er die bestehende Feature File aendert.",
+      "files": [
+        {
+          "path": "features/navigation.feature",
+          "content": "Feature: Navigation\n  Benutzer koennen im Wissensgraph navigieren.\n\n  Background:\n    Given ein Wissensgraph mit mehreren Knoten ist geoeffnet\n\n  @critical\n  Scenario: Knoten per Doppelklick bearbeiten\n    Given der Knoten \"Server\" ist sichtbar\n    When ich auf den Knoten \"Server\" doppelklicke\n    Then oeffnet sich das Bearbeitungsfenster fuer \"Server\"\n\n  Scenario: Zoom per Mausrad\n    When ich das Mausrad nach vorne drehe\n    Then wird der Graph vergroessert dargestellt\n"
+        }
+      ],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The feature-design skill was invoked", "type": "process"},
+        {"name": "conflict_detected", "text": "The conflict with the existing double-click behavior is identified", "type": "process"},
+        {"name": "user_asked_before_change", "text": "The agent asks the user for approval BEFORE modifying navigation.feature — does NOT just change it", "type": "process"},
+        {"name": "change_reason_documented", "text": "If changes are made, the reason is documented (comment in feature file or in transcript)", "type": "process"},
+        {"name": "zoom_scenario_preserved", "text": "The non-conflicting Zoom scenario is preserved unchanged", "type": "factual"},
+        {"name": "no_rationalization", "text": "The agent does NOT rationalize past the approval requirement (e.g., 'since this is clearly needed...' or 'proceeding as this is straightforward')", "type": "process"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "complex-multi-feature-requirements",
+      "prompt": "Wir bauen ein Cluster-System fuer unseren Wissensgraph. Die Anforderungen: 1) Automatische Cluster-Erkennung basierend auf Kantenverbindungen, 2) Visuelle Darstellung von Clustern mit farbigen Rahmen, 3) Cluster koennen manuell zusammengefasst/aufgeloest werden, 4) Cluster-Zuordnung wird beim Speichern persistiert, 5) Cluster-spezifische Layout-Algorithmen. Erstelle die Feature Files — das sind mehrere zusammenhaengende Features.",
+      "expected_output": "Mehrere .feature Files organisiert nach Domain-Konzept, nicht eine riesige Datei.",
+      "files": [],
+      "assertions": [
+        {"name": "skill_invoked", "text": "The feature-design skill was invoked", "type": "process"},
+        {"name": "multiple_feature_files", "text": "Multiple .feature files were created, organized by domain concept (not one giant file)", "type": "factual"},
+        {"name": "cluster_detection", "text": "Scenarios for automatic cluster detection exist", "type": "factual"},
+        {"name": "cluster_visualization", "text": "Scenarios for visual cluster representation exist", "type": "factual"},
+        {"name": "cluster_persistence", "text": "Scenarios for saving/loading cluster data exist", "type": "factual"},
+        {"name": "manual_operations", "text": "Scenarios for manual cluster merge/dissolve exist", "type": "factual"},
+        {"name": "one_behavior_per_scenario", "text": "Each scenario tests exactly one behavior — no conjunctive scenarios", "type": "quality"},
+        {"name": "completeness", "text": "All 5 requirement areas have at least one scenario each", "type": "factual"},
+        {"name": "declarative", "text": "Scenarios describe behavior, not implementation (no API calls, no database operations)", "type": "quality"}
+      ]
+    }
+  ]
+}
