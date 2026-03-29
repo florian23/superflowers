@@ -158,6 +158,20 @@ The only exception: the user explicitly requests a scenario change because
 the requirement itself changed. This requires user approval, not agent judgment.
 </HARD-GATE>
 
+**Conflict Resolution Protocol:**
+If implementation reveals that a new feature conflicts with existing scenarios:
+1. **STOP implementation immediately**
+2. Report the conflict: "Implementing [X] requires changing existing scenario [Y] in [file]"
+3. Show the current scenario and what would need to change
+4. Ask the user to decide:
+   a) Update the existing scenario (user must approve the specific change)
+   b) Redesign the new feature to not conflict
+   c) Create a separate scenario that supersedes the old one
+5. Only proceed after explicit user decision
+
+This protocol applies to ALL phases: step definition creation, implementation, verification.
+Feature files are NEVER silently modified — every change requires explicit user approval with documented reasoning.
+
 ## Red Flags — STOP
 
 - Step definitions containing business logic (too coupled)
@@ -167,6 +181,9 @@ the requirement itself changed. This requires user approval, not agent judgment.
 - .feature files modified to match implementation (scenarios are the spec, not tests)
 - Step definitions that duplicate application logic instead of calling it
 - Existing step definitions weakened to make failing tests pass
+- Agent modifying .feature files to match implementation (MOST CRITICAL violation)
+- Changing Given/When/Then steps in existing scenarios without user approval
+- "Fixing" scenarios that fail by adjusting the scenario instead of the code
 - Scenarios deleted or commented out to reduce failure count
 
 ## Rationalization Prevention

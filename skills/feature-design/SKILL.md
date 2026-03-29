@@ -55,12 +55,22 @@ digraph feature_design {
 
     "Brainstorming complete\n(spec approved)" -> "Read spec, identify\nrequirements";
     "Read spec, identify\nrequirements" -> "Draft .feature files\n(Gherkin scenarios)";
-    "Draft .feature files\n(Gherkin scenarios)" -> "Advisory skill available?";
+    "Check consistency with\nexisting .feature files" [shape=box];
+    "Conflicts found?" [shape=diamond];
+    "Present conflicts to user\nand resolve" [shape=box];
+    "Feature file quality review\n(fresh agent)" [shape=box];
+
+    "Draft .feature files\n(Gherkin scenarios)" -> "Check consistency with\nexisting .feature files";
+    "Check consistency with\nexisting .feature files" -> "Conflicts found?";
+    "Conflicts found?" -> "Present conflicts to user\nand resolve" [label="yes"];
+    "Conflicts found?" -> "Advisory skill available?" [label="no"];
+    "Present conflicts to user\nand resolve" -> "Advisory skill available?";
     "Advisory skill available?" -> "RECOMMENDED SUB-SKILL:\nInvoke advisory skill\n(e.g., architect)" [label="yes"];
     "Advisory skill available?" -> "Scenario self-review\n(coverage, clarity, boundaries)" [label="no"];
     "RECOMMENDED SUB-SKILL:\nInvoke advisory skill\n(e.g., architect)" -> "Incorporate advisory\nfeedback";
     "Incorporate advisory\nfeedback" -> "Scenario self-review\n(coverage, clarity, boundaries)";
-    "Scenario self-review\n(coverage, clarity, boundaries)" -> "All requirements\ncovered?";
+    "Scenario self-review\n(coverage, clarity, boundaries)" -> "Feature file quality review\n(fresh agent)";
+    "Feature file quality review\n(fresh agent)" -> "All requirements\ncovered?";
     "All requirements\ncovered?" -> "Add missing scenarios" [label="no"];
     "Add missing scenarios" -> "Scenario self-review\n(coverage, clarity, boundaries)";
     "All requirements\ncovered?" -> "User reviews\n.feature files" [label="yes"];
@@ -118,6 +128,25 @@ For full Gherkin syntax reference, see `gherkin-reference.md`.
 
 If the spec has many requirements, delegate scenario writing to a subagent using `./scenario-writer-prompt.md`. Paste the full spec text into the prompt (never reference files).
 
+## Consistency Check with Existing Features
+
+Before writing new scenarios, read ALL existing .feature files in the project. Check for conflicts:
+
+1. **Contradicting scenarios:** Does a new scenario contradict an existing one? Example: Existing says "click Auto-Layout button", new feature replaces button with dropdown — the existing scenario would break.
+2. **Overlapping scenarios:** Do multiple feature files test the same behavior differently?
+3. **Broken assumptions:** Does the new feature invalidate Given/When/Then steps used in other feature files?
+
+**If conflicts are found:**
+- Present each conflict to the user with both the existing and new requirement
+- Ask: "This new feature changes existing behavior in [file]. Should the existing scenario be updated?"
+- Only modify existing .feature files with explicit user approval
+- Document the change reason as a comment in the .feature file
+- If the user approves changes, update the existing feature file BEFORE writing new scenarios
+
+**If no conflicts:** Proceed normally.
+
+This check is critical — conflicting requirements must be resolved with the user BEFORE implementation, not silently adjusted during coding.
+
 ## Scenario Self-Review
 
 After writing scenarios, review with fresh eyes:
@@ -140,6 +169,20 @@ The verification agent checks:
 5. **Completeness:** Error paths, edge cases, boundary conditions covered
 
 If the verification agent finds gaps, fix them before presenting to the user.
+
+## Feature File Quality Review
+
+Before proceeding to the spec, dispatch a fresh subagent to review the NEW feature files for quality. The reviewer checks:
+
+1. **Declarative style:** Scenarios describe WHAT, not HOW (no UI selectors, no implementation details)
+2. **Single behavior per scenario:** Each scenario tests exactly one thing
+3. **Completeness:** Happy path + error paths + edge cases covered
+4. **Independence:** Scenarios don't depend on execution order
+5. **Domain language:** Uses ubiquitous language, not technical jargon
+6. **Gherkin validity:** Correct syntax, proper use of Background/Outline/Examples
+7. **Step reusability:** Steps are generic enough to be reused across scenarios
+
+If quality issues are found, fix them before presenting to the user.
 
 ## Red Flags — STOP and Revisit
 
