@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "A0: Output file exists with real content", "passed": true, "evidence": "workflow-order.md is 176 lines, contains a 10-step generic software development workflow in German"},
+    {"text": "A1: quality-scenarios is mentioned/included in the workflow", "passed": false, "evidence": "No mention of 'quality-scenarios' anywhere in the file. The workflow has generic steps like 'Qualitaetssicherung' (step 9) but no dedicated quality-scenarios skill or artifact"},
+    {"text": "A2: quality-scenarios comes AFTER architecture-style-selection and BEFORE feature-design", "passed": "N/A", "evidence": "N/A -- baseline has no knowledge of superflowers skills, so ordering of skill-specific steps cannot be evaluated"},
+    {"text": "A3: quality-scenarios.md is referenced as an artifact", "passed": false, "evidence": "No reference to quality-scenarios.md. Artifacts listed are generic: Anforderungsdokument, Domain-Modell, OpenAPI-Spezifikation, ADRs, etc."},
+    {"text": "A4: Test-type categorization from quality-scenarios flows into output", "passed": false, "evidence": "No test-type categorization (unit-test, integration-test, load-test, etc.) appears anywhere. Testing is mentioned generically in steps 7 and 9 without categorization by quality scenario type"}
+  ]
+}

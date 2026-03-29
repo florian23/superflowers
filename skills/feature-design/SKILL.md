@@ -91,9 +91,11 @@ After drafting scenarios and before self-review, check if advisory context is av
 
 This is a generic extension point — new advisory skills plug in here without changing feature-design.
 
-## Architecture Awareness
+## Architecture and Quality Awareness
 
-If `architecture.md` exists in the project (from superflowers:architecture-assessment), read it BEFORE writing scenarios. Architecture characteristics should inform scenario design:
+If `architecture.md` exists in the project (from superflowers:architecture-assessment), read it BEFORE writing scenarios. If `quality-scenarios.md` exists (from superflowers:quality-scenarios), read it too — quality scenarios define non-functional test specifications that complement BDD's functional scenarios. Don't duplicate quality scenarios as BDD scenarios, but ensure functional scenarios are consistent with quality goals.
+
+Architecture characteristics should inform scenario design:
 
 - **Performance characteristics** → scenarios should reflect expected response behavior (e.g., "results appear immediately" for a search feature with <200ms requirement)
 - **Security characteristics** → scenarios should include authorization/authentication edge cases

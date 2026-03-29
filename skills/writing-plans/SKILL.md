@@ -32,6 +32,13 @@ If specification skills were used before this plan, the plan MUST reference thei
 - Include **architecture style fitness function** tasks (from the "Architecture Style Fitness Functions" section in architecture.md) — these enforce structural invariants of the selected style (e.g., "no shared database" for microservices, "module boundary enforcement" for modular monolith)
 - Reference architecture decisions that affect implementation choices
 
+**quality-scenarios** (quality-scenarios.md exists):
+- Plan tasks should include test implementations for each quality scenario
+- Categorize test tasks by the **test type** defined in quality-scenarios.md (unit-test, integration-test, load-test, chaos-test, fitness-function, manual-review)
+- Group test implementation tasks by type: unit tests first (fastest feedback), then integration, then load/chaos tests
+- Reference tradeoffs from quality-scenarios.md when they affect implementation choices
+- Do NOT create test tasks for scenarios that overlap with style fitness functions (already covered)
+
 **feature-design** (.feature files exist):
 - The plan MUST include explicit **Step Definition Tasks** that wire .feature scenarios to the implementation. These are NOT optional — without them, BDD tests cannot run.
 - Step definition tasks come AFTER the implementation task they test (the implementation must exist for steps to call it)
@@ -84,6 +91,8 @@ This structure informs the task decomposition. Each task should produce self-con
 **Characteristic Fitness Functions:** [List architecture characteristics needing fitness functions, or "N/A"]
 
 **Style Fitness Functions:** [List style-specific structural checks from architecture.md, or "N/A"]
+
+**Quality Scenarios:** [List quality scenarios by test type from quality-scenarios.md, or "N/A"]
 
 ---
 ```

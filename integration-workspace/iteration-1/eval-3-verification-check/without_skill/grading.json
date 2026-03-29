@@ -1,0 +1,11 @@
+{
+  "eval_id": 3,
+  "variant": "without_skill",
+  "expectations": [
+    {"text": "A0: Output file exists with real content", "passed": true, "evidence": "verification-checklist.md is 112 lines with 6 sections covering BDD, quality scenarios, fitness functions, traceability, build, and completeness"},
+    {"text": "A1: quality-scenarios is mentioned/included in the workflow", "passed": true, "evidence": "Section 2 'Quality Scenario Test Execution (quality-scenarios.md)' with subsections 2a-2d covering all 10 quality scenarios by type"},
+    {"text": "A2: quality-scenarios comes AFTER architecture-style-selection and BEFORE feature-design", "passed": "N/A", "evidence": "N/A -- Eval 3 tests verification checklist, not workflow ordering"},
+    {"text": "A3: quality-scenarios.md is referenced as an artifact", "passed": true, "evidence": "quality-scenarios.md referenced in section 2 header, checks 2.10 and 2.11 reference thresholds/definitions from quality-scenarios.md, check 6.2 requires every quality scenario in quality-scenarios.md to be addressed. Note: baseline had quality-scenarios.md in prompt context"},
+    {"text": "A4: Test-type categorization from quality-scenarios flows into output", "passed": true, "evidence": "Section 2 is split into subsections by test type: 2a Unit Tests (3 scenarios), 2b Integration Tests (4 scenarios), 2c Load Tests (2 scenarios), 2d Manual Review (1 scenario). Summary requires 15 verification points broken down by type. Note: baseline had quality-scenarios.md with type info in prompt context"}
+  ]
+}

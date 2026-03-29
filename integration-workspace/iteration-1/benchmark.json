@@ -1,0 +1,33 @@
+{
+  "skill_name": "quality-scenarios-integration",
+  "iteration": 1,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "evals": [
+        {"eval_name": "workflow-order", "assertions_passed": 5, "assertions_total": 5, "pass_rate": 1.0},
+        {"eval_name": "writing-plans-refs", "assertions_passed": 4, "assertions_total": 4, "pass_rate": 1.0},
+        {"eval_name": "verification-check", "assertions_passed": 4, "assertions_total": 4, "pass_rate": 1.0}
+      ],
+      "aggregate": {"mean_pass_rate": 1.0, "total_passed": 13, "total_assertions": 13}
+    },
+    {
+      "name": "without_skill",
+      "evals": [
+        {"eval_name": "workflow-order", "assertions_passed": 1, "assertions_total": 4, "pass_rate": 0.25},
+        {"eval_name": "writing-plans-refs", "assertions_passed": 4, "assertions_total": 4, "pass_rate": 1.0},
+        {"eval_name": "verification-check", "assertions_passed": 4, "assertions_total": 4, "pass_rate": 1.0}
+      ],
+      "aggregate": {"mean_pass_rate": 0.75, "total_passed": 9, "total_assertions": 12}
+    }
+  ],
+  "delta": {"pass_rate_improvement": 0.25},
+  "analysis": {
+    "key_findings": [
+      "with_skill: 13/13 (100%) vs without_skill: 9/12 (75%)",
+      "Differentiation concentrated in Eval 1 (Workflow Order) — baseline doesn't know quality-scenarios exists",
+      "Evals 2+3 show no gap — once quality-scenarios.md exists as artifact, both variants use it well",
+      "Skill value is in GENERATING the artifact and PLACING it in the workflow, not downstream consumption"
+    ]
+  }
+}

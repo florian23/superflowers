@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "variant": "with_skill",
+  "expectations": [
+    {"text": "A0: Output file exists with real content", "passed": true, "evidence": "workflow-order.md is 180 lines, contains detailed 10-step workflow from brainstorming through finishing-a-development-branch"},
+    {"text": "A1: quality-scenarios is mentioned/included in the workflow", "passed": true, "evidence": "Step 4 is explicitly 'superflowers:quality-scenarios' with full description of what it does and produces"},
+    {"text": "A2: quality-scenarios comes AFTER architecture-style-selection and BEFORE feature-design", "passed": true, "evidence": "Order is: 3. architecture-style-selection -> 4. quality-scenarios -> 5. feature-design"},
+    {"text": "A3: quality-scenarios.md is referenced as an artifact", "passed": true, "evidence": "Step 4 produces 'docs/superflowers/quality-scenarios.md'; summary table lists 'quality-scenarios.md (testable scenarios by type)'; spec writing step references quality-scenarios.md alongside architecture.md and .feature files"},
+    {"text": "A4: Test-type categorization from quality-scenarios flows into output", "passed": true, "evidence": "Step 4 says 'Classifies each scenario into a test type: unit-test, integration-test, load-test, chaos-test, fitness-function, or manual-review'; Step 8 (writing-plans) says 'References quality-scenarios.md, categorizes test tasks by test type (unit first, then integration, then load/chaos)'; Step 9 mentions 'quality scenario tests' in completion verification"}
+  ]
+}

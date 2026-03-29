@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "variant": "with_skill",
+  "expectations": [
+    {"text": "A0: Output file exists with real content", "passed": true, "evidence": "plan.md is 1540 lines with 8 detailed implementation tasks including code samples, test code, verification steps, and commit instructions"},
+    {"text": "A1: quality-scenarios is mentioned/included in the workflow", "passed": true, "evidence": "quality-scenarios referenced extensively: header lists all 10 QS IDs with test types, Task 2 traces to QS-001, Task 5 traces to QS-004, Task 8 traces to QS-005/006/007"},
+    {"text": "A2: quality-scenarios comes AFTER architecture-style-selection and BEFORE feature-design", "passed": "N/A", "evidence": "N/A -- Eval 2 tests plan writing, not workflow ordering"},
+    {"text": "A3: quality-scenarios.md is referenced as an artifact", "passed": true, "evidence": "Header line 19 lists 'Quality Scenarios: Unit tests: QS-001...QS-003, Integration tests: QS-004...QS-007, Load tests: QS-008, QS-009, Manual review: QS-010 -- per quality-scenarios.md'. Multiple tasks reference 'from quality-scenarios.md'"},
+    {"text": "A4: Test-type categorization from quality-scenarios flows into output", "passed": true, "evidence": "Header explicitly categorizes: '3 unit-test, 4 integration-test, 2 load-test, 1 manual-review'. Tasks are organized by test type: Tasks 2-4 handle unit tests, Task 5 handles integration (QS-004), Task 8 titled 'Quality Scenario Tests -- Integration Tests (QS-005, QS-006, QS-007)'. File structure groups tests into unit/, integration/, load/ directories. However, load-test tasks (QS-008, QS-009) and manual-review task (QS-010) are mentioned in header but missing as actual tasks"}
+  ]
+}

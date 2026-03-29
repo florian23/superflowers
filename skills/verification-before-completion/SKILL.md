@@ -107,6 +107,19 @@ Skip any step = lying, not verifying
 ❌ "Code follows the architecture" / "Looks structurally sound"
 ```
 
+**Quality Scenarios (when quality-scenarios.md exists):**
+```
+✅ [Check each scenario by test type] [See: unit tests pass, integration tests pass, load test meets threshold] "All quality scenarios verified"
+❌ "Tests pass" (which tests? which scenarios?) / "Quality looks good"
+```
+Quality scenarios define different test types. Verify each type ran:
+- unit-test scenarios: covered by unit test suite
+- integration-test scenarios: covered by integration test suite
+- load-test scenarios: load test results meet response measures
+- chaos-test scenarios: resilience tests passed
+- fitness-function scenarios: already covered by fitness-functions check above
+- manual-review scenarios: explicitly acknowledged with evidence or deferred with justification
+
 **Requirements:**
 ```
 ✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
