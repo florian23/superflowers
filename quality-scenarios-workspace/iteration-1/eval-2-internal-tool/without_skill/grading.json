@@ -1,0 +1,41 @@
+{
+  "eval_id": 2,
+  "variant": "without_skill",
+  "expectations": [
+    {
+      "text": "A0: Agent produced both output files with real content",
+      "passed": true,
+      "evidence": "quality-scenarios.md (80 lines, 5 scenarios) and analysis.md (37 lines) both present with content."
+    },
+    {
+      "text": "A1: Scenarios use ATAM format (Source, Stimulus, Environment, Artifact, Response, Response Measure)",
+      "passed": true,
+      "evidence": "All 5 scenarios use table format with fields: Quelle (Source), Stimulus, Artefakt (Artifact), Umgebung (Environment), Antwort (Response), Antwortmetrik (Response Measure). All 6 ATAM fields present in German."
+    },
+    {
+      "text": "A2: Diverse test types — at least 3 different types, not all fitness-functions",
+      "passed": false,
+      "evidence": "No explicit test type classification on the scenarios. The analysis mentions 'Automatisierbar: Ja/Nein' and suggests tooling (coverage tool, linter, integration test) but does not assign formal test types (unit-test, integration-test, load-test, etc.) to each scenario. Cannot count 3+ distinct types."
+    },
+    {
+      "text": "A3: Style fitness functions NOT duplicated — no scenarios for structural invariants already covered by style FFs",
+      "passed": false,
+      "evidence": "QS-3 (Maintainability — function length and cyclomatic complexity) directly duplicates the existing complexity check fitness function from architecture.md ('no function >50 lines, cyclomatic complexity <10'). QS-2 (Testability — >90% line coverage) duplicates the existing coverage gate fitness function from architecture.md."
+    },
+    {
+      "text": "A4: Tradeoffs identified — at least 1 explicit tension/conflict between characteristics",
+      "passed": false,
+      "evidence": "The analysis.md mentions 'Risiken' (risks) but does not identify any explicit tradeoffs or tensions between characteristics. No conflicts between quality attributes documented."
+    },
+    {
+      "text": "A5: Summary table present — table listing all scenarios with test types",
+      "passed": false,
+      "evidence": "The analysis.md has a coverage table and a fitness-function suitability table, but neither lists scenarios with their test types. The quality-scenarios.md has no summary table."
+    },
+    {
+      "text": "A6: Response measures are CONCRETE — numbers, thresholds, or specific observable outcomes",
+      "passed": true,
+      "evidence": "All measures are concrete: 'Innerhalb von 5 Arbeitstagen produktiv' (QS-1), '>90% Line Coverage, <30 Sekunden' (QS-2), '0 Verletzungen' (QS-3), '100% der geschuetzten Endpunkte pruefen Rollen' (QS-4), '100% der datenveraendernden Operationen erzeugen einen Audit-Eintrag' (QS-5)."
+    }
+  ]
+}

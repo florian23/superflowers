@@ -1,0 +1,41 @@
+{
+  "eval_id": 3,
+  "variant": "without_skill",
+  "expectations": [
+    {
+      "text": "A0: Agent produced both output files with real content",
+      "passed": true,
+      "evidence": "quality-scenarios.md (125 lines, 11 scenarios) and analysis.md (61 lines) both present with content."
+    },
+    {
+      "text": "A1: Scenarios use ATAM format (Source, Stimulus, Environment, Artifact, Response, Response Measure)",
+      "passed": true,
+      "evidence": "All 11 scenarios use table format with all 6 ATAM fields: Source, Stimulus, Artifact, Environment, Response, Response Measure."
+    },
+    {
+      "text": "A2: Diverse test types — at least 3 different types, not all fitness-functions",
+      "passed": false,
+      "evidence": "No explicit test type field on any scenario. The analysis.md has a 'Fitness Function Mapping' table that assigns types like 'Unit/integration test', 'Chaos test', 'Load test' — but these are in the analysis, not on the scenarios themselves, and the quality-scenarios.md has no test type classification. The analysis categories are also not the standard types (e.g., 'Unit/integration test' is ambiguous). Borderline, but strictly: scenarios lack test type assignment."
+    },
+    {
+      "text": "A3: Style fitness functions NOT duplicated — no scenarios for structural invariants already covered by style FFs",
+      "passed": false,
+      "evidence": "DI-4 (Schema Validation on Ingestion) tests 'Invalid message routed to dead-letter queue; valid messages unaffected' — this directly overlaps with the event schema registry and dead letter queue style FFs. DI-1 (Duplicate Detection) tests consumer idempotency which is already a style FF. The style FF for consumer idempotency checks that consumers implement idempotent processing; DI-1 tests the same thing."
+    },
+    {
+      "text": "A4: Tradeoffs identified — at least 1 explicit tension/conflict between characteristics",
+      "passed": false,
+      "evidence": "The analysis.md has 'Gaps and Recommendations' and 'Key Design Decisions' sections but does not identify any explicit tradeoffs or tensions between quality characteristics. No conflicts documented."
+    },
+    {
+      "text": "A5: Summary table present — table listing all scenarios with test types",
+      "passed": false,
+      "evidence": "The analysis.md has a 'Coverage Summary' table listing characteristic, priority, scenario count, and IDs — but not individual scenario names or test types. There is a 'Fitness Function Mapping' table but it's in the analysis, not a summary table of scenarios with test types."
+    },
+    {
+      "text": "A6: Response measures are CONCRETE — numbers, thresholds, or specific observable outcomes",
+      "passed": true,
+      "evidence": "All measures are concrete: 'Zero duplicate records persisted; deduplication within 10ms' (DI-1), '100% of events persisted exactly once' (DI-2), '0% deviation' (DI-3), 'rebalance within 30 seconds' (FT-1), '100k concurrent connections; latency < 50ms p95' (SC-1), etc."
+    }
+  ]
+}

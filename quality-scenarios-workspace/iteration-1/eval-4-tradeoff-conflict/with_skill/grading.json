@@ -1,0 +1,41 @@
+{
+  "eval_id": 4,
+  "variant": "with_skill",
+  "expectations": [
+    {
+      "text": "A0: Agent produced both output files with real content",
+      "passed": true,
+      "evidence": "quality-scenarios.md (222 lines, 12 scenarios) and analysis.md (91 lines) both present with substantive content."
+    },
+    {
+      "text": "A1: Scenarios use ATAM format (Source, Stimulus, Environment, Artifact, Response, Response Measure)",
+      "passed": true,
+      "evidence": "All 12 scenarios have all 6 ATAM fields: Source, Stimulus, Environment, Artifact, Response, Response Measure (plus Characteristic and Test Type)."
+    },
+    {
+      "text": "A2: Diverse test types — at least 3 different types, not all fitness-functions",
+      "passed": true,
+      "evidence": "3 different test types used: integration-test (7), load-test (4), chaos-test (1). No fitness-functions (correct — existing FFs already cover structural checks)."
+    },
+    {
+      "text": "A3: Style fitness functions NOT duplicated — no scenarios for structural invariants already covered by style FFs",
+      "passed": true,
+      "evidence": "Eval 4 is a service-based architecture. The analysis explicitly notes existing fitness functions are not duplicated. No scenario tests service boundary, service count, chatter limits, or DB sharing discipline. Scenarios focus on runtime quality behavior (latency, audit completeness, consistency, availability)."
+    },
+    {
+      "text": "A4: Tradeoffs identified — at least 1 explicit tension/conflict between characteristics",
+      "passed": true,
+      "evidence": "3 tradeoffs documented with detailed mechanisms: Performance vs Security (audit write latency eats 50ms budget, with 3 numbered options), Performance vs Data Consistency (strong consistency prevents caching/replicas, with 3 options), Security vs Data Consistency (audit writes compete for IO, with 3 options). Plus 3 sensitivity points (audit write latency, connection pool size, consistency scope). Each tradeoff includes concrete mechanisms, decision options, and recommendations."
+    },
+    {
+      "text": "A5: Summary table present — table listing all scenarios with test types",
+      "passed": true,
+      "evidence": "Scenario Summary table with columns: ID, Characteristic, Scenario, Test Type, Priority. Plus Test Type Distribution table."
+    },
+    {
+      "text": "A6: Response measures are CONCRETE — numbers, thresholds, or specific observable outcomes",
+      "passed": true,
+      "evidence": "All measures are concrete: 'p95 response time < 50ms' (QS-001), 'p99 < 100ms; zero dropped requests' (QS-002), '100% of API calls have matching audit entries; timestamp drift < 1ms' (QS-004), 'SHA-256 hash match for 100%' (QS-006), 'Zero stale reads across 10,000 operations' (QS-007), 'within 30 seconds; zero permanent request failures' (QS-011)."
+    }
+  ]
+}

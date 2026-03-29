@@ -1,0 +1,41 @@
+{
+  "eval_id": 3,
+  "variant": "with_skill",
+  "expectations": [
+    {
+      "text": "A0: Agent produced both output files with real content",
+      "passed": true,
+      "evidence": "quality-scenarios.md (221 lines, 14 scenarios) and analysis.md (77 lines) both present with substantive content."
+    },
+    {
+      "text": "A1: Scenarios use ATAM format (Source, Stimulus, Environment, Artifact, Response, Response Measure)",
+      "passed": true,
+      "evidence": "All 14 scenarios have all 6 ATAM fields: Source, Stimulus, Environment, Artifact, Response, Response Measure."
+    },
+    {
+      "text": "A2: Diverse test types — at least 3 different types, not all fitness-functions",
+      "passed": true,
+      "evidence": "3 different test types used: integration-test (5), load-test (5), chaos-test (4). No fitness-functions generated (justified: style FFs already cover structural invariants)."
+    },
+    {
+      "text": "A3: Style fitness functions NOT duplicated — no scenarios for structural invariants already covered by style FFs",
+      "passed": true,
+      "evidence": "Style FFs cover: no sync coupling, event schema registry, consumer idempotency, dead letter queue handling. QS-005 (Lambda crash mid-batch) tests fault tolerance behavior (crash recovery, checkpoint management), not the structural consumer idempotency invariant. QS-007 (duplicate detection) tests data integrity under retry storms with specific numeric targets, not the structural idempotency enforcement. No scenario tests event schema registry or DLQ as structural checks."
+    },
+    {
+      "text": "A4: Tradeoffs identified — at least 1 explicit tension/conflict between characteristics",
+      "passed": true,
+      "evidence": "3 tradeoffs documented: Consumer Idempotency vs Ingestion Latency (dedup lookup adds latency), Local Buffering vs Memory Pressure (buffer during partitions vs gateway memory at 100k connections), Comprehensive Tracing vs Throughput (trace overhead at 20k readings/sec). Plus 2 sensitivity points (Kinesis shard count, Lambda batch size)."
+    },
+    {
+      "text": "A5: Summary table present — table listing all scenarios with test types",
+      "passed": true,
+      "evidence": "Scenario Summary table with columns: ID, Characteristic, Scenario, Test Type, Priority. Plus Test Type Distribution table."
+    },
+    {
+      "text": "A6: Response measures are CONCRETE — numbers, thresholds, or specific observable outcomes",
+      "passed": true,
+      "evidence": "All measures are concrete: '100k concurrent connections sustained for 30 minutes with 0 dropped connections' (QS-001), 'Zero data loss, recovery within 60s' (QS-004), 'Exactly 1000 unique readings persisted, zero duplicates' (QS-007), 'p95 ingestion latency < 50ms, p99 < 100ms' (QS-012), etc."
+    }
+  ]
+}
