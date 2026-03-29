@@ -215,6 +215,7 @@ After writing scenarios, review with fresh eyes:
 3. **Independence:** Does each scenario stand alone (no implicit ordering)?
 4. **Boundaries:** Are edge cases and error paths covered?
 5. **Language:** Does it use the domain's ubiquitous language (DDD)?
+6. **Step Consistency:** Are step wordings consistent across scenarios? Watch for singular/plural variants of the same step (e.g., "1 failed attempt" vs "2 failed attempts") — use a single parameterized form like `{int} failed attempt(s)` or always use the plural. Inconsistent wording forces step definitions to use regex matching and reduces reuse across features.
 
 ## Feature File Verification (Fresh Agent)
 

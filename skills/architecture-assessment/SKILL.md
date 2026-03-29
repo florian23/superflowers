@@ -90,21 +90,25 @@ This file evolves over time. It is NOT recreated for each feature — it is upda
 ## All Characteristics
 
 ### Operational
-| Characteristic | Priority | Concrete Goal | Fitness Function |
-|---------------|----------|---------------|-----------------|
-| Performance | Critical | API <200ms p95 | Yes - load test |
-| Availability | Important | 99.9% uptime | Yes - health check |
+| Characteristic | Priority | Concrete Goal | Fitness Function | Cadence |
+|---------------|----------|---------------|-----------------|---------|
+| Performance | Critical | API <200ms p95 | Yes - load test | Holistic (PR) |
+| Availability | Important | 99.9% uptime | Yes - health check | Nightly |
 
 ### Structural
-| Characteristic | Priority | Concrete Goal | Fitness Function |
-|---------------|----------|---------------|-----------------|
-| Modularity | Critical | No circular deps | Yes - dependency check |
-| Testability | Important | >80% coverage | Yes - coverage gate |
+| Characteristic | Priority | Concrete Goal | Fitness Function | Cadence |
+|---------------|----------|---------------|-----------------|---------|
+| Modularity | Critical | No circular deps | Yes - dependency check | Atomic (commit) |
+| Testability | Important | >80% coverage | Yes - coverage gate | Atomic (commit) |
 
 ### Cross-Cutting
-| Characteristic | Priority | Concrete Goal | Fitness Function |
-|---------------|----------|---------------|-----------------|
-| Security | Critical | No known CVEs | Yes - vulnerability scan |
+| Characteristic | Priority | Concrete Goal | Fitness Function | Cadence |
+|---------------|----------|---------------|-----------------|---------|
+| Security | Critical | No known CVEs | Yes - vulnerability scan | Atomic (commit) |
+
+**Cadence values:** Atomic (every commit/CI run), Holistic (per PR, may need running services), Nightly (long-running, scheduled).
+
+**Splitting compound characteristics:** If a characteristic has multiple distinct sub-goals (e.g., Security covering both "no CVEs" and "no SQL injection" and "input validation"), split them into separate rows. Each row should have one concrete, independently testable goal. This makes fitness function creation straightforward — one row, one automated check.
 
 ## Architecture Drivers
 - [Driver]: [Why it matters, which characteristic it influences]

@@ -77,7 +77,8 @@ Auto-detect project language and select the appropriate BDD framework:
 
 | Language | Detection | Framework | Run Command |
 |----------|-----------|-----------|-------------|
-| JavaScript/TypeScript | `package.json` | `@cucumber/cucumber` | `npx cucumber-js` |
+| JavaScript/TypeScript | `package.json` + `@cucumber/cucumber` | `@cucumber/cucumber` | `npx cucumber-js` |
+| JavaScript/TypeScript | `package.json` + `jest-cucumber` | `jest-cucumber` | `npx jest --testMatch='**/*.steps.js'` |
 | Python | `pyproject.toml` / `setup.py` / `*.py` | `behave` | `behave` |
 | Python (pytest) | `pytest` already in use | `pytest-bdd` | `pytest --bdd` |
 | Java/Kotlin | `pom.xml` / `build.gradle` | `cucumber-jvm` | `mvn test` / `gradle test` |

@@ -14,6 +14,7 @@
 
 | Config File | Framework |
 |------------|-----------|
+| `jest-cucumber` in `package.json` dependencies | jest-cucumber |
 | `cucumber.js` / `cucumber.mjs` / `.cucumber.yaml` | cucumber-js |
 | `behave.ini` / `setup.cfg [behave]` / `.behaverc` | behave |
 | `conftest.py` with `pytest-bdd` imports | pytest-bdd |
@@ -63,6 +64,59 @@ features/
 ```
 
 **Run:** `npx cucumber-js`
+
+---
+
+### JavaScript / TypeScript — jest-cucumber
+
+**Detection:** `package.json` with `jest-cucumber` in dependencies/devDependencies
+
+**When to use instead of @cucumber/cucumber:** When the project already uses Jest as its test runner. jest-cucumber integrates Gherkin feature files with Jest's test infrastructure, avoiding a separate test runner.
+
+**Install:**
+```bash
+npm install --save-dev jest-cucumber
+```
+
+**Jest config** (in `package.json` or `jest.config.js`):
+```json
+{
+  "jest": {
+    "testMatch": ["**/test/**/*.steps.js", "**/step-definitions/**/*.steps.js"]
+  }
+}
+```
+
+**Step definition pattern:**
+```javascript
+const { defineFeature, loadFeature } = require('jest-cucumber');
+const feature = loadFeature('./features/example.feature');
+
+defineFeature(feature, test => {
+  test('Scenario name', ({ given, when, then }) => {
+    given('some precondition', () => { /* ... */ });
+    when('an action occurs', () => { /* ... */ });
+    then('expected outcome', () => { /* ... */ });
+  });
+});
+```
+
+**Directory structure:**
+```
+features/
+  *.feature
+test/
+  step-definitions/
+    *.steps.js
+```
+
+**Run:** `npx jest --testMatch='**/*.steps.js'`
+
+**Key differences from @cucumber/cucumber:**
+- Steps are defined inline within each scenario (not shared globally via regex)
+- Each `.steps.js` file imports and binds to a specific `.feature` file
+- Verification command: `npx jest --testMatch='**/*.steps.js'` (NOT `npx cucumber-js`)
+- Dry-run equivalent: `npx jest --testMatch='**/*.steps.js' --listTests`
 
 ---
 
