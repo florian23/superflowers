@@ -212,6 +212,15 @@ If implementation reveals that a new feature conflicts with existing scenarios:
    c) Create a separate scenario that supersedes the old one
 5. Only proceed after explicit user decision
 
+**If the user approves a feature file change (option a), trigger the Change Impact Cascade:**
+1. Update the .feature file as approved
+2. Run `npx cucumber-js --dry-run` to identify all broken/undefined step definitions
+3. Update affected step definitions to match the new scenario text
+4. Run the full BDD suite — ALL scenarios must pass (changed + unchanged)
+5. If unchanged scenarios now fail: the implementation has a regression — fix the code, not the tests
+
+Step definitions for changed scenarios MUST be updated in the same commit as the feature file change. Never leave a gap where .feature files and step definitions are out of sync.
+
 This protocol applies to ALL phases: step definition creation, implementation, verification.
 Feature files are NEVER silently modified — every change requires explicit user approval with documented reasoning.
 

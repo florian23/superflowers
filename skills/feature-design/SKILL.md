@@ -147,6 +147,46 @@ Before writing new scenarios, read ALL existing .feature files in the project. C
 
 This check is critical — conflicting requirements must be resolved with the user BEFORE implementation, not silently adjusted during coding.
 
+### Change Impact Cascade
+
+When an existing .feature file is updated (with user approval), a cascade of downstream changes is triggered. This cascade MUST be tracked and resolved:
+
+```
+.feature file changed (user approved)
+    ↓
+1. Identify affected step definitions
+    → Which steps reference changed/removed Given/When/Then?
+    → Which steps need new parameters or behavior?
+    ↓
+2. Mark affected step definitions for update
+    → These become explicit tasks in the implementation plan
+    → Old step definitions are updated, not deleted (preserve git history)
+    ↓
+3. Identify affected implementation code
+    → Does the changed behavior require code changes?
+    → Example: "click button" → "select from dropdown" means UI code must change
+    ↓
+4. Dry-run validation after updates
+    → Run BDD dry-run to verify zero undefined/pending steps
+    → ALL existing scenarios (changed and unchanged) must still have step definitions
+    ↓
+5. Full BDD suite run
+    → ALL scenarios must pass, not just the changed ones
+    → Regressions in unchanged scenarios = implementation broke something
+```
+
+**The writing-plans skill MUST include tasks for each step of this cascade.** When a plan involves changing existing .feature files, the plan must contain:
+1. A task to update affected step definitions
+2. A task to update affected implementation code
+3. A dry-run validation task
+4. A full suite verification task
+
+**Traceability:** For each changed scenario, document:
+- **What changed:** The old vs new scenario text
+- **Why:** The user's reason for the change (from the conflict resolution)
+- **Impact:** Which step definitions and implementation files are affected
+- **Status:** Updated / Pending / Verified
+
 ## Scenario Self-Review
 
 After writing scenarios, review with fresh eyes:
