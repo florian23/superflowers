@@ -97,10 +97,10 @@ These thoughts mean STOP—you're rationalizing:
 When multiple skills could apply, use this order:
 
 1. **Process skills first** (brainstorming, debugging) - these determine HOW to approach the task
-2. **Specification skills second** (architecture-assessment, feature-design) - these define WHAT to build: architecture characteristics and executable acceptance criteria
+2. **Specification skills second** (architecture-assessment, architecture-style-selection, feature-design) - these define WHAT to build: architecture characteristics, style selection, and executable acceptance criteria
 3. **Implementation skills third** (frontend-design, mcp-builder) - these guide execution
 
-"Let's build X" → brainstorming first, then architecture-assessment, then feature-design, then implementation skills.
+"Let's build X" → brainstorming first, then architecture-assessment, then architecture-style-selection, then feature-design, then implementation skills.
 "Fix this bug" → debugging first, then domain-specific skills.
 
 ## Skill Types

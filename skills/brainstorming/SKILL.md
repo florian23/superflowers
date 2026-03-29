@@ -62,7 +62,9 @@ digraph brainstorming {
     "Invoke feature-design" [shape=doublecircle];
 
     "User approves design?" -> "Invoke architecture-assessment" [label="yes"];
-    "Invoke architecture-assessment" -> "Invoke feature-design";
+    "Invoke architecture-style-selection" [shape=doublecircle];
+    "Invoke architecture-assessment" -> "Invoke architecture-style-selection";
+    "Invoke architecture-style-selection" -> "Invoke feature-design";
     "Invoke feature-design" -> "Write design doc";
     "Write design doc" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
@@ -73,9 +75,10 @@ digraph brainstorming {
 
 **After design approval, invoke specification skills BEFORE writing the spec:**
 1. superflowers:architecture-assessment — identify/review architecture characteristics
-2. superflowers:feature-design — create BDD acceptance criteria as Gherkin scenarios
-3. Then write the design doc (spec references architecture.md and .feature files)
-4. Then invoke writing-plans
+2. superflowers:architecture-style-selection — select best-fitting architecture style based on characteristics
+3. superflowers:feature-design — create BDD acceptance criteria as Gherkin scenarios
+4. Then write the design doc (spec references architecture.md and .feature files)
+5. Then invoke writing-plans
 
 Do NOT invoke frontend-design, mcp-builder, or any other implementation skill directly.
 

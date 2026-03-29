@@ -26,9 +26,10 @@ If the spec covers multiple independent subsystems, it should have been broken i
 
 If specification skills were used before this plan, the plan MUST reference their outputs:
 
-**architecture-assessment** (architecture.md exists):
+**architecture-assessment + architecture-style-selection** (architecture.md exists):
 - Plan tasks should respect architecture characteristics and constraints
 - Include fitness function implementation tasks for new characteristics
+- Include **architecture style fitness function** tasks (from the "Architecture Style Fitness Functions" section in architecture.md) — these enforce structural invariants of the selected style (e.g., "no shared database" for microservices, "module boundary enforcement" for modular monolith)
 - Reference architecture decisions that affect implementation choices
 
 **feature-design** (.feature files exist):
@@ -80,7 +81,9 @@ This structure informs the task decomposition. Each task should produce self-con
 
 **Feature Files:** [List .feature files if they exist, or "N/A"]
 
-**Fitness Functions:** [List architecture characteristics needing fitness functions, or "N/A"]
+**Characteristic Fitness Functions:** [List architecture characteristics needing fitness functions, or "N/A"]
+
+**Style Fitness Functions:** [List style-specific structural checks from architecture.md, or "N/A"]
 
 ---
 ```

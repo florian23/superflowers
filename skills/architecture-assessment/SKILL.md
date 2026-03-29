@@ -204,9 +204,14 @@ After writing or updating architecture.md, dispatch a fresh agent using `archite
 4. Fitness function column is populated for critical characteristics
 5. Changelog reflects the change accurately
 
+## Reference Files
+
+- `../architecture-style-selection/references/architecture-characteristics-reference.md` — Canonical definitions for all architecture characteristics from the Ford/Richards Architecture Characteristics Worksheet. Use these definitions when walking the user through the questionnaire.
+
 ## Integration
 
 **Called after:** superflowers:brainstorming
-**Runs before:** superflowers:feature-design (architecture informs scenarios)
+**Runs before:** superflowers:architecture-style-selection (style selection needs characteristics)
+**Then:** superflowers:feature-design (architecture informs scenarios)
 **During implementation:** superflowers:fitness-functions verifies compliance
 **Pairs with:** superflowers:feature-design (BDD for behavior, fitness functions for architecture)
