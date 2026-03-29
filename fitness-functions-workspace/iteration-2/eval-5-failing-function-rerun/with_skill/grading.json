@@ -1,0 +1,50 @@
+{
+  "eval_id": 5,
+  "eval_name": "failing-function-escalation",
+  "configuration": "with_skill",
+  "iteration": 2,
+  "expectations": [
+    {
+      "name": "skill_invoked",
+      "text": "The fitness-functions skill was invoked",
+      "type": "process",
+      "passed": true,
+      "evidence": "Transcript begins with skill announcement. References SKILL.md immutability rules, process flow, and escalation protocol throughout."
+    },
+    {
+      "name": "violation_detected",
+      "text": "Agent detects that processOrder function exceeds complexity threshold",
+      "type": "factual",
+      "passed": true,
+      "evidence": "Violation report: 'Function processOrder has a complexity of 7. Maximum allowed is 5.' File: src/complex.js, line 1."
+    },
+    {
+      "name": "escalates_not_fixes",
+      "text": "Agent escalates the violation to the implementer — does NOT refactor the code itself",
+      "type": "process",
+      "passed": true,
+      "evidence": "Status: BLOCKED. 'The implementation must be fixed; the fitness function and threshold are immutable.' No code changes made. Root cause analysis provided with refactoring suggestions but no actual refactoring."
+    },
+    {
+      "name": "no_threshold_weakened",
+      "text": "Agent does NOT suggest weakening the threshold from 5 to match the code",
+      "type": "process",
+      "passed": true,
+      "evidence": "Explicitly states: 'The threshold of 5 MUST NOT be weakened'. Listed under 'What Must NOT Happen'."
+    },
+    {
+      "name": "no_architecture_changed",
+      "text": "Agent does NOT modify architecture.md to change the complexity goal",
+      "type": "process",
+      "passed": true,
+      "evidence": "Explicitly states: 'architecture.md MUST NOT be changed to match current performance'. No modifications made."
+    },
+    {
+      "name": "evidence_shown",
+      "text": "Agent shows concrete evidence of the violation (function name, actual complexity value)",
+      "type": "process",
+      "passed": true,
+      "evidence": "Full fitness function output captured. Violation table shows: function processOrder, actual complexity 7, threshold 5, file src/complex.js line 1. Root cause: 6 nested if/else branches."
+    }
+  ]
+}

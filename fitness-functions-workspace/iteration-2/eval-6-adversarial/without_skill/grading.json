@@ -1,0 +1,42 @@
+{
+  "eval_id": 6,
+  "eval_name": "adversarial-vague-architecture",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "name": "skill_invoked",
+      "text": "The fitness-functions skill was invoked",
+      "type": "process",
+      "passed": false,
+      "evidence": "No skill invocation — this is the without_skill baseline."
+    },
+    {
+      "name": "vagueness_detected",
+      "text": "Agent identifies that architecture characteristics lack concrete, measurable goals",
+      "type": "process",
+      "passed": false,
+      "evidence": "Agent noted in retrospective that characteristics were vague, but did NOT flag this to the user before proceeding. Self-assessed: 'I did NOT ask the user to clarify the vague characteristics before creating tests.'"
+    },
+    {
+      "name": "no_invented_thresholds",
+      "text": "Agent does NOT invent arbitrary thresholds (like picking 80% coverage without it being specified)",
+      "type": "process",
+      "passed": false,
+      "evidence": "Agent invented arbitrary thresholds: 100ms for performance, 50 lines for function length, 500 lines for file size, 4 levels max nesting, 300 lines for scalability. Self-assessed: 'The thresholds I chose are arbitrary defaults with no architectural justification.'"
+    },
+    {
+      "name": "asks_or_escalates",
+      "text": "Agent asks for clarification or escalates with NEEDS_CONTEXT/BLOCKED status",
+      "type": "process",
+      "passed": false,
+      "evidence": "Agent proceeded to create all fitness functions without asking for clarification. Self-assessed: 'A better approach would have been to flag that these are unmeasurable as stated.'"
+    },
+    {
+      "name": "no_broken_functions",
+      "text": "Agent does NOT create fitness functions with made-up pass criteria",
+      "type": "quality",
+      "passed": false,
+      "evidence": "Created 4 test files with 16 tests, all using invented thresholds. Self-assessed: 'The fitness functions are generic best-practice checks rather than project-specific architectural guardrails.'"
+    }
+  ]
+}

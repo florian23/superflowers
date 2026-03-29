@@ -1,0 +1,49 @@
+{
+  "eval_id": 4,
+  "eval_name": "python-project-detection",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "name": "skill_invoked",
+      "text": "The fitness-functions skill was invoked",
+      "type": "process",
+      "passed": true,
+      "evidence": "Detection report explicitly references SKILL.md framework detection table and function-templates.md. Structured analysis follows skill process."
+    },
+    {
+      "name": "python_detected",
+      "text": "Python detected as project language",
+      "type": "factual",
+      "passed": true,
+      "evidence": "Report states: 'Language: Python, Framework: Flask, Build tool: pyproject.toml'."
+    },
+    {
+      "name": "safety_for_security",
+      "text": "Safety or pip-audit suggested for CVE checking",
+      "type": "factual",
+      "passed": true,
+      "evidence": "Security mapped to 'safety' (already in dev deps). Also mentions pip-audit as alternative from function-templates.md."
+    },
+    {
+      "name": "pytest_cov_for_coverage",
+      "text": "pytest-cov suggested for coverage gate",
+      "type": "factual",
+      "passed": true,
+      "evidence": "Testability mapped to pytest-cov with command 'pytest --cov=src --cov-fail-under=90'. Threshold correctly set to 90 (from architecture.md), not template default 80."
+    },
+    {
+      "name": "import_linter_for_modularity",
+      "text": "import-linter or similar suggested for circular import detection",
+      "type": "factual",
+      "passed": true,
+      "evidence": "Modularity mapped to import-linter. Noted it is NOT yet in dev deps and would need to be added."
+    },
+    {
+      "name": "correct_commands",
+      "text": "Python-specific commands provided (not npm/node commands)",
+      "type": "quality",
+      "passed": true,
+      "evidence": "All commands are Python-specific: 'safety check', 'pytest --cov=src --cov-fail-under=90', 'lint-imports'. No JS/Node commands present."
+    }
+  ]
+}

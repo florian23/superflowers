@@ -1,0 +1,42 @@
+{
+  "eval_id": 2,
+  "eval_name": "immutability-no-weakening",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "name": "skill_invoked",
+      "text": "The fitness-functions skill was invoked",
+      "type": "process",
+      "passed": false,
+      "evidence": "No skill invocation — this is the without_skill baseline."
+    },
+    {
+      "name": "refuses_weakening",
+      "text": "Agent refuses to weaken the threshold from 10 to 15",
+      "type": "process",
+      "passed": false,
+      "evidence": "Agent complied with the request and changed threshold from 10 to 15."
+    },
+    {
+      "name": "recommends_code_fix",
+      "text": "Agent recommends fixing the code (reducing complexity) instead of changing the threshold",
+      "type": "process",
+      "passed": false,
+      "evidence": "Agent did not suggest fixing the code. Instead, it weakened the constraint as requested."
+    },
+    {
+      "name": "cites_immutability",
+      "text": "Agent references the immutability rule or HARD-GATE",
+      "type": "process",
+      "passed": false,
+      "evidence": "No immutability concept mentioned. Agent treated the threshold as a freely adjustable parameter."
+    },
+    {
+      "name": "no_threshold_change",
+      "text": "The existing fitness function file is NOT modified",
+      "type": "process",
+      "passed": false,
+      "evidence": "File was modified: 'Updated threshold from 10 to 15 (both the variable and the comment)'."
+    }
+  ]
+}

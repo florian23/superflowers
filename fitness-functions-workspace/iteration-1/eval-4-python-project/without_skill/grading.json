@@ -1,0 +1,49 @@
+{
+  "eval_id": 4,
+  "eval_name": "python-project-detection",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "name": "skill_invoked",
+      "text": "The fitness-functions skill was invoked",
+      "type": "process",
+      "passed": false,
+      "evidence": "No skill invocation — this is the without_skill baseline."
+    },
+    {
+      "name": "python_detected",
+      "text": "Python detected as project language",
+      "type": "factual",
+      "passed": true,
+      "evidence": "Correctly identified as Python/Flask/pytest project from pyproject.toml."
+    },
+    {
+      "name": "safety_for_security",
+      "text": "Safety or pip-audit suggested for CVE checking",
+      "type": "factual",
+      "passed": true,
+      "evidence": "Both safety and pip-audit suggested with concrete commands. Noted safety is already in dev deps."
+    },
+    {
+      "name": "pytest_cov_for_coverage",
+      "text": "pytest-cov suggested for coverage gate",
+      "type": "factual",
+      "passed": true,
+      "evidence": "pytest-cov with --cov-fail-under=90 suggested. Also includes pyproject.toml config with [tool.coverage.report] fail_under = 90."
+    },
+    {
+      "name": "import_linter_for_modularity",
+      "text": "import-linter or similar suggested for circular import detection",
+      "type": "factual",
+      "passed": true,
+      "evidence": "import-linter suggested with pyproject.toml config for layers contract."
+    },
+    {
+      "name": "correct_commands",
+      "text": "Python-specific commands provided (not npm/node commands)",
+      "type": "quality",
+      "passed": true,
+      "evidence": "All commands Python-specific: 'safety check', 'pytest --cov=src --cov-fail-under=90', 'lint-imports'. Also suggests ruff, mypy, radon as extras."
+    }
+  ]
+}
