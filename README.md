@@ -51,56 +51,115 @@ git fetch upstream
 git merge upstream/main
 ```
 
-## The Basic Workflow
+## The Complete Workflow
 
-1. **brainstorming** - Activates before writing code. Refines rough ideas through questions, explores alternatives, presents design in sections for validation. Saves design document.
+```
+ADR Review ──► Brainstorming ──► Architecture Assessment ──► Style Selection
+                  [ADR]              [ADR]                      [ADR]
+                                                                  │
+                                                                  ▼
+Feature Design ◄── Quality Scenarios ◄─────────────────────────────┘
+                        [ADR]
+      │
+      ▼
+Writing Plans ──► Implementation ──► Fitness Functions ──► Verification ──► Finishing
+                   [BDD Testing]    [Style FFs + Char FFs]   [All checks]    [PR/Merge]
+```
 
-2. **using-git-worktrees** - Activates after design approval. Creates isolated workspace on new branch, runs project setup, verifies clean test baseline.
+### Phase 1: Specification (what to build)
 
-3. **writing-plans** - Activates with approved design. Breaks work into bite-sized tasks (2-5 minutes each). Every task has exact file paths, complete code, verification steps.
+1. **ADR Review** — Before starting a new feature, read existing Architecture Decision Records. Check if the feature is compatible with active decisions or if ADRs need to be superseded.
 
-4. **subagent-driven-development** or **executing-plans** - Activates with plan. Dispatches fresh subagent per task with two-stage review (spec compliance, then code quality), or executes in batches with human checkpoints.
+2. **brainstorming** — Refine the idea through questions, explore 2-3 approaches, present design in sections for validation. Creates design document.
 
-5. **test-driven-development** - Activates during implementation. Enforces RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, commit. Deletes code written before tests.
+3. **architecture-assessment** — Identify and prioritize architecture characteristics (performance, scalability, security, ...) through structured dialogue. Creates/updates `architecture.md` with Top-3 driving characteristics. Based on Ford/Richards Architecture Characteristics Worksheet.
 
-6. **requesting-code-review** - Activates between tasks. Reviews against plan, reports issues by severity. Critical issues block progress.
+4. **architecture-style-selection** — Score all 8 architecture styles (Layered, Modular Monolith, Microkernel, Microservices, Service-Based, SOA, Event-Driven, Space-Based) against driving characteristics using the Ford/Richards star-rating matrix. Select best fit, generate style-specific fitness functions. Updates `architecture.md`.
 
-7. **finishing-a-development-branch** - Activates when tasks complete. Verifies tests, presents options (merge/PR/keep/discard), cleans up worktree.
+5. **quality-scenarios** — Create concrete, testable quality scenarios from architecture characteristics using ATAM. Each scenario gets the right test type: unit-test, integration-test, load-test, chaos-test, fitness-function, or manual-review. Creates `quality-scenarios.md`.
 
-**The agent checks for relevant skills before any task.** Mandatory workflows, not suggestions.
+6. **feature-design** — Write BDD acceptance criteria as Gherkin `.feature` files, informed by architecture and quality scenarios.
 
-## What's Inside
+### Phase 2: Planning
 
-### Skills Library
+7. **writing-plans** — Break work into bite-sized tasks (2-5 minutes each). References `architecture.md`, `quality-scenarios.md`, `.feature` files, and active ADRs. Categorizes test tasks by test type.
 
-**Testing**
-- **test-driven-development** - RED-GREEN-REFACTOR cycle (includes testing anti-patterns reference)
+### Phase 3: Implementation
 
-**Debugging**
-- **systematic-debugging** - 4-phase root cause process (includes root-cause-tracing, defense-in-depth, condition-based-waiting techniques)
-- **verification-before-completion** - Ensure it's actually fixed
+8. **using-git-worktrees** — Create isolated workspace on a new branch.
 
-**Collaboration** 
-- **brainstorming** - Socratic design refinement
-- **writing-plans** - Detailed implementation plans
-- **executing-plans** - Batch execution with checkpoints
-- **dispatching-parallel-agents** - Concurrent subagent workflows
-- **requesting-code-review** - Pre-review checklist
-- **receiving-code-review** - Responding to feedback
-- **using-git-worktrees** - Parallel development branches
-- **finishing-a-development-branch** - Merge/PR decision workflow
-- **subagent-driven-development** - Fast iteration with two-stage review (spec compliance, then code quality)
+9. **subagent-driven-development** or **executing-plans** — Execute the plan task by task. Dispatch fresh subagent per task with two-stage review, or execute in batches with human checkpoints.
 
-**Meta**
-- **writing-skills** - Create new skills following best practices (includes testing methodology)
-- **using-superflowers** - Introduction to the skills system
+10. **test-driven-development** — RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, commit.
+
+11. **bdd-testing** — Implement step definitions for `.feature` files. Auto-detects framework (Cucumber, Jest-Cucumber, Behave, pytest-bdd, etc.).
+
+12. **fitness-functions** — Implement and verify both characteristic fitness functions (quality attributes) and style fitness functions (structural invariants). All must pass before completion.
+
+### Phase 4: Verification & Delivery
+
+13. **verification-before-completion** — Run every check: unit tests, integration tests, load tests, BDD scenarios, fitness functions, quality scenarios, ADR compliance. Evidence required, no self-reported claims.
+
+14. **requesting-code-review** / **receiving-code-review** — Pre-review checklist and feedback processing.
+
+15. **finishing-a-development-branch** — Verify tests, present options (merge/PR/keep/discard), clean up worktree.
+
+### Cross-Cutting: Architecture Decision Records
+
+**architecture-decisions** — Captures significant decisions as immutable ADRs (Nygard format) throughout the entire workflow. Maintains a "Current Architecture at a Glance" index. Handles superseding with cascade: old fitness functions removed, new ones generated, quality scenarios re-evaluated. Every fitness function traces back to its justifying ADR.
+
+## Skills Library
+
+### Architecture & Design
+- **architecture-assessment** — Identify architecture characteristics (Ford/Richards worksheet, ATAM)
+- **architecture-style-selection** — Select architecture style from star-rating matrix, generate style fitness functions
+- **architecture-decisions** — ADR management (Nygard format), superseding cascade, ADR-FF traceability
+- **quality-scenarios** — ATAM quality scenarios with test-type classification
+- **fitness-functions** — Automated architecture compliance (structural + characteristic)
+
+### Specification & BDD
+- **brainstorming** — Socratic design refinement with ADR review
+- **feature-design** — BDD acceptance criteria as Gherkin scenarios
+- **bdd-testing** — Step definition implementation, framework auto-detection
+
+### Planning & Execution
+- **writing-plans** — Detailed implementation plans referencing all specification artifacts
+- **executing-plans** — Batch execution with checkpoints
+- **subagent-driven-development** — Fast iteration with two-stage review
+- **dispatching-parallel-agents** — Concurrent subagent workflows
+
+### Testing & Verification
+- **test-driven-development** — RED-GREEN-REFACTOR cycle
+- **verification-before-completion** — Evidence-based completion gate
+- **systematic-debugging** — 4-phase root cause process
+
+### Collaboration & Git
+- **requesting-code-review** — Pre-review checklist
+- **receiving-code-review** — Responding to feedback
+- **using-git-worktrees** — Parallel development branches
+- **finishing-a-development-branch** — Merge/PR decision workflow
+
+### Meta
+- **writing-skills** — Create new skills following best practices
+- **using-superflowers** — Introduction to the skills system
+
+## Key Artifacts
+
+| Artifact | Created by | Used by |
+|---|---|---|
+| `architecture.md` | architecture-assessment, architecture-style-selection | All downstream skills |
+| `quality-scenarios.md` | quality-scenarios | writing-plans, verification |
+| `doc/adr/` | architecture-decisions | brainstorming (review), writing-plans, verification |
+| `.feature` files | feature-design | bdd-testing, writing-plans, verification |
 
 ## Philosophy
 
-- **Test-Driven Development** - Write tests first, always
-- **Systematic over ad-hoc** - Process over guessing
-- **Complexity reduction** - Simplicity as primary goal
-- **Evidence over claims** - Verify before declaring success
+- **Architecture-First** — Define characteristics, select style, document decisions before writing code
+- **Test-Driven Development** — Write tests first, always
+- **Evidence over Claims** — Verify before declaring success, no self-reported completions
+- **Immutable Decisions** — ADRs and fitness functions don't change; they get superseded with documented rationale
+- **Systematic over Ad-hoc** — Process over guessing
+- **Right Test for the Job** — Not everything is a fitness function; unit tests, integration tests, load tests, and manual reviews each have their place
 
 Read more: [Superpowers for Claude Code](https://blog.fsck.com/2025/10/09/superpowers/) (original project)
 
