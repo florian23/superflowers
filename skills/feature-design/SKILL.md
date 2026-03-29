@@ -11,6 +11,8 @@ Turn requirements into executable specifications using BDD Given-When-Then scena
 
 **Announce at start:** "I'm using the feature-design skill to create BDD feature files from the requirements."
 
+**This skill CREATES FILES.** Do not just plan or describe scenarios — write them to .feature files on the filesystem. The output of this skill is committed .feature files, not a description of what they could contain.
+
 ## The Iron Law
 
 ```
@@ -51,7 +53,6 @@ digraph feature_design {
     "Add missing scenarios" [shape=box];
     "User reviews\n.feature files" [shape=diamond];
     "Commit .feature files" [shape=box];
-    "Invoke writing-plans skill" [shape=doublecircle];
 
     "Brainstorming complete\n(spec approved)" -> "Read spec, identify\nrequirements";
     "Read spec, identify\nrequirements" -> "Draft .feature files\n(Gherkin scenarios)";
@@ -91,6 +92,16 @@ Examples of advisory skills that can plug in here:
 - Performance advisor (load/stress scenarios)
 
 This is a generic extension point — no changes to feature-design required when new advisory skills are added.
+
+## Architecture Awareness
+
+If `architecture.md` exists in the project (from superflowers:architecture-assessment), read it before writing scenarios. Architecture characteristics should inform scenario design:
+
+- **Performance characteristics** → scenarios should reflect expected response behavior (e.g., "results appear immediately" for a search feature with <200ms requirement)
+- **Security characteristics** → scenarios should include authorization/authentication edge cases
+- **Scalability characteristics** → scenarios should consider multi-user or high-volume cases
+
+You don't need to test architecture directly (that's what fitness-functions does), but scenarios should be CONSISTENT with the architecture. A scenario that implies synchronous processing contradicts an architecture that requires async.
 
 ## Writing Scenarios
 
@@ -138,15 +149,24 @@ Before writing new scenarios, read ALL existing .feature files in the project. C
 3. **Broken assumptions:** Does the new feature invalidate Given/When/Then steps used in other feature files?
 
 **If conflicts are found:**
-- Present each conflict to the user with both the existing and new requirement
-- Ask: "This new feature changes existing behavior in [file]. Should the existing scenario be updated?"
-- Only modify existing .feature files with explicit user approval
+
+<HARD-GATE>
+When a conflict with existing .feature files is detected, you MUST:
+1. STOP — do not modify any existing .feature file
+2. Present each conflict to the user: show the existing scenario and what would change
+3. Ask: "This new feature changes existing behavior in [file]. Should the existing scenario be updated?"
+4. WAIT for the user's explicit response — do NOT proceed, do NOT rationalize past this gate
+5. Only after the user explicitly approves: modify the existing .feature file
+
+You may NOT rationalize past this requirement. "Since this is clearly needed" or "proceeding as
+this is straightforward" or "since the task requires complete outputs" are all violations.
+The user MUST respond before you modify existing feature files. No exceptions.
+</HARD-GATE>
+
 - Document the change reason as a comment in the .feature file
 - If the user approves changes, update the existing feature file BEFORE writing new scenarios
 
 **If no conflicts:** Proceed normally.
-
-This check is critical — conflicting requirements must be resolved with the user BEFORE implementation, not silently adjusted during coding.
 
 ### Change Impact Cascade
 
@@ -234,6 +254,9 @@ If quality issues are found, fix them before presenting to the user.
 - Skipping scenarios "because the requirement is obvious"
 - Writing plan tasks before scenarios exist
 - Modifying scenarios to match implementation (scenarios are the spec)
+- Modifying existing .feature files without asking the user first
+- Planning scenarios but not writing them to .feature files
+- Rationalizing past the user-approval gate for conflict resolution
 
 ## Rationalization Prevention
 
@@ -245,13 +268,25 @@ If quality issues are found, fix them before presenting to the user.
 | "I'll write scenarios after the plan" | Post-hoc scenarios describe what was built, not what should be built. Spec before plan. |
 | "Technical features don't need scenarios" | Every feature has observable behavior. If it doesn't, question whether it's needed. |
 | "We can derive scenarios from the spec later" | Later never comes. Write them now while the requirements are fresh. |
+| "Since this is an evaluation/test task, I'll proceed" | The rules apply to ALL contexts. Evaluation tasks are not exempt from user-approval requirements. |
+| "The change is clearly needed, so I'll just do it" | Clarity to you ≠ approval from the user. Ask and wait. |
+| "I'll document what I changed so it's transparent" | Documentation is not approval. The user must approve BEFORE the change, not be informed AFTER. |
 
 ## Verification Checklist
 
+- [ ] .feature files WRITTEN to filesystem (not just planned)
 - [ ] Every spec requirement maps to at least one scenario
 - [ ] .feature files parse correctly (valid Gherkin syntax)
-- [ ] No implementation details in scenarios
+- [ ] No implementation details in scenarios (declarative style)
 - [ ] Edge cases and error paths covered
+- [ ] Tags used for organization (@critical, @edge-case, @smoke)
+- [ ] Scenario Outline used where parameterization makes sense
+- [ ] Background used for shared preconditions
+- [ ] One .feature file per domain concept (not one giant file)
+- [ ] Existing .feature files NOT modified without user approval
+- [ ] If architecture.md exists: scenarios are consistent with architecture characteristics
+- [ ] Self-review performed (coverage, clarity, independence, boundaries, language)
+- [ ] Quality review by fresh agent performed
 - [ ] User has reviewed and approved feature files
 - [ ] Feature files committed to git
 
