@@ -135,6 +135,8 @@ ATAM's core insight is that quality attributes conflict. After generating scenar
 
 Document these as a dedicated section in quality-scenarios.md. Tradeoffs are valuable — they surface decisions that the team needs to make consciously rather than discovering them during implementation.
 
+When a tradeoff is resolved (the user decides which side to favor), invoke `superflowers:architecture-decisions` to create an ADR. Tradeoff resolutions are architecture decisions — documenting them ensures the team remembers why they accepted the tradeoff.
+
 ## Step 5: Present to User
 
 Show the user:

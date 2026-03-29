@@ -1,0 +1,37 @@
+{
+  "skill_name": "architecture-decisions",
+  "iteration": 1,
+  "configurations": [
+    {
+      "name": "with_skill",
+      "evals": [
+        {"eval_name": "style-selection", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0},
+        {"eval_name": "brainstorming-approach", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0},
+        {"eval_name": "unplanned-decision", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0},
+        {"eval_name": "superseding", "assertions_passed": 7, "assertions_total": 7, "pass_rate": 1.0}
+      ],
+      "aggregate": {"mean_pass_rate": 1.0, "total_passed": 25, "total_assertions": 25}
+    },
+    {
+      "name": "without_skill",
+      "evals": [
+        {"eval_name": "style-selection", "assertions_passed": 4, "assertions_total": 6, "pass_rate": 0.67},
+        {"eval_name": "brainstorming-approach", "assertions_passed": 4, "assertions_total": 6, "pass_rate": 0.67},
+        {"eval_name": "unplanned-decision", "assertions_passed": 4, "assertions_total": 6, "pass_rate": 0.67},
+        {"eval_name": "superseding", "assertions_passed": 4, "assertions_total": 7, "pass_rate": 0.57}
+      ],
+      "aggregate": {"mean_pass_rate": 0.64, "total_passed": 16, "total_assertions": 25}
+    }
+  ],
+  "delta": {"pass_rate_improvement": 0.36},
+  "analysis": {
+    "key_findings": [
+      "with_skill: 25/25 (100%) vs without_skill: 16/25 (64%)",
+      "ALL 8 agents completed successfully",
+      "Skill value is FORMAT DISCIPLINE: canonical Nygard sections, imperative titles",
+      "Baseline uses German headings and non-standard structure in 3/4 evals",
+      "Content quality (alternatives, consequences) is reasonable in both conditions",
+      "Superseding mechanics handled correctly by both, but skill ensures immutability explicitly"
+    ]
+  }
+}

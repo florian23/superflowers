@@ -120,6 +120,13 @@ Quality scenarios define different test types. Verify each type ran:
 - fitness-function scenarios: already covered by fitness-functions check above
 - manual-review scenarios: explicitly acknowledged with evidence or deferred with justification
 
+**ADR Compliance (when doc/adr/ exists):**
+```
+✅ [Read active ADRs] [Check implementation against each] "Implementation consistent with all active ADRs"
+❌ "We follow the architecture" / "ADRs are outdated anyway"
+```
+If implementation contradicts an active ADR, either fix the implementation or supersede the ADR — never silently violate it.
+
 **Requirements:**
 ```
 ✅ Re-read plan → Create checklist → Verify each → Report gaps or completion

@@ -38,7 +38,15 @@ You MUST create a task for each of these items and complete them in order:
 
 ```dot
 digraph brainstorming {
+    "Read ADR index\n(Current Architecture at a Glance)" [shape=box];
+    "ADRs exist?" [shape=diamond];
+    "Present constraints\nfrom active ADRs" [shape=box];
     "Explore project context" [shape=box];
+
+    "Read ADR index\n(Current Architecture at a Glance)" -> "ADRs exist?";
+    "ADRs exist?" -> "Present constraints\nfrom active ADRs" [label="yes"];
+    "ADRs exist?" -> "Explore project context" [label="no"];
+    "Present constraints\nfrom active ADRs" -> "Explore project context";
     "Visual questions ahead?" [shape=diamond];
     "Offer Visual Companion\n(own message, no other content)" [shape=box];
     "Ask clarifying questions" [shape=box];
@@ -85,11 +93,23 @@ digraph brainstorming {
 
 Do NOT invoke frontend-design, mcp-builder, or any other implementation skill directly.
 
+## Step 0: ADR Review (before brainstorming)
+
+If `doc/adr/` exists, read the ADR index — specifically the "Current Architecture at a Glance" block. This tells you what architectural constraints are already in place.
+
+- Present the active ADRs to the user: "These are the current architecture decisions that may affect this feature."
+- For each active ADR, assess: does the new feature conflict with this decision?
+  - **Compatible:** Note as constraint ("We're using Service-Based, so the new feature should be a service or part of an existing one")
+  - **Conflict:** Flag explicitly ("This feature needs real-time streaming, but ADR-001 chose REST. We may need to supersede that decision.")
+- If conflicts exist: discuss with the user BEFORE proceeding. Superseding an ADR is a conscious choice, not a side effect.
+
+If no `doc/adr/` exists: skip this step and proceed normally.
+
 ## The Process
 
 **Understanding the idea:**
 
-- Check out the current project state first (files, docs, recent commits)
+- Check out the current project state first (files, docs, recent commits, and ADR index if it exists)
 - Before asking detailed questions, assess scope: if the request describes multiple independent subsystems (e.g., "build a platform with chat, file storage, billing, and analytics"), flag this immediately. Don't spend questions refining details of a project that needs to be decomposed first.
 - If the project is too large for a single spec, help the user decompose into sub-projects: what are the independent pieces, how do they relate, what order should they be built? Then brainstorm the first sub-project through the normal design flow. Each sub-project gets its own spec → plan → implementation cycle.
 - For appropriately-scoped projects, ask questions one at a time to refine the idea

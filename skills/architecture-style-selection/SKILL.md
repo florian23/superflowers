@@ -162,9 +162,9 @@ After the user confirms a selection, update `architecture.md` with a new section
 ### Architecture Style Fitness Functions
 These fitness functions enforce the selected style's structural invariants. They are mandatory and immutable — if the implementation violates them, the implementation must change, not the fitness function.
 
-| Fitness Function | What it checks | Tool/Approach |
-|---|---|---|
-| [copied from style-fitness-functions.md for the selected style] | ... | ... |
+| Fitness Function | What it checks | Tool/Approach | ADR |
+|---|---|---|---|
+| [copied from style-fitness-functions.md for the selected style] | ... | ... | ADR-NNN |
 ```
 
 ## Step 6: Generate Style Fitness Functions
@@ -180,6 +180,22 @@ Both types are mandatory. Together they ensure the system not only meets its qua
 The fitness-functions skill picks up BOTH types from architecture.md during implementation. The verification-before-completion skill checks that ALL pass before any completion claim.
 
 If an evolution path is defined (e.g., Phase 1: Service-Based → Phase 3: selective Microservices), only the current phase's style fitness functions apply. When the team moves to the next phase, the new phase's fitness functions are added — the old ones are NOT removed unless the style explicitly replaces them.
+
+## Step 7: Create ADR for Style Selection
+
+Every architecture style selection is a significant decision. After the user confirms the selection, invoke `superflowers:architecture-decisions` to create an ADR. The ADR should include:
+- **Context:** The scoring results (all 8 styles), cost comparison, qualifying context
+- **Decision:** "Use [style] architecture" with brief rationale
+- **Consequences:** Tradeoffs accepted (from Step 5), evolution path commitments
+
+### Re-Selection Mode
+
+When a style ADR is superseded (e.g., migrating from Service-Based to Microservices):
+1. The superseding ADR triggers this skill in Re-Selection mode
+2. Remove the old style's fitness functions from architecture.md (identified by their ADR reference)
+3. Generate new fitness functions for the new style (from style-fitness-functions.md)
+4. Add the new ADR reference to all new fitness functions
+5. Re-evaluate quality-scenarios.md for affected scenarios
 
 ## Red Flags — STOP
 

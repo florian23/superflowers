@@ -94,6 +94,8 @@ This structure informs the task decomposition. Each task should produce self-con
 
 **Quality Scenarios:** [List quality scenarios by test type from quality-scenarios.md, or "N/A"]
 
+**Active ADRs:** [List active architecture decisions from doc/adr/ that affect this implementation, or "N/A"]
+
 ---
 ```
 

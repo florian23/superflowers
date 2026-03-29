@@ -35,8 +35,12 @@ During verification, existing fitness functions are IMMUTABLE:
 - Do NOT change architecture.md goals to match current performance
 
 If a fitness function fails, the IMPLEMENTATION must be fixed — not the test.
-The only exception: the user explicitly changes the architecture characteristic
-in architecture.md because the requirement itself changed.
+
+Exceptions (the only cases where FFs may be replaced):
+1. The user explicitly changes the architecture characteristic in architecture.md because the requirement itself changed.
+2. The ADR that justifies the FF has been **superseded** by a new ADR. When an ADR is superseded, all fitness functions referencing that ADR are replaced by the new ADR's fitness functions. This is not "weakening to pass" — it's a legitimized architecture change documented in the superseding ADR.
+
+To verify a FF replacement is legitimate: check that a superseding ADR exists in `doc/adr/` with status "Accepted" and the old ADR's status is "Superseded by ADR-NNN".
 </HARD-GATE>
 
 ## When to Use

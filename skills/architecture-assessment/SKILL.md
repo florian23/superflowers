@@ -171,7 +171,7 @@ When `architecture.md` already exists, be SKEPTICAL about changes:
 3. If the user wants changes:
    - Ask: "Why does this change the architecture? What is different now?"
    - Challenge: "Could we achieve this within the current architecture constraints?"
-   - If truly justified: Update with changelog entry
+   - If truly justified: Update with changelog entry and invoke `superflowers:architecture-decisions` to create an ADR documenting why the characteristics changed
    - If not justified: Recommend keeping the existing architecture
 
 **Architecture should be stable.** Frequent changes to architecture characteristics are a red flag — either the initial assessment was incomplete or requirements are being confused with architecture.
