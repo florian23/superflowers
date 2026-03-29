@@ -1,6 +1,6 @@
 ---
 name: feature-design
-description: Use AFTER brainstorming completes and BEFORE writing-plans begins - whenever a design spec or requirements exist and you are about to plan implementation, invoke this first to create Gherkin feature files as executable acceptance criteria
+description: Use AFTER brainstorming design approval and BEFORE writing the design spec - creates Gherkin feature files as executable acceptance criteria that inform the spec
 ---
 
 # Feature Design
@@ -76,7 +76,8 @@ digraph feature_design {
     "All requirements\ncovered?" -> "User reviews\n.feature files" [label="yes"];
     "User reviews\n.feature files" -> "Draft .feature files\n(Gherkin scenarios)" [label="changes requested"];
     "User reviews\n.feature files" -> "Commit .feature files" [label="approved"];
-    "Commit .feature files" -> "Invoke writing-plans skill";
+    "Commit .feature files" -> "Return to brainstorming\n(Write design doc)";
+    "Return to brainstorming\n(Write design doc)" [shape=doublecircle];
 }
 ```
 
@@ -256,6 +257,7 @@ If quality issues are found, fix them before presenting to the user.
 
 ## Integration
 
-**Called after:** superflowers:brainstorming
-**Feeds into:** superflowers:writing-plans (scenarios become plan acceptance criteria)
-**During implementation:** superflowers:bdd-testing converts scenarios to executable tests
+**Called after:** superflowers:brainstorming (step 7, after architecture-assessment)
+**Returns to:** superflowers:brainstorming (step 8, Write design doc — feature files inform the spec)
+**During implementation:** superflowers:bdd-testing verifies scenarios pass
+**Note:** This skill does NOT invoke writing-plans directly. Control returns to brainstorming which continues with spec writing, user review, then writing-plans.

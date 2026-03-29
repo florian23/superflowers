@@ -31,7 +31,8 @@ You MUST create a task for each of these items and complete them in order:
 8. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit. Spec references architecture.md and .feature files.
 9. **Spec self-review** — check for placeholders, contradictions, ambiguity, scope, architecture alignment, scenario coverage (see below)
 10. **User reviews written spec** — ask user to review the spec file before proceeding
-11. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+11. **Create worktree** — invoke superflowers:using-git-worktrees to create an isolated workspace for implementation
+12. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
 ## Process Flow
 

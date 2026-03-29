@@ -43,14 +43,14 @@ digraph architecture_assessment {
     "User approves\ncharacteristics?" [shape=diamond];
     "Write architecture.md" [shape=box];
     "Dispatch verification agent" [shape=box];
-    "Proceed to specification\nskills" [shape=doublecircle];
+    "Return to brainstorming\n(feature-design next)" [shape=doublecircle];
 
     "Brainstorming complete" -> "architecture.md exists?";
     "architecture.md exists?" -> "Read existing architecture" [label="yes"];
     "architecture.md exists?" -> "Structured questionnaire\ndialog" [label="no"];
     "Read existing architecture" -> "Show to user:\ncurrent characteristics";
     "Show to user:\ncurrent characteristics" -> "Changes needed for\nthis feature?";
-    "Changes needed for\nthis feature?" -> "Proceed to specification\nskills" [label="no — architecture stable"];
+    "Changes needed for\nthis feature?" -> "Return to brainstorming\n(feature-design next)" [label="no — architecture stable"];
     "Changes needed for\nthis feature?" -> "Critical review:\nwhy change?" [label="yes"];
     "Critical review:\nwhy change?" -> "User confirms change?";
     "User confirms change?" -> "Changes needed for\nthis feature?" [label="no — keep existing"];
@@ -61,7 +61,7 @@ digraph architecture_assessment {
     "User approves\ncharacteristics?" -> "Structured questionnaire\ndialog" [label="revise"];
     "User approves\ncharacteristics?" -> "Write architecture.md" [label="approved"];
     "Write architecture.md" -> "Dispatch verification agent";
-    "Dispatch verification agent" -> "Proceed to specification\nskills";
+    "Dispatch verification agent" -> "Return to brainstorming\n(feature-design next)";
 }
 ```
 

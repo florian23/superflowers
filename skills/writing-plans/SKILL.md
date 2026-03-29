@@ -39,7 +39,7 @@ If specification skills were used before this plan, the plan MUST reference thei
 - After ALL step definition tasks: run the full BDD suite to verify all scenarios pass
 - The plan's final task MUST be a BDD verification task that runs the complete suite
 
-**RECOMMENDED SUB-SKILL:** Use superflowers:bdd-testing for BDD execution and superflowers:fitness-functions for architecture verification during implementation.
+**REQUIRED SUB-SKILL (when artifacts exist):** Use superflowers:bdd-testing for BDD verification when .feature files exist. Use superflowers:fitness-functions for architecture verification when architecture.md exists. These are NOT optional — the specification verification gate in subagent-driven-development will enforce them.
 
 ## File Structure
 

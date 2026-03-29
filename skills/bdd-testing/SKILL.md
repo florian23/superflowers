@@ -96,15 +96,18 @@ For full detection heuristics, configuration templates, and setup instructions p
 
 Dispatch a dedicated BDD subagent using `./bdd-agent-prompt.md`.
 
-The BDD agent:
+The BDD agent's primary role is **verification**, not creation. Step definitions are created during implementation (as plan tasks by the implementer). The BDD agent:
 1. Reads all .feature files in the project
 2. Detects project language (see `framework-detection.md`)
 3. Installs BDD framework if not present
-4. Generates step definition stubs from scenarios
-5. Implements step definitions with real test code
-6. Runs all scenarios, fixes step definition failures
-7. Escalates implementation bugs to controller (not the agent's job to fix app code)
-8. Reports: which scenarios pass, which fail, full test output
+4. Runs dry-run to verify ALL steps have definitions (created by implementer during plan tasks)
+5. If undefined steps are found: reports them as BLOCKED — implementer must create them first
+6. Runs all scenarios, reports results
+7. Fixes step definition bugs (wrong assertions, missing state setup) — but does NOT write new step definitions from scratch
+8. Escalates implementation bugs to controller (not the agent's job to fix app code)
+9. Reports: which scenarios pass, which fail, full test output
+
+**Step definitions are created by the implementer as plan tasks (see writing-plans BDD Step Definition Task template). The BDD agent verifies they exist and work correctly.**
 
 **Model selection:** Use a standard model for the BDD agent. Step definition writing is pattern-matching on Gherkin syntax — doesn't require the most capable model.
 

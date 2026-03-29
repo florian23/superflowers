@@ -95,13 +95,13 @@ Skip any step = lying, not verifying
 ❌ "Linter passed" (linter doesn't check compilation)
 ```
 
-**BDD Scenarios (when .feature files exist):**
+**BDD Scenarios (when .feature files exist — use superflowers:bdd-testing):**
 ```
 ✅ [Run BDD command] [See: 12 scenarios, 12 passed] "All BDD scenarios pass"
 ❌ "Unit tests pass so features work" / "Most scenarios pass"
 ```
 
-**Fitness Functions (when architecture.md exists):**
+**Fitness Functions (when architecture.md exists — use superflowers:fitness-functions):**
 ```
 ✅ [Run fitness functions] [See: 5/5 checks passed] "Architecture compliance verified"
 ❌ "Code follows the architecture" / "Looks structurally sound"
