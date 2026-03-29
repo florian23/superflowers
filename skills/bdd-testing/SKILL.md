@@ -164,12 +164,24 @@ Parse the output to identify which scenarios failed and why.
 
 Compare current results against last known good run. If any previously passing scenario now fails, this is a regression — the implementation broke existing behavior.
 
-**All 3 steps must succeed. No exceptions. No "looks good to me". Only code output counts as evidence.**
+### Step 4: Step Definition Quality Check
+
+After tests pass, READ the step definition files and check for quality issues:
+
+1. **Hardcoded values:** Steps that return hardcoded results instead of calling real code (e.g., `context.response = 200` instead of making an actual HTTP call). These make tests meaningless — they prove nothing about the implementation.
+2. **Mock-like behavior:** Steps that simulate behavior instead of exercising real code paths. If a Given step sets up fake state that the When step never actually processes, the test is a tautology.
+3. **Missing delegation:** Steps that contain business logic instead of calling application code. Step definitions are glue — they should call functions, not implement them.
+4. **Unused setup:** Given steps that set variables never used by When/Then steps.
+
+**If quality issues are found:** Report them with specific file and line references. These are NOT test failures but quality warnings that should be fixed before the implementation is considered complete.
+
+**All 4 steps must succeed. No exceptions. No "looks good to me". Only code output counts as evidence.**
 
 ## Step Definition Best Practices
 
 - **Thin step definitions:** Parse Gherkin parameters, delegate to real code. Steps are glue, not logic.
 - **No business logic in steps.** Steps call application code, they don't replicate it.
+- **No hardcoded returns.** Steps must exercise real code, not return fixed values.
 - **Use intermediaries:** Page objects (UI), API clients (HTTP), domain helpers (logic).
 - **Cucumber expressions over regex** when the framework supports it.
 - **World/context object** for sharing state between steps within a scenario.
@@ -256,6 +268,8 @@ Feature files are NEVER silently modified — every change requires explicit use
 | "Step definitions are not needed yet" | Undefined steps = untested features. If the .feature file exists, the steps must exist too. |
 | "The dry-run passed so we're good" | Dry-run only checks step existence. Full run checks behavior. Both are required. |
 | "I verified the tests manually" | Manual verification is not verification. Run the command. Show the output. |
+| "Tests pass so the step definitions are fine" | Passing tests with hardcoded values prove nothing. Read the step definitions and check quality. |
+| "The step definitions are just glue code, quality doesn't matter" | Bad glue makes tests meaningless. A test that returns hardcoded 200 is not testing anything. |
 
 ## Verification Checklist (Code-Verified, Not Self-Reported)
 
@@ -269,6 +283,7 @@ Every item below MUST be verified by running a command and checking its output.
 - [ ] No .feature files were modified: `git diff -- '*.feature'` shows no changes
 - [ ] No existing step definitions were weakened: `git diff -- '*steps*'` shows only additions, no modified assertions
 - [ ] Regression check: all previously passing scenarios still pass
+- [ ] Step definition quality: no hardcoded values, no mock-like behavior, steps delegate to real code
 - [ ] Full test run output pasted as evidence in the verification report
 
 ## Integration

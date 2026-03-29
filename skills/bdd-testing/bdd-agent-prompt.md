@@ -67,11 +67,21 @@ If scenarios fail due to step definition bugs (wrong selectors, incorrect assert
 
 If scenarios fail due to application code bugs (missing functionality, wrong behavior), DO NOT fix the application code. This is not your job.
 
-### 7. Verify No Feature Files Changed
+### 7. Step Definition Quality Check
+
+After tests pass, READ each step definition file and check for:
+- **Hardcoded values:** Steps returning fixed results instead of calling real code (e.g., `context.response = 200` without making an HTTP call)
+- **Mock-like behavior:** Steps simulating behavior instead of exercising real code paths
+- **Missing delegation:** Steps containing business logic instead of calling application code
+- **Unused setup:** Given steps setting variables that When/Then steps never use
+
+Report quality issues with specific file paths and line numbers as DONE_WITH_CONCERNS.
+
+### 8. Verify No Feature Files Changed
 
 Run `git diff -- '*.feature'` and confirm no .feature files were modified. If any were modified, revert immediately and report the violation.
 
-### 8. Report
+### 9. Report
 
 Report your results with full evidence.
 
