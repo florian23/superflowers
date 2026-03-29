@@ -120,6 +120,17 @@ This file evolves over time. It is NOT recreated for each feature — it is upda
 - YYYY-MM-DD: Initial architecture assessment
 ```
 
+## Context Map Awareness
+
+If `context-map.md` exists (from superflowers:bounded-context-design), read it before starting the questionnaire. Bounded contexts inform the assessment:
+
+- **Modularity/Coupling:** How many contexts? How tightly coupled are their relationships? (Partnership = tight, Separate Ways = loose)
+- **Interoperability:** Do contexts use different technologies or data formats? (Published Language = yes)
+- **Scalability:** Do different contexts have different scaling needs? (e.g., Catalog handles 10x more reads than Fulfillment)
+- **Per-context characteristics:** Some characteristics may be critical for one context but irrelevant for another. Note these differences — they inform architecture-style-selection about whether to treat contexts differently.
+
+If no `context-map.md` exists, proceed with the questionnaire as normal.
+
 ## The Questionnaire Dialog (New Projects)
 
 Walk the user through each category. Ask one question at a time. Use the full questionnaire from `questionnaire-template.md`.
@@ -210,7 +221,8 @@ After writing or updating architecture.md, dispatch a fresh agent using `archite
 
 ## Integration
 
-**Called after:** superflowers:brainstorming
+**Called after:** superflowers:bounded-context-design (domain boundaries inform characteristics)
+**Reads:** `context-map.md` if it exists (from bounded-context-design)
 **Runs before:** superflowers:architecture-style-selection (style selection needs characteristics)
 **Then:** superflowers:feature-design (architecture informs scenarios)
 **During implementation:** superflowers:fitness-functions verifies compliance

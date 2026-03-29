@@ -54,12 +54,12 @@ git merge upstream/main
 ## The Complete Workflow
 
 ```
-ADR Review ──► Brainstorming ──► Architecture Assessment ──► Style Selection
-                  [ADR]              [ADR]                      [ADR]
-                                                                  │
-                                                                  ▼
-Feature Design ◄── Quality Scenarios ◄─────────────────────────────┘
-                        [ADR]
+ADR Review ──► Brainstorming ──► Bounded Context Design ──► Architecture Assessment
+                  [ADR]              [context-map.md]            [ADR]
+                                                                   │
+                                                                   ▼
+Feature Design ◄── Quality Scenarios ◄── Style Selection ◄─────────┘
+                        [ADR]                [ADR]
       │
       ▼
 Writing Plans ──► Implementation ──► Fitness Functions ──► Verification ──► Finishing
@@ -72,17 +72,19 @@ Writing Plans ──► Implementation ──► Fitness Functions ──► Ver
 
 2. **brainstorming** — Refine the idea through questions, explore 2-3 approaches, present design in sections for validation. Creates design document.
 
-3. **architecture-assessment** — Identify and prioritize architecture characteristics (performance, scalability, security, ...) through structured dialogue. Creates/updates `architecture.md` with Top-3 driving characteristics. Based on Ford/Richards Architecture Characteristics Worksheet.
+3. **bounded-context-design** — Identify bounded contexts, classify subdomains (Core/Supporting/Generic), create context map with DDD relationship patterns, define ubiquitous language per context. Skips automatically for single-domain projects. Creates `context-map.md`.
 
-4. **architecture-style-selection** — Score all 8 architecture styles (Layered, Modular Monolith, Microkernel, Microservices, Service-Based, SOA, Event-Driven, Space-Based) against driving characteristics using the Ford/Richards star-rating matrix. Select best fit, generate style-specific fitness functions. Updates `architecture.md`.
+4. **architecture-assessment** — Identify and prioritize architecture characteristics (performance, scalability, security, ...) through structured dialogue, informed by context boundaries. Creates/updates `architecture.md` with Top-3 driving characteristics. Based on Ford/Richards Architecture Characteristics Worksheet.
 
-5. **quality-scenarios** — Create concrete, testable quality scenarios from architecture characteristics using ATAM. Each scenario gets the right test type: unit-test, integration-test, load-test, chaos-test, fitness-function, or manual-review. Creates `quality-scenarios.md`.
+5. **architecture-style-selection** — Score all 8 architecture styles against driving characteristics using the Ford/Richards star-rating matrix. Context boundaries inform service/module cuts. Select best fit, generate style-specific fitness functions. Updates `architecture.md`.
 
-6. **feature-design** — Write BDD acceptance criteria as Gherkin `.feature` files, informed by architecture and quality scenarios.
+6. **quality-scenarios** — Create concrete, testable quality scenarios from architecture characteristics using ATAM. Each scenario gets the right test type: unit-test, integration-test, load-test, chaos-test, fitness-function, or manual-review. Creates `quality-scenarios.md`.
+
+7. **feature-design** — Write BDD acceptance criteria as Gherkin `.feature` files, using ubiquitous language from context-map.md. Informed by architecture and quality scenarios.
 
 ### Phase 2: Planning
 
-7. **writing-plans** — Break work into bite-sized tasks (2-5 minutes each). References `architecture.md`, `quality-scenarios.md`, `.feature` files, and active ADRs. Categorizes test tasks by test type.
+8. **writing-plans** — Break work into bite-sized tasks (2-5 minutes each). Module/service decomposition follows bounded context boundaries. References `context-map.md`, `architecture.md`, `quality-scenarios.md`, `.feature` files, and active ADRs.
 
 ### Phase 3: Implementation
 
@@ -111,6 +113,7 @@ Writing Plans ──► Implementation ──► Fitness Functions ──► Ver
 ## Skills Library
 
 ### Architecture & Design
+- **bounded-context-design** — DDD strategic design: subdomain classification, context maps, ubiquitous language
 - **architecture-assessment** — Identify architecture characteristics (Ford/Richards worksheet, ATAM)
 - **architecture-style-selection** — Select architecture style from star-rating matrix, generate style fitness functions
 - **architecture-decisions** — ADR management (Nygard format), superseding cascade, ADR-FF traceability
@@ -147,6 +150,7 @@ Writing Plans ──► Implementation ──► Fitness Functions ──► Ver
 
 | Artifact | Created by | Used by |
 |---|---|---|
+| `context-map.md` | bounded-context-design | architecture-assessment, style-selection, feature-design, writing-plans |
 | `architecture.md` | architecture-assessment, architecture-style-selection | All downstream skills |
 | `quality-scenarios.md` | quality-scenarios | writing-plans, verification |
 | `doc/adr/` | architecture-decisions | brainstorming (review), writing-plans, verification |

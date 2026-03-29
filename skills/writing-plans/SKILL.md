@@ -26,6 +26,12 @@ If the spec covers multiple independent subsystems, it should have been broken i
 
 If specification skills were used before this plan, the plan MUST reference their outputs:
 
+**bounded-context-design** (context-map.md exists):
+- Module/service decomposition in the plan should follow bounded context boundaries
+- Each context maps to one or more modules/services — never split a context across unrelated modules
+- Use the ubiquitous language from context-map.md in task descriptions
+- If context relationships define Anti-Corruption Layers, include ACL implementation as explicit tasks
+
 **architecture-assessment + architecture-style-selection** (architecture.md exists):
 - Plan tasks should respect architecture characteristics and constraints
 - Include fitness function implementation tasks for new characteristics
@@ -85,6 +91,8 @@ This structure informs the task decomposition. Each task should produce self-con
 **Tech Stack:** [Key technologies/libraries]
 
 **Architecture:** [Reference architecture.md characteristics if it exists, or "N/A"]
+
+**Bounded Contexts:** [List contexts from context-map.md with their subdomain type, or "N/A"]
 
 **Feature Files:** [List .feature files if they exist, or "N/A"]
 

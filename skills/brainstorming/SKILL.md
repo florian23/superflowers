@@ -69,7 +69,9 @@ digraph brainstorming {
     "Invoke architecture-assessment" [shape=doublecircle];
     "Invoke feature-design" [shape=doublecircle];
 
-    "User approves design?" -> "Invoke architecture-assessment" [label="yes"];
+    "User approves design?" -> "Invoke bounded-context-design" [label="yes"];
+    "Invoke bounded-context-design" [shape=doublecircle];
+    "Invoke bounded-context-design" -> "Invoke architecture-assessment";
     "Invoke architecture-style-selection" [shape=doublecircle];
     "Invoke architecture-assessment" -> "Invoke architecture-style-selection";
     "Invoke quality-scenarios" [shape=doublecircle];
@@ -84,12 +86,13 @@ digraph brainstorming {
 ```
 
 **After design approval, invoke specification skills BEFORE writing the spec:**
-1. superflowers:architecture-assessment — identify/review architecture characteristics
-2. superflowers:architecture-style-selection — select best-fitting architecture style based on characteristics
-3. superflowers:quality-scenarios — create testable quality scenarios from quality goals, categorized by test type
-4. superflowers:feature-design — create BDD acceptance criteria as Gherkin scenarios
-5. Then write the design doc (spec references architecture.md, quality-scenarios.md, and .feature files)
-6. Then invoke writing-plans
+1. superflowers:bounded-context-design — identify domain boundaries, classify subdomains, create context map (skips automatically if single-domain project)
+2. superflowers:architecture-assessment — identify/review architecture characteristics (informed by context-map.md if it exists)
+3. superflowers:architecture-style-selection — select best-fitting architecture style based on characteristics (context boundaries inform service/module cuts)
+4. superflowers:quality-scenarios — create testable quality scenarios from quality goals, categorized by test type
+5. superflowers:feature-design — create BDD acceptance criteria as Gherkin scenarios (uses ubiquitous language from context-map.md)
+6. Then write the design doc (spec references context-map.md, architecture.md, quality-scenarios.md, and .feature files)
+7. Then invoke writing-plans
 
 Do NOT invoke frontend-design, mcp-builder, or any other implementation skill directly.
 

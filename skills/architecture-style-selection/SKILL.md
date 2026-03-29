@@ -68,6 +68,12 @@ Read `architecture.md` from the project root. Extract:
 - All other identified characteristics (these serve as tiebreakers)
 - Any architecture drivers or constraints already documented
 
+If `context-map.md` exists (from superflowers:bounded-context-design), also read it. Context boundaries influence style selection:
+- **Number of contexts** → more contexts favor distributed styles (Service-Based, Microservices)
+- **Context relationship patterns** → Published Language/Customer-Supplier favor event-driven or API-based styles; Partnership favors monolithic/shared approaches
+- **Subdomain types** → Generic domains (auth, payments) may justify different styles than Core domains
+- **Team-to-context mapping** → if each team owns a context, independent deployability matters more
+
 If architecture.md uses the older operational/structural/cross-cutting categories, that's fine — map the characteristics to the names in the matrix. See `references/architecture-characteristics-reference.md` for the canonical definitions.
 
 ## Step 2: Score Styles Against the Matrix
@@ -230,7 +236,8 @@ Before finalizing the architecture style selection:
 ## Integration
 
 - **Called after:** `superflowers:architecture-assessment` (characteristics must exist)
-- **Runs before:** `superflowers:feature-design` (scenarios depend on architecture decisions)
+- **Reads:** `context-map.md` if it exists (context boundaries inform service/module cuts)
+- **Runs before:** `superflowers:quality-scenarios` (quality scenarios depend on style choice)
 - **Pairs with:** `superflowers:fitness-functions` (fitness functions verify architecture compliance)
 - **Referenced by:** `superflowers:writing-plans` (implementation plan respects architecture style)
 

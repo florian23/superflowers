@@ -91,9 +91,11 @@ After drafting scenarios and before self-review, check if advisory context is av
 
 This is a generic extension point — new advisory skills plug in here without changing feature-design.
 
-## Architecture and Quality Awareness
+## Architecture, Quality, and Domain Awareness
 
-If `architecture.md` exists in the project (from superflowers:architecture-assessment), read it BEFORE writing scenarios. If `quality-scenarios.md` exists (from superflowers:quality-scenarios), read it too — quality scenarios define non-functional test specifications that complement BDD's functional scenarios. Don't duplicate quality scenarios as BDD scenarios, but ensure functional scenarios are consistent with quality goals.
+If `architecture.md` exists (from superflowers:architecture-assessment), read it BEFORE writing scenarios. If `quality-scenarios.md` exists (from superflowers:quality-scenarios), read it too.
+
+If `context-map.md` exists (from superflowers:bounded-context-design), use the **ubiquitous language** defined per bounded context in your Gherkin scenarios. The domain's words — not technical jargon — should appear in Given/When/Then steps. If the context map defines "Order" as "a collection of items with payment intent" in the Checkout context, use that exact meaning in Checkout scenarios. Different contexts may use the same word with different meanings — keep scenarios within one context's language.
 
 Architecture characteristics should inform scenario design:
 

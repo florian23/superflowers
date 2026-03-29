@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "bounded-context-design", "runs": [{"id": "eval-1-ecommerce-with_skill", "prompt": "(No prompt found)", "eval_id": null, "outputs": [{"name": "analysis.md", "type": "text", "content": "# Bounded Context Analysis: E-Commerce Platform\n\n## Input Summary\n\n- **Domain:** E-Commerce Platform\n- **Capabilities mentioned:** Product Catalog, Cart/Checkout, Payment, Shipping/Fulfillment, Customer Management, Recommendation System\n- **Teams:** 3\n- **Target architecture:** Service-Based Architecture\n\n---\n\n## Step 1: Identify Subdomains\n\nThe user listed six business areas. Applying the subdomain heuristics:\n\n| # | Subdomain | Reasoning |\n|---|-----------|-----------|\n| 1 | **Product Catalog** | Distinct business rules around taxonomy, search, product data. Different stakeholders (merchandising). |\n| 2 | **Ordering (Cart + Checkout)** | Cart and Checkout are tightly coupled -- cart becomes an order upon checkout. Same business rules, same rate of change, same team would own this. Splitting them would create artificial integration overhead. |\n| 3 | **Payment** | Standard payment processing (charge, refund, reconciliation). Could be outsourced to Stripe/Adyen. Different compliance rules (PCI-DSS). |\n| 4 | **Shipping & Fulfillment** | Warehouse logistics, pick/pack/ship, tracking. Different stakeholders (operations). Different rate of change from ordering. |\n| 5 | **Customer Management** | Customer profiles, preferences, addresses, account lifecycle. Shared across many areas but has its own rules. |\n| 6 | **Recommendation System** | ML-driven suggestions, browsing behavior analysis, personalization. Highly specialized, different technology stack, different rate of change. |\n\nCart and Checkout were grouped into a single \"Ordering\" subdomain because:\n- Cart is a pre-order construct that only exists to become an order\n- They share the same domain model (items, prices, discounts)\n- They change for the same reasons (new checkout flow, new discount type)\n- Splitting them would force constant integration for a single user journey\n\n## Step 2: Classify Subdomains\n\n| Subdomain | Type | Rationale |\n|---|---|---|\n| Product Catalog | **Core** | Product taxonomy, search relevance, and rich product data directly drive conversion. This is what the customer browses -- if it's bad, they leave. |\n| Ordering (Cart + Checkout) | **Core** | The checkout flow is a key differentiator. Cart abandonment rates depend on this. Custom discount logic, promotions, and checkout UX are competitive advantages. |\n| Payment | **Generic** | Standard payment processing. Use Stripe, Adyen, or similar. PCI-DSS compliance is a solved problem -- don't reinvent it. Thin integration layer only. |\n| Shipping & Fulfillment | **Supporting** | Standard logistics, but requires custom integration with warehouse systems and carriers. Not differentiating, but must be built because off-the-shelf doesn't fit the specific warehouse setup. |\n| Customer Management | **Supporting** | Profiles, preferences, address books. Needed by many contexts but not differentiating. Standard CRUD with some business rules around data quality. |\n| Recommendation System | **Core** | Personalized recommendations are a competitive advantage. This is what drives cross-sell and upsell. Unique algorithms based on domain-specific data. |\n\n## Step 3: Find Bounded Context Boundaries\n\n### Linguistic Test\n\n- **\"Product\"** means different things:\n  - In Catalog: full product with descriptions, images, taxonomy, variants, pricing rules\n  - In Ordering: a line item with SKU, name, quantity, price-at-time-of-order\n  - In Fulfillment: a physical item with weight, dimensions, warehouse location\n  - In Recommendations: a feature vector with category, tags, purchase history correlation\n\n- **\"Customer\"** means different things:\n  - In Ordering: buyer identity with shipping address and payment method\n  - In Customer Management: full profile with preferences, history, account status\n  - In Recommendations: a behavioral profile with browsing patterns and purchase history\n\n- **\"Order\"** means different things:\n  - In Ordering: items + payment intent + shipping address + discount codes applied\n  - In Fulfillment: pick list + shipping label + tracking number + delivery status\n  - In Payment: invoice + charge amount + payment status + refund eligibility\n\nThese linguistic splits confirm the boundaries.\n\n### Team Test (3 teams, Conway's Law)\n\nThe skill explicitly warns: \"If the org has 3 teams, aim for ~3 contexts. Fighting the org chart usually loses.\"\n\nWith 3 teams and 6 subdomains, we need to group contexts pragmatically:\n\n- **Team 1 -- Storefront:** Product Catalog + Recommendation System (both customer-facing discovery, search and recommendations are tightly coupled in the user journey)\n- **Team 2 -- Commerce:** Ordering (Cart + Checkout) + Payment (the purchase flow end-to-end, payment is a thin integration layer within ordering)\n- **Team 3 -- Operations:** Shipping & Fulfillment + Customer Management (post-purchase operations and customer data management)\n\n### Boundary Decisions\n\n**Decision 1: Keep Cart + Checkout as one context (\"Ordering\")**\nCart and Checkout are one user journey. Splitting them creates an artificial boundary that forces integration for every cart modification. The ubiquitous language overlaps completely.\n\n**Decision 2: Payment as a separate bounded context despite being on the same team as Ordering**\nPayment has different compliance requirements (PCI-DSS), different domain language (charges, refunds, reconciliation vs. carts, orders, discounts), and is largely a wrapper around an external payment provider. It's a logical boundary even if the same team owns it. Keeping it separate means PCI scope is contained.\n\n**Decision 3: Recommendation as a separate bounded context despite being on the same team as Catalog**\nRecommendations have a fundamentally different model (behavioral data, ML features) even though they consume catalog data. Different rate of change (ML model retraining vs. catalog updates). Different technology (likely a different runtime/store).\n\n**Decision 4: Customer Management as a separate context**\nCustomer data is consumed by many contexts but owned in one place. Keeps profile management logic from leaking into Ordering or Fulfillment.\n\n### Final Bounded Contexts (6 contexts, 3 teams)\n\n1. **Catalog Context** (Team 1)\n2. **Recommendation Context** (Team 1)\n3. **Ordering Context** (Team 2)\n4. **Payment Context** (Team 2)\n5. **Fulfillment Context** (Team 3)\n6. **Customer Context** (Team 3)\n\n## Step 4: Ubiquitous Language\n\nSee `context-map.md` for the full language definitions per context.\n\n## Step 5: Map Context Relationships\n\n| Relationship | Pattern | Rationale |\n|---|---|---|\n| Catalog -> Ordering | **Customer-Supplier** | Catalog supplies product data (name, price, availability). Ordering consumes it. Catalog team accommodates Ordering's data needs. |\n| Catalog -> Recommendation | **Partnership** | Same team, closely intertwined. Recommendations need catalog data, catalog search results can incorporate recommendation scores. They evolve together. |\n| Ordering -> Fulfillment | **Published Language** | Order-placed events as a defined schema (JSON). Fulfillment subscribes to order events. Clear contract, asynchronous. |\n| Ordering -> Payment | **Partnership** | Same team, tightly coupled in the checkout flow. Payment intent is created during checkout. They coordinate closely and release together. |\n| Customer -> Ordering | **Open Host Service** | Customer data (profile, addresses) consumed by Ordering and potentially other contexts. Stable API with multiple consumers. |\n| Customer -> Fulfillment | **Open Host Service** | Fulfillment needs customer addresses for shipping. Same API as above. |\n| Customer -> Recommendation | **Customer-Supplier** | Recommendation consumes customer behavioral data. Customer context supplies preference and history data. |\n| Payment -> (External PSP) | **Anti-Corruption Layer** | External payment provider (Stripe/Adyen) has its own model. ACL translates between PSP model and internal payment domain. |\n| Fulfillment -> (External Carriers) | **Anti-Corruption Layer** | External shipping carriers (DHL, UPS) have their own APIs. ACL translates carrier models to internal fulfillment domain. |\n\n## Verification Checklist\n\n- [x] Subdomains identified and classified (Core/Supporting/Generic)\n- [x] Each bounded context has a clear responsibility (one sentence)\n- [x] Ubiquitous language defined per context (key terms with meanings)\n- [x] No technical boundaries masquerading as domain boundaries\n- [x] Context relationships mapped with explicit patterns\n- [x] Anti-Corruption Layer specified for external integrations (PSP, carriers)\n- [x] Context count proportional to system complexity (6 contexts for 3 teams -- 2 per team)\n- [x] Conway's Law respected (3 teams, contexts grouped by team)\n- [x] context-map.md written\n"}, {"name": "context-map.md", "type": "text", "content": "# Context Map\n\n## Last Updated: 2026-03-29\n\n## Subdomains\n\n| Subdomain | Type | Bounded Context(s) |\n|---|---|---|\n| Product Catalog | Core | Catalog Context |\n| Ordering (Cart + Checkout) | Core | Ordering Context |\n| Payment | Generic | Payment Context |\n| Shipping & Fulfillment | Supporting | Fulfillment Context |\n| Customer Management | Supporting | Customer Context |\n| Recommendation System | Core | Recommendation Context |\n\n## Bounded Contexts\n\n### Catalog Context\n- **Subdomain:** Core\n- **Responsibility:** Manages product data, taxonomy, search, pricing rules, and product availability for the storefront.\n- **Team:** Team 1 (Storefront)\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Product | A sellable item with name, description, images, variants, and pricing rules |\n  | Variant | A specific configuration of a product (e.g., size M, color red) with its own SKU and price |\n  | Category | A node in the product taxonomy tree used for navigation and filtering |\n  | SKU | Stock Keeping Unit -- the unique identifier for a specific variant |\n  | Price | The current selling price of a variant, subject to pricing rules and promotions |\n  | Availability | Whether a variant is in stock and can be sold (stock count > 0) |\n\n### Ordering Context\n- **Subdomain:** Core\n- **Responsibility:** Manages the shopping cart, checkout flow, order creation, discount/promotion application, and order lifecycle.\n- **Team:** Team 2 (Commerce)\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Cart | A mutable collection of items a customer intends to purchase. Becomes an Order at checkout. |\n  | Order | A confirmed purchase with line items, applied discounts, shipping address, and payment reference |\n  | Line Item | A product variant with quantity and price locked at the time of adding to cart |\n  | Checkout | The process of converting a Cart into an Order -- validating items, applying discounts, confirming payment |\n  | Discount | A price reduction applied to cart or line items based on promotion rules (coupon code, volume, etc.) |\n  | Order Status | The lifecycle state of an order: Created, Paid, Shipped, Delivered, Cancelled |\n\n### Payment Context\n- **Subdomain:** Generic\n- **Responsibility:** Processes payments, manages refunds, and handles reconciliation with external payment service providers.\n- **Team:** Team 2 (Commerce)\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Payment Intent | A request to charge a specific amount for an order, before the charge is confirmed |\n  | Charge | A confirmed, successful payment transaction against a payment method |\n  | Refund | A reversal of a previous charge, full or partial |\n  | Payment Method | The instrument used to pay (credit card, PayPal, bank transfer) |\n  | Reconciliation | Matching internal payment records against PSP settlement reports |\n  | PSP | Payment Service Provider -- the external system processing the actual transaction (Stripe, Adyen) |\n\n### Fulfillment Context\n- **Subdomain:** Supporting\n- **Responsibility:** Handles warehouse operations (pick, pack, ship), carrier integration, shipment tracking, and delivery confirmation.\n- **Team:** Team 3 (Operations)\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Shipment | A physical package being sent to a customer, with weight, dimensions, and tracking number |\n  | Pick List | The list of items to retrieve from warehouse locations for a given order |\n  | Shipping Label | The carrier-generated label with destination address, barcode, and routing info |\n  | Tracking Number | The carrier-assigned identifier used to track shipment status |\n  | Carrier | The logistics provider transporting the shipment (DHL, UPS, FedEx) |\n  | Delivery Status | The shipment lifecycle: Picking, Packed, Shipped, In Transit, Delivered, Returned |\n\n### Customer Context\n- **Subdomain:** Supporting\n- **Responsibility:** Manages customer profiles, addresses, preferences, account lifecycle, and authentication.\n- **Team:** Team 3 (Operations)\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Customer | A registered user with a profile, one or more addresses, and account preferences |\n  | Profile | The customer's personal data: name, email, phone, communication preferences |\n  | Address | A postal address associated with a customer, tagged as shipping or billing |\n  | Account Status | The customer's account state: Active, Suspended, Closed |\n  | Preference | A customer-defined setting (e.g., preferred language, newsletter opt-in, default address) |\n\n### Recommendation Context\n- **Subdomain:** Core\n- **Responsibility:** Generates personalized product recommendations based on browsing behavior, purchase history, and product similarity.\n- **Team:** Team 1 (Storefront)\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Recommendation | A ranked list of products suggested to a specific customer in a specific context (homepage, PDP, cart) |\n  | Behavioral Signal | A customer action that informs recommendations: view, click, add-to-cart, purchase |\n  | Product Affinity | A computed score representing how likely a customer is to be interested in a product |\n  | Model | The trained ML model that produces recommendation scores |\n  | Placement | The UI location where recommendations appear (homepage carousel, \"you may also like\", post-purchase) |\n  | Cold Start | The challenge of recommending products to a new customer with no behavioral history |\n\n## Context Relationships\n\n| Upstream | Downstream | Pattern | Notes |\n|---|---|---|---|\n| Catalog | Ordering | Customer-Supplier | Catalog provides product data (name, price, availability). Ordering consumes it for cart and checkout. Catalog team prioritizes data needs of Ordering. |\n| Catalog | Recommendation | Partnership | Same team. Recommendations need product metadata, catalog search incorporates recommendation scores. Evolve together, joint releases. |\n| Ordering | Fulfillment | Published Language | Order-placed events published as versioned JSON schema. Fulfillment subscribes asynchronously. Decoupled deployment. |\n| Ordering | Payment | Partnership | Same team. Payment intent created during checkout. Tightly coordinated -- checkout cannot complete without payment confirmation. Joint releases. |\n| Customer | Ordering | Open Host Service | Customer context exposes a stable API for profile and address data. Ordering reads customer info at checkout. |\n| Customer | Fulfillment | Open Host Service | Fulfillment reads customer shipping addresses via the same Customer API. |\n| Customer | Recommendation | Customer-Supplier | Customer context supplies behavioral history and preferences. Recommendation consumes to build personalization models. |\n| Payment | External PSP (Stripe/Adyen) | Anti-Corruption Layer | Translates PSP-specific models (Stripe PaymentIntent, Adyen authorisation) into internal Payment domain model. PCI scope contained here. |\n| Fulfillment | External Carriers (DHL/UPS) | Anti-Corruption Layer | Translates carrier-specific APIs and tracking models into internal Fulfillment domain model. |\n\n## Relationship Diagram\n\n```\n  +--------------------+          +---------------------+\n  |   Catalog Context  |--------->|  Ordering Context   |\n  |   (Core, Team 1)   | C/S     |  (Core, Team 2)     |\n  +--------------------+          +---------------------+\n        |  Partnership                   |  Partnership\n        v                               v\n  +--------------------+          +---------------------+\n  | Recommendation Ctx |          |  Payment Context    |---[ACL]---> External PSP\n  |  (Core, Team 1)    |          |  (Generic, Team 2)  |\n  +--------------------+          +---------------------+\n        ^                               ^\n        | C/S                           | Pub. Lang.\n        |                               |\n  +--------------------+          +---------------------+\n  | Customer Context   |--------->| Fulfillment Context |---[ACL]---> External Carriers\n  | (Supporting, Tm 3) |  OHS    | (Supporting, Team 3)|\n  +--------------------+          +---------------------+\n        |          OHS                   ^\n        +--------------------------------+\n\n  Legend:\n    C/S  = Customer-Supplier\n    OHS  = Open Host Service\n    ACL  = Anti-Corruption Layer\n    Pub. Lang. = Published Language\n    ---> = direction of data flow (upstream to downstream)\n```\n\n## Team Ownership Summary\n\n| Team | Bounded Contexts | Focus |\n|---|---|---|\n| Team 1 (Storefront) | Catalog, Recommendation | Product discovery and personalization |\n| Team 2 (Commerce) | Ordering, Payment | Purchase flow and payment processing |\n| Team 3 (Operations) | Fulfillment, Customer | Post-purchase operations and customer data |\n\n## Key Boundary Decisions\n\n1. **Cart + Checkout merged into Ordering Context** -- Cart is a pre-order construct within the same user journey. Splitting them creates artificial integration overhead for no domain benefit.\n2. **Payment kept as separate context from Ordering** -- Despite same team, Payment has different compliance requirements (PCI-DSS) and is largely a thin wrapper around an external PSP. Separate context contains PCI scope.\n3. **Recommendation kept as separate context from Catalog** -- Different domain model (behavioral data, ML features vs. product master data), different technology stack, different rate of change.\n4. **6 contexts for 3 teams (2 per team)** -- Respects Conway's Law while maintaining clean domain boundaries. Each team has a primary (Core/Supporting) and a secondary context.\n"}], "grading": null}, {"id": "eval-1-ecommerce-without_skill", "prompt": "(No prompt found)", "eval_id": null, "outputs": [{"name": "analysis.md", "type": "text", "content": "# Bounded Context Analyse: E-Commerce Plattform\n\n## Ausgangslage\n\n- **Domaene:** E-Commerce Plattform\n- **Fachliche Bereiche:** Produktkatalog, Warenkorb/Checkout, Bezahlung, Versand/Fulfillment, Kundenverwaltung, Empfehlungssystem\n- **Teams:** 3\n- **Architekturstil:** Service-Based Architecture\n\n## Identifizierte Bounded Contexts (6)\n\n### 1. Product Catalog\n\n**Abgrenzung:** Verwaltet die zentrale Produktwahrheit -- was wird verkauft, zu welchem Preis, in welchen Kategorien. Dieser Context besitzt die Hoheit ueber Produktdaten.\n\n**Ubiquitous Language:**\n- *Product* -- ein verkaufbares Gut mit SKU, Name, Beschreibung\n- *Category* -- hierarchische Einordnung von Produkten\n- *Price* -- aktueller Verkaufspreis inkl. Aktionspreise\n- *ProductAttribute* -- variable Eigenschaft (Farbe, Groesse etc.)\n\n**Warum eigener Context:** Product hat in jedem anderen Context eine andere Bedeutung. Im Katalog ist es ein reichhaltiges Objekt mit Beschreibungen und Bildern. In der Bestellung ist es nur eine Referenz mit Preis-Snapshot. Diese Modell-Divergenz rechtfertigt die Trennung.\n\n---\n\n### 2. Order Management\n\n**Abgrenzung:** Deckt den gesamten Bestellprozess ab -- vom Hinzufuegen zum Warenkorb ueber Checkout bis zur finalen Bestellung. Warenkorb und Bestellung gehoeren zusammen, weil der Warenkorb der direkte Vorlaeufer der Bestellung ist und beide denselben Lebenszyklus teilen.\n\n**Ubiquitous Language:**\n- *Cart* -- temporaere Sammlung von Kaufabsichten\n- *Order* -- verbindliche Bestellung nach Checkout\n- *OrderLine* -- einzelne Position mit Produktreferenz und Menge\n- *OrderStatus* -- Zustand im Bestelllebenszyklus (created, paid, shipped, completed)\n\n**Warum eigener Context:** Der Bestellprozess hat eigene Geschaeftsregeln (Mindestbestellwert, Gutscheine, Steuern) und einen klaren Lebenszyklus, der von Produktdaten und Zahlung unabhaengig ist.\n\n---\n\n### 3. Payment\n\n**Abgrenzung:** Kapselt die gesamte Zahlungslogik inkl. Integration mit externen Payment-Providern (Stripe, PayPal etc.), PCI-Compliance und Rueckerstattungen.\n\n**Ubiquitous Language:**\n- *Payment* -- ein Zahlungsvorgang zu einer Bestellung\n- *Transaction* -- einzelne Buchung bei einem Provider\n- *Refund* -- Rueckerstattung eines Zahlungsbetrags\n- *PaymentMethod* -- Kreditkarte, PayPal, Rechnung etc.\n\n**Warum eigener Context:** Zahlungen unterliegen regulatorischen Anforderungen (PCI-DSS) und erfordern spezielle Sicherheitsmassnahmen. Die Isolation schuetzt den Rest des Systems und ermoeglicht unabhaengige Compliance-Audits.\n\n---\n\n### 4. Shipping & Fulfillment\n\n**Abgrenzung:** Verantwortlich fuer alles nach der Bezahlung -- Lagerbestand, Kommissionierung, Versand, Sendungsverfolgung und Retourenabwicklung.\n\n**Ubiquitous Language:**\n- *Shipment* -- physischer Versandvorgang\n- *InventoryItem* -- Lagerbestand eines Produkts\n- *TrackingInfo* -- Sendungsverfolgungsdaten\n- *Return* -- Retoure mit Grund und Status\n\n**Warum eigener Context:** Fulfillment hat einen voellig anderen Rhythmus als Bestellungen -- es arbeitet mit physischen Prozessen, Lagerhaltung und Logistik-Partnern. Die Entkopplung erlaubt unabhaengige Skalierung (z.B. Weihnachtsgeschaeft).\n\n---\n\n### 5. Customer Management\n\n**Abgrenzung:** Verwaltet Kundenidentitaet, Authentifizierung, Profilinformationen und Adressen. Ist die Single Source of Truth fuer \"Wer ist der Kunde?\".\n\n**Ubiquitous Language:**\n- *Customer* -- registrierter Benutzer mit eindeutiger ID\n- *Address* -- Liefer- oder Rechnungsadresse\n- *CustomerProfile* -- Praeferenzen und Einstellungen\n- *Credentials* -- Login-Daten und Authentifizierungsinfo\n\n**Warum eigener Context:** Kundendaten werden von fast allen anderen Contexts referenziert, aber nur hier veraendert. Die zentrale Verwaltung verhindert Dateninkonsistenz und buendelt Datenschutz-Anforderungen (DSGVO) an einer Stelle.\n\n---\n\n### 6. Recommendation\n\n**Abgrenzung:** Analysiert Kundenverhalten und Produktdaten, um personalisierte Empfehlungen zu generieren. Konsumiert Daten, produziert aber keine transaktionalen Aenderungen.\n\n**Ubiquitous Language:**\n- *RecommendationModel* -- trainiertes Modell fuer Produktvorschlaege\n- *CustomerBehavior* -- aggregiertes Kaufverhalten und Browsing-Muster\n- *ProductScore* -- Relevanz-Bewertung eines Produkts fuer einen Kunden\n\n**Warum eigener Context:** Das Empfehlungssystem arbeitet mit anderen Datenmodellen (Events, Scores, ML-Modelle) und hat einen voellig anderen technischen Stack und Aenderungsrhythmus als transaktionale Contexts.\n\n---\n\n## Team-Zuordnung (3 Teams, 6 Contexts)\n\n| Team   | Bounded Contexts                        | Begruendung                                                    |\n|--------|-----------------------------------------|----------------------------------------------------------------|\n| Team 1 | Product Catalog, Customer Management    | Stammdaten-Team: Produkt- und Kundendaten als Kern-Assets      |\n| Team 2 | Order Management, Payment               | Transaktions-Team: Bestellung und Bezahlung sind eng gekoppelt  |\n| Team 3 | Shipping/Fulfillment, Recommendation    | Operations/Intelligence-Team: physische Prozesse + Datenanalyse |\n\n**Prinzip:** Die Zuordnung folgt dem Inverse Conway Maneuver -- die Teamstruktur spiegelt die gewuenschte Architektur. Eng gekoppelte Contexts liegen bei einem Team, um Kommunikations-Overhead zwischen Teams zu minimieren.\n\n**Hinweis zu Team 3:** Shipping und Recommendation wirken auf den ersten Blick unzusammenhaengend. Die Zuordnung ergibt sich aus der Constraint von 3 Teams. Alternativ koennte Recommendation auch zu Team 1 wandern (naehe zu Produktdaten). Sollte das Recommendation-System stark wachsen, waere es ein Kandidat fuer ein eigenes Team.\n\n---\n\n## Integrationsmuster fuer Service-Based Architecture\n\nDa eine Service-Based Architecture zum Einsatz kommt (typischerweise groebere Services als Microservices, oft mit geteilter Datenbank-Infrastruktur), gelten folgende Empfehlungen:\n\n### Synchrone Kommunikation\n- **Order -> Product Catalog:** REST-API fuer Produktpreis-Abfrage beim Checkout (mit lokalem Cache)\n- **Order -> Customer Management:** REST-API fuer Adress- und Kundenvalidierung\n\n### Asynchrone Kommunikation (Events)\n- **Order -> Payment:** `OrderPlaced`-Event loest Zahlungsvorgang aus\n- **Payment -> Order:** `PaymentCompleted`/`PaymentFailed`-Event aktualisiert Bestellstatus\n- **Order -> Shipping:** `OrderPaid`-Event loest Fulfillment aus\n- **Shipping -> Order:** `ShipmentDispatched`-Event aktualisiert Bestellstatus\n- **Order -> Recommendation:** `OrderCompleted`-Event fuettert das Empfehlungsmodell\n- **Product Catalog -> Recommendation:** `ProductUpdated`-Events fuer Katalogaenderungen\n\n### Daten-Ownership\nJeder Bounded Context besitzt sein eigenes Schema. In einer Service-Based Architecture koennen diese Schemas in derselben Datenbankinstanz liegen, muessen aber durch Schema-Trennung isoliert sein. Kein Context darf direkt auf Tabellen eines anderen Contexts zugreifen.\n\n---\n\n## Risiken und offene Punkte\n\n1. **Warenkorb-Zuordnung:** Der Warenkorb koennte auch als eigener Context modelliert werden, falls er komplexe eigene Regeln entwickelt (z.B. gespeicherte Warenkoerbe, Wunschlisten). Aktuell ist er Teil von Order Management.\n\n2. **Pricing-Komplexitaet:** Falls das Preismodell komplex wird (dynamische Preise, B2B-Staffelpreise, Aktionen), koennte ein eigener Pricing-Context notwendig werden.\n\n3. **Inventory als Shared Concern:** Lagerbestand wird sowohl vom Produktkatalog (Verfuegbarkeitsanzeige) als auch von Shipping/Fulfillment (tatsaechlicher Bestand) benoetigt. Die Hoheit liegt bei Fulfillment, der Katalog bekommt eine projizierte Sicht via Event.\n\n4. **Team 3 Heterogenitaet:** Shipping und Recommendation erfordern unterschiedliche Kompetenzen. Bei Teamwachstum sollte hier zuerst gesplittet werden.\n"}, {"name": "context-map.md", "type": "text", "content": "# Bounded Context Map: E-Commerce Plattform\n\n## Identifizierte Bounded Contexts\n\n### 1. Product Catalog (Produktkatalog)\n- **Verantwortung:** Produktdaten, Kategorien, Attribute, Preise, Verfuegbarkeit, Produktsuche\n- **Kernentitaeten:** Product, Category, Price, ProductAttribute\n- **Team-Zuordnung:** Team 1\n\n### 2. Order Management (Bestellung & Warenkorb)\n- **Verantwortung:** Warenkorb-Verwaltung, Checkout-Prozess, Bestellabwicklung, Bestellstatus\n- **Kernentitaeten:** Cart, CartItem, Order, OrderLine, OrderStatus\n- **Team-Zuordnung:** Team 2\n\n### 3. Payment (Bezahlung)\n- **Verantwortung:** Zahlungsabwicklung, Zahlungsmethoden, Rueckerstattungen, Zahlungsstatus\n- **Kernentitaeten:** Payment, PaymentMethod, Transaction, Refund\n- **Team-Zuordnung:** Team 2\n\n### 4. Shipping & Fulfillment (Versand)\n- **Verantwortung:** Versandoptionen, Sendungsverfolgung, Lagerbestand, Kommissionierung, Retouren\n- **Kernentitaeten:** Shipment, TrackingInfo, Warehouse, InventoryItem, Return\n- **Team-Zuordnung:** Team 3\n\n### 5. Customer Management (Kundenverwaltung)\n- **Verantwortung:** Kundenprofile, Authentifizierung, Adressen, Bestellhistorie-Zugriff, Praeferenzen\n- **Kernentitaeten:** Customer, Address, CustomerProfile, Credentials\n- **Team-Zuordnung:** Team 1\n\n### 6. Recommendation (Empfehlungssystem)\n- **Verantwortung:** Produktempfehlungen, Personalisierung, Kaufverhalten-Analyse, Trending-Produkte\n- **Kernentitaeten:** RecommendationModel, CustomerBehavior, ProductScore, BrowsingHistory\n- **Team-Zuordnung:** Team 3\n\n---\n\n## Context Map (Beziehungen)\n\n```\n+-------------------+        +---------------------+\n|  Product Catalog  |<------=|   Recommendation    |\n|    (Team 1)       | CF     |     (Team 3)        |\n+-------------------+        +---------------------+\n        |                             ^\n        | PL                          | CF\n        v                             |\n+-------------------+        +---------------------+\n| Order Management  |------->| Customer Management |\n|    (Team 2)       | CF     |     (Team 1)        |\n+-------------------+        +---------------------+\n    |           |\n    | PL        | PL\n    v           v\n+-----------+  +---------------------+\n|  Payment  |  | Shipping/Fulfillment|\n|  (Team 2) |  |     (Team 3)        |\n+-----------+  +---------------------+\n```\n\n### Beziehungstypen\n\n| Upstream              | Downstream            | Beziehung                | Typ                        |\n|-----------------------|-----------------------|--------------------------|----------------------------|\n| Product Catalog       | Order Management      | Produktdaten im Warenkorb | Published Language (PL)   |\n| Order Management      | Payment               | Zahlungsausloesung       | Published Language (PL)    |\n| Order Management      | Shipping/Fulfillment  | Versandauftrag           | Published Language (PL)    |\n| Customer Management   | Order Management      | Kundendaten              | Conformist (CF)            |\n| Product Catalog       | Recommendation        | Produktdaten-Feed        | Conformist (CF)            |\n| Customer Management   | Recommendation        | Kundenverhalten          | Conformist (CF)            |\n\n### Legende\n- **PL (Published Language):** Upstream definiert ein stabiles API/Event-Schema, Downstream konsumiert es\n- **CF (Conformist):** Downstream uebernimmt das Modell des Upstream ohne eigene Uebersetzung\n"}], "grading": null}, {"id": "eval-2-single-context-with_skill", "prompt": "(No prompt found)", "eval_id": null, "outputs": [{"name": "analysis.md", "type": "text", "content": "# Bounded Context Analysis: Zeiterfassungs-Tool\n\n## Date: 2026-03-29\n\n## Input Summary\n\n- **System:** Internal time tracking tool for 30 employees\n- **Team:** One developer\n- **Scope:** Employees log hours on projects, managers approve, monthly CSV export for accounting\n- **Nature:** Simple CRUD application\n\n## Skill Process Flow Trace\n\n```\nStart -> \"Multiple domains?\" -> NO -> \"Single context -> skip to assessment\"\n```\n\nThe skill's process flow was followed. At the first decision point (\"Multiple domains?\"), the answer is clearly **No**. The skill explicitly states:\n\n> \"Skip this skill when: The system is a single, focused tool (one domain, one team, one purpose)\"\n\n> \"Not every system needs multiple bounded contexts. A small internal HR tool is likely one context. Forcing DDD strategic patterns onto a simple CRUD app adds complexity without value.\"\n\nThis system matches all three skip criteria:\n1. **One domain** -- time tracking (logging, approval, export are all part of the same domain)\n2. **One team** -- single developer\n3. **One purpose** -- track employee hours for accounting\n\n## Why This Is Not Multiple Contexts\n\nOne might be tempted to split into \"Time Entry\", \"Approval\", and \"Reporting/Export\" contexts. This would be wrong because:\n\n- **No linguistic boundaries:** \"TimeEntry\" means the same thing whether you are creating it, approving it, or exporting it. There is no semantic divergence.\n- **No independent change drivers:** If the time entry model changes (e.g., adding a \"task category\" field), approval and export must both reflect that change. They are tightly coupled by nature, not by accident.\n- **No team boundaries:** One developer owns everything. Splitting into contexts would create artificial interfaces within a single person's codebase.\n- **No outsourcing boundary:** None of these capabilities would be bought as SaaS or delegated to another team.\n\nApplying the skill's heuristics:\n- Different business rules? **No.** The rules are simple and uniform.\n- Different stakeholders? **No.** Same internal users (employees and their managers).\n- Different rate of change? **No.** Changes to the data model affect all areas equally.\n- Could be outsourced? **Not individually.** The whole tool could be replaced by commercial time tracking software, but you would not outsource \"approval\" separately from \"logging.\"\n\n## Subdomain Classification\n\n| Subdomain | Type | Rationale |\n|---|---|---|\n| Zeiterfassung (Time Tracking) | Supporting | Internal operational tool. Not a competitive differentiator. Necessary for the business but standard functionality. |\n\nThis is **Supporting**, not Core: the company does not compete on time tracking. It is not Generic either, because the specific approval workflow and CSV format are custom to this organization (a generic SaaS tool might work, but the user chose to build custom).\n\n## Rationalization Check\n\n| Temptation | Skill Response |\n|---|---|\n| \"Let's create separate contexts for future growth\" | YAGNI. 30 users, 1 developer. If the system grows to need multiple contexts, refactoring a clean single-context app is straightforward. |\n| \"Approval is a separate domain\" | No. Approval is a workflow step within time tracking, not a separate business domain with its own language and rules. |\n| \"Export/Reporting is its own context\" | No. CSV export is a read-only view of approved time entries. It has no independent domain logic. |\n\n## Verification Checklist\n\n- [x] Subdomains identified and classified (Supporting)\n- [x] Single bounded context recognized -- detailed mapping correctly skipped\n- [x] Ubiquitous language defined (in context-map.md)\n- [x] No technical boundaries masquerading as domain boundaries\n- [x] Context relationships: N/A (single context)\n- [x] Anti-Corruption Layer: N/A (no legacy integration mentioned)\n- [x] Context count proportional to system complexity (1 context for a simple CRUD tool)\n- [x] context-map.md written\n\n## Recommendation\n\n**Skip detailed context mapping. Proceed to architecture assessment.**\n\nThe architecture assessment should evaluate this as a single-module application. Key characteristics to assess: simplicity, maintainability by a solo developer, and low operational overhead for 30 users. Do not over-engineer.\n"}, {"name": "context-map.md", "type": "text", "content": "# Context Map\n\n## Last Updated: 2026-03-29\n\n## Decision: Single Bounded Context\n\nThis system does **not** require multiple bounded contexts. Detailed context mapping is skipped per the skill's process flow (\"Multiple domains?\" -> No -> \"Single context -> skip to assessment\").\n\n### Rationale\n\n- **One domain:** Time tracking is a single, cohesive business area. Logging hours, approving hours, and exporting hours are all facets of the same domain -- not separate domains with different business rules.\n- **One team:** A single developer builds and maintains the system.\n- **One purpose:** Internal tool for 30 employees to track hours on projects.\n- **No linguistic ambiguity:** \"TimeEntry\", \"Project\", \"Employee\", \"Approval\" mean the same thing everywhere in this system. There is no case where the same term carries different meaning in different parts of the application.\n- **No competing business rules:** Approval and export follow straightforward, uniform rules. There is no tension between subdomains.\n\n### Red Flags Check (from skill)\n\n| Red Flag | Applies? | Assessment |\n|---|---|---|\n| Technical boundaries instead of domain boundaries | No | Not splitting by frontend/backend |\n| One context per entity | No | Not creating separate contexts for Employee, Project, TimeEntry |\n| Too many contexts for a small system | No | Recommending exactly one |\n| Ignoring existing team structure | No | One developer = one context |\n\n## Single Context: Zeiterfassung (Time Tracking)\n\n- **Type:** Supporting (necessary internal tool, not a competitive differentiator)\n- **Responsibility:** Employees log hours on projects, managers approve time entries, monthly CSV export for accounting.\n- **Team:** Single developer\n- **Ubiquitous Language:**\n\n| Term | Meaning |\n|---|---|\n| Mitarbeiter (Employee) | A person who logs time entries against projects |\n| Projekt (Project) | A billable or internal project that hours are logged against |\n| Zeiteintrag (Time Entry) | A record of hours worked by one employee on one project on a given day |\n| Manager | An employee with the authority to approve or reject time entries |\n| Genehmigung (Approval) | A manager's confirmation that a time entry is correct and accepted |\n| CSV-Export | Monthly extraction of approved time entries for accounting |\n\n## Subdomains\n\n| Subdomain | Type | Bounded Context(s) |\n|---|---|---|\n| Zeiterfassung (Time Tracking) | Supporting | Zeiterfassung |\n\n## Context Relationships\n\nNone. Single context -- no inter-context relationships to map.\n\n## Recommendation\n\nProceed directly to architecture assessment. A single bounded context implemented as a simple modular monolith (or even a straightforward CRUD application) is the right fit. Do not introduce microservices, event-driven patterns, or multi-module splits -- they would add accidental complexity with no benefit for this scope.\n"}], "grading": null}, {"id": "eval-2-single-context-without_skill", "prompt": "(No prompt found)", "eval_id": null, "outputs": [{"name": "analysis.md", "type": "text", "content": "# Bounded Context Analysis: Internes Zeiterfassungs-Tool\n\n## Ausgangslage\n\n- 30 Mitarbeiter, 1 Entwickler\n- Einfache CRUD-App\n- Mitarbeiter loggen Stunden auf Projekte\n- Manager genehmigen Eintraege\n- Monatlicher CSV-Export fuer Buchhaltung\n\n## Analyse\n\n### Drei identifizierte Kontexte -- aber brauchen wir sie getrennt?\n\nAus DDD-Perspektive lassen sich drei fachliche Bereiche erkennen: Zeiterfassung, Genehmigung und Reporting. Die entscheidende Frage ist jedoch, ob eine Trennung in separate Bounded Contexts bei diesem Projektumfang sinnvoll ist.\n\n### Empfehlung: Ein einziger Bounded Context\n\n**Fuer dieses Projekt ist ein einzelner Bounded Context die richtige Wahl.**\n\nGruende:\n\n1. **Teamgroesse:** Ein Entwickler. Bounded Contexts dienen primaer der Entkopplung zwischen Teams. Bei einem Ein-Personen-Team gibt es keine organisatorische Grenze, die modelliert werden muss.\n\n2. **Komplexitaet:** Einfache CRUD-Operationen mit einem linearen Workflow (erfassen -> genehmigen -> exportieren). Kein konkurrierendes Domainverstaendnis, keine widerspruechlichen Modelle.\n\n3. **Nutzeranzahl:** 30 Mitarbeiter erzeugen keine Last, die eine Zerlegung in Services rechtfertigt.\n\n4. **Shared Entities:** `Employee`, `Project` und `TimeEntry` werden in allen drei Bereichen benoetigt. Bei getrennten Kontexten muesste man diese Entitaeten duplizieren oder synchronisieren -- ein unverh\u00e4ltnismaessiger Aufwand.\n\n5. **Datenbank:** Eine einzige relationale Datenbank mit wenigen Tabellen (employees, projects, time_entries, approvals) deckt alles ab. Joins sind einfacher als kontextuebergreifende Queries.\n\n### Interne Strukturierung statt Kontexttrennung\n\nStatt separate Bounded Contexts empfehle ich eine modulare Paketstruktur innerhalb eines Kontexts:\n\n```\nsrc/\n  timetracking/\n    model/          -- TimeEntry, Project, Employee\n    api/            -- REST-Endpunkte fuer CRUD\n  approval/\n    model/          -- ApprovalStatus (Enum)\n    api/            -- Genehmigungs-Endpunkte\n  export/\n    service/        -- CSV-Generator\n    api/            -- Export-Endpunkt\n```\n\nDies haelt die fachlichen Bereiche lesbar getrennt, ohne den Overhead separater Kontexte.\n\n### Wann wuerde sich eine Trennung lohnen?\n\nEine Aufteilung in echte Bounded Contexts waere erst sinnvoll, wenn:\n\n- Mehrere Entwicklerteams unabhaengig arbeiten muessen\n- Die Genehmigungslogik deutlich komplexer wird (mehrstufig, regelbasiert)\n- Das Reporting eigenstaendige, komplexe Auswertungen benoetigt\n- Unterschiedliche Deployment- oder Skalierungsanforderungen entstehen\n\nKeiner dieser Faktoren trifft aktuell zu.\n\n## Fazit\n\nDie drei fachlichen Bereiche (Zeiterfassung, Genehmigung, Export) sind **Module innerhalb eines einzelnen Bounded Contexts**, nicht eigenstaendige Kontexte. Die Context Map zeigt die fachlichen Abhaengigkeiten, aber die Implementierung sollte als ein Monolith mit sauberer interner Struktur erfolgen. Das ist die pragmatische Loesung fuer ein Ein-Entwickler-Projekt mit 30 Nutzern.\n"}, {"name": "context-map.md", "type": "text", "content": "# Context Map: Internes Zeiterfassungs-Tool\n\n## Identified Bounded Contexts\n\n### 1. Time Tracking (Zeiterfassung)\n\n**Core Domain**\n\n- Mitarbeiter erfassen Arbeitsstunden auf Projekte\n- CRUD-Operationen auf Zeiteintraegen (erstellen, lesen, aktualisieren, loeschen)\n- Zuordnung von Stunden zu Projekten\n\n**Key Entities:** TimeEntry, Employee, Project\n\n---\n\n### 2. Approval (Genehmigung)\n\n**Supporting Subdomain**\n\n- Manager pruefen und genehmigen erfasste Stunden\n- Genehmigungsworkflow (offen, genehmigt, abgelehnt)\n\n**Key Entities:** ApprovalRequest, Manager\n\n---\n\n### 3. Reporting / Export\n\n**Generic Subdomain**\n\n- Monatlicher CSV-Export fuer die Buchhaltung\n- Aggregation genehmigter Stunden pro Mitarbeiter und Projekt\n\n**Key Entities:** MonthlyReport, ExportFile\n\n---\n\n## Context Relationships\n\n```\n+-------------------+         +-------------------+         +-------------------+\n|                   |         |                   |         |                   |\n|   Time Tracking   |-------->|     Approval      |-------->|  Reporting/Export  |\n|                   | submits |                   | approved|                   |\n+-------------------+         +-------------------+  data   +-------------------+\n```\n\n- **Time Tracking -> Approval:** Upstream/Downstream (Conformist). Time Tracking liefert erfasste Eintraege an Approval.\n- **Approval -> Reporting/Export:** Upstream/Downstream (Conformist). Reporting liest genehmigte Daten aus Approval.\n\n## Domain Classification\n\n| Context | Classification | Reason |\n|---|---|---|\n| Time Tracking | Core Domain | Kernfunktion der Anwendung |\n| Approval | Supporting Subdomain | Unterstuetzt den Kernprozess |\n| Reporting/Export | Generic Subdomain | Standard-Exportfunktion, austauschbar |\n"}], "grading": null}, {"id": "eval-3-saas-classification-with_skill", "prompt": "(No prompt found)", "eval_id": null, "outputs": [{"name": "analysis.md", "type": "text", "content": "# Bounded Context Analysis: B2B SaaS Logistics Platform\n\n## Last Updated: 2026-03-29\n\n## Domain Overview\n\nB2B SaaS platform for logistics companies. Core product is a route planning engine (USP). Supporting capabilities include multi-tenant management, billing, reporting/analytics, fleet telematics integration, and a customer portal. Currently 2 teams, scaling to 4.\n\n## Subdomain Classification\n\n| Subdomain | Type | Rationale |\n|---|---|---|\n| Tourenplanung (Route Planning) | **Core** | This IS the product. The optimization algorithm is the competitive differentiator \u2014 what customers pay for and what no off-the-shelf solution provides. Highest investment, best engineers, most domain expertise required. |\n| Flotten-Telematik-Integration (Fleet Telematics) | **Supporting** | Necessary for real-time route optimization (feeds the Core), but the integration itself is not differentiating. Custom-built because each telematics provider has a different API, but the logic is adapter/translation work, not algorithmic innovation. |\n| Multi-Tenant-Verwaltung (Tenant Management) | **Supporting** | Essential for SaaS operation but not differentiating. Custom-built because tenant isolation, configuration, and lifecycle management must fit the specific product. No off-the-shelf multi-tenancy solution fits a domain-specific SaaS. |\n| Reporting/Analytics | **Supporting** | Customers expect dashboards and KPIs, but the analytics themselves are not the reason they buy the product. Custom-built because the metrics are domain-specific (tour efficiency, on-time rate), but the infrastructure is standard. |\n| Abrechnungssystem (Billing) | **Generic** | Subscription billing is a solved problem. Use Stripe, Chargebee, or similar. No competitive advantage in building custom payment processing. Lowest investment \u2014 integrate, don't build. |\n| Kundenportal (Customer Portal) | **Supporting** | Adds value (tenants can offer their customers tracking), but it's not the core reason tenants choose this platform. Custom-built because it surfaces domain-specific data (ETAs from the planning engine), but the portal patterns are standard. |\n\n## Classification Decisions and Rationale\n\n### Why Route Planning is Core (not Supporting)\n\nThe route planning engine is explicitly stated as the USP. This is the algorithm that differentiates the product from competitors. Core domains deserve:\n- The best developers assigned to this context\n- The most sophisticated architecture (if complexity is warranted)\n- The highest test coverage and domain modeling rigor\n- Protection from external model contamination (other contexts should not leak their models into route planning)\n\n### Why Fleet Telematics is Supporting (not Core)\n\nWhile fleet telematics feeds the Core domain and is tightly coupled to route planning, the integration work itself is adapter logic \u2014 translating GPS provider APIs into a normalized model. The value comes from what Route Planning DOES with the telemetry data, not from the integration itself. If telematics integration were the USP (e.g., a fleet management platform), it would be Core.\n\n### Why Billing is Generic (not Supporting)\n\nBilling follows standard SaaS subscription patterns. There is no domain-specific billing logic that would justify custom development. The classification as Generic means: use an external provider (Stripe, Chargebee), wrap it with an Anti-Corruption Layer, and invest minimal engineering time. If the business later develops complex usage-based pricing tied to tour optimization metrics, this could be re-evaluated to Supporting.\n\n### Why Customer Portal is Supporting (not Generic)\n\nAlthough customer portals exist as off-the-shelf products, this portal must display domain-specific data (live ETAs from the planning engine, route-specific tracking). A generic portal solution would require significant customization. Custom-built, but with moderate investment.\n\n## Bounded Context Boundaries\n\n### Key Boundary Decisions\n\n**Route Planning and Fleet Integration are separate contexts despite tight coupling.**\nThey have different rates of change (fleet integration changes when providers change their APIs; route planning changes when optimization algorithms improve) and different responsibilities. However, they are connected via Partnership because they evolve together and share a team.\n\n**Tenant Management and Billing are separate contexts.**\nTenant lifecycle and billing are distinct concerns. A tenant exists before it is billed. Tenant configuration (vehicle fleet, constraints) has nothing to do with invoicing. Separating them allows Billing to be replaced with an external provider without touching Tenant Management.\n\n**Analytics is its own context, not embedded in Route Planning.**\nAnalytics consumes data from multiple contexts (Route Planning, Fleet Integration, Tenant Management). It has its own read-optimized data model and different query patterns. Embedding analytics in Route Planning would bloat the Core domain with reporting concerns.\n\n## Team Alignment (Conway's Law)\n\n| Team | Bounded Context(s) | Rationale |\n|---|---|---|\n| Team 1 (Core) | Route Planning, Fleet Integration | Core domain gets a dedicated team. Fleet Integration is co-owned because it feeds the Core directly. Partnership pattern reflects this. |\n| Team 2 (Platform) | Tenant Management, Billing | Platform concerns \u2014 multi-tenancy and billing are foundational SaaS infrastructure. |\n| Team 3 (future) | Analytics | When the team grows, Analytics gets its own team. Data-intensive work with different skill set (data engineering). |\n| Team 4 (future) | Customer Portal | Frontend-heavy, customer-facing. Different skill set and release cadence. |\n\nWith 2 teams today, Team 2 temporarily owns Analytics and Customer Portal. As the organization scales to 4 teams, these contexts migrate cleanly because they are already bounded.\n\n## External Integrations\n\n| External System | Integration Pattern | Rationale |\n|---|---|---|\n| GPS/Telematics Providers (Webfleet, Samsara, etc.) | Anti-Corruption Layer | Each provider has a wildly different API and data model. The ACL normalizes to a single internal telemetry model. New providers are added by writing a new adapter, not changing the domain. |\n| Payment Provider (Stripe, etc.) | Anti-Corruption Layer | Payment provider models (charges, subscriptions, webhooks) must not leak into the Billing domain. Translate at the boundary. |\n\n## Risk Assessment\n\n| Risk | Mitigation |\n|---|---|\n| Route Planning context becomes too large | Monitor for sub-domain emergence. If optimization and scheduling diverge, consider splitting. |\n| Fleet Integration coupled too tightly to Route Planning | Partnership is appropriate now (same team). If teams split, evolve to Customer-Supplier with Published Language. |\n| Billing as Generic may under-invest | Acceptable. Billing is not differentiating. If complex pricing models emerge, re-classify to Supporting. |\n| 6 contexts for 2 teams is too many | Contexts are logical boundaries, not deployment units. Start as modules in a modular monolith. Physical separation happens when teams grow. |\n\n## Verification Checklist\n\n- [x] Subdomains identified and classified (Core/Supporting/Generic)\n- [x] Each bounded context has a clear responsibility (one sentence)\n- [x] Ubiquitous language defined per context (key terms with meanings)\n- [x] No technical boundaries masquerading as domain boundaries\n- [x] Context relationships mapped with explicit patterns\n- [x] Anti-Corruption Layer specified for external integrations (telematics, payment)\n- [x] Context count proportional to system complexity (6 contexts, scaling to 4 teams)\n- [x] Team alignment follows Conway's Law\n- [x] context-map.md written\n"}, {"name": "context-map.md", "type": "text", "content": "# Context Map\n\n## Last Updated: 2026-03-29\n\n## Subdomains\n\n| Subdomain | Type | Bounded Context(s) |\n|---|---|---|\n| Tourenplanung (Route Planning) | Core | Route Planning |\n| Flotten-Telematik-Integration (Fleet Telematics) | Supporting | Fleet Integration |\n| Multi-Tenant-Verwaltung (Tenant Management) | Supporting | Tenant Management |\n| Reporting/Analytics | Supporting | Analytics |\n| Abrechnungssystem (Billing) | Generic | Billing |\n| Kundenportal (Customer Portal) | Supporting | Customer Portal |\n\n## Bounded Contexts\n\n### Route Planning\n- **Subdomain:** Core\n- **Responsibility:** Optimizes delivery routes based on constraints (time windows, vehicle capacity, driver availability, real-time traffic) \u2014 the company's competitive differentiator.\n- **Team:** Team 1 (dedicated Core team)\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Tour | A planned sequence of stops assigned to one vehicle for one day |\n  | Stop | A delivery or pickup location with a time window and service duration |\n  | Constraint | A business rule limiting route options (vehicle capacity, driver hours, customer time window) |\n  | Optimization Run | A single execution of the planning engine producing a set of tours |\n  | Vehicle Profile | Capacity, speed, and cost parameters for a specific vehicle type |\n  | Planning Horizon | The time period for which tours are being optimized (typically 1-7 days) |\n\n### Fleet Integration\n- **Subdomain:** Supporting\n- **Responsibility:** Ingests real-time GPS and telemetry data from fleet tracking devices, normalizes it, and provides vehicle position and status to other contexts.\n- **Team:** Team 1 (co-owned with Route Planning)\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Telemetry Event | A timestamped GPS position with speed, heading, and vehicle status |\n  | Device | A GPS tracker hardware unit installed in a vehicle |\n  | Vehicle Position | The last known location and timestamp of a vehicle |\n  | Geofence | A geographic boundary that triggers events when a vehicle enters or exits |\n  | Provider | An external telematics system supplying raw GPS data (e.g., Webfleet, Samsara) |\n\n### Tenant Management\n- **Subdomain:** Supporting\n- **Responsibility:** Manages tenant lifecycle (onboarding, configuration, user management, subscription tier) and enforces data isolation across tenants.\n- **Team:** Team 2\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Tenant | A logistics company that is a paying customer of the platform |\n  | Workspace | The isolated data and configuration space belonging to one tenant |\n  | Subscription Tier | The plan level (e.g., Basic, Professional, Enterprise) determining feature access and limits |\n  | Tenant Admin | A user with full administrative rights within their tenant |\n  | User | A person with login credentials and role-based permissions within a tenant |\n\n### Billing\n- **Subdomain:** Generic\n- **Responsibility:** Manages subscription billing, invoicing, and payment processing based on tenant subscription tier and usage.\n- **Team:** Team 2\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Invoice | A periodic charge document for a tenant based on their subscription and usage |\n  | Subscription | The recurring billing agreement tied to a tenant's tier |\n  | Usage Record | A metered data point (e.g., number of tours planned) used for billing calculation |\n  | Payment Method | The tenant's stored payment instrument (credit card, SEPA direct debit) |\n\n### Analytics\n- **Subdomain:** Supporting\n- **Responsibility:** Aggregates operational data across contexts to provide dashboards, KPI tracking, and exportable reports for tenant users.\n- **Team:** Team 2 (initially), migrates to Team 3 when available\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Report | A predefined or custom data view showing operational KPIs |\n  | Dashboard | A real-time visual overview of key metrics for a tenant |\n  | KPI | A measurable value indicating operational performance (e.g., tours per day, on-time delivery rate) |\n  | Data Export | A downloadable file (CSV, PDF) of report data |\n\n### Customer Portal\n- **Subdomain:** Supporting\n- **Responsibility:** Provides the tenant's end-customers with shipment tracking, delivery time windows, and communication capabilities.\n- **Team:** Team 2 (initially), migrates to Team 4 when available\n- **Ubiquitous Language:**\n\n  | Term | Meaning |\n  |---|---|\n  | Shipment | A delivery from the tenant to their end-customer, with tracking status |\n  | Tracking Link | A unique URL allowing an end-customer to see delivery status |\n  | Delivery Window | The estimated time range when a delivery will arrive |\n  | End-Customer | The recipient of a delivery \u2014 NOT the tenant, but the tenant's customer |\n  | Notification | A message (email/SMS) sent to an end-customer about delivery status |\n\n## Context Relationships\n\n| Upstream | Downstream | Pattern | Notes |\n|---|---|---|---|\n| Route Planning | Fleet Integration | Partnership | Both evolve together \u2014 real-time positions feed re-optimization, route data feeds ETA calculations. Same team owns both. |\n| Route Planning | Analytics | Customer-Supplier | Route Planning publishes tour execution data (planned vs. actual). Analytics consumes for KPI calculation. |\n| Route Planning | Customer Portal | Customer-Supplier + Published Language | Route Planning provides ETAs and stop sequences as events. Portal consumes for tracking display. |\n| Fleet Integration | Route Planning | Partnership | Bidirectional \u2014 live positions trigger re-optimization. Symmetric relationship. |\n| Fleet Integration | Analytics | Customer-Supplier | Fleet Integration supplies vehicle utilization and mileage data. |\n| Tenant Management | Route Planning | Open Host Service | Tenant config (vehicle fleet, constraints, business rules) provided via API to planning engine. |\n| Tenant Management | Billing | Customer-Supplier | Tenant lifecycle events (created, tier changed, deactivated) drive billing actions. |\n| Tenant Management | Analytics | Open Host Service | Tenant configuration and user data provided to analytics for scoping and access control. |\n| Tenant Management | Customer Portal | Open Host Service | Tenant branding, configuration, and user permissions. |\n| External Telematics Providers | Fleet Integration | Anti-Corruption Layer | Each GPS provider has a different API and data model. ACL translates to our normalized telemetry model. |\n| External Payment Provider | Billing | Anti-Corruption Layer | Stripe/payment provider models translated at boundary. Keep billing domain clean. |\n\n## Relationship Diagram\n\n```\n                    [External Telematics]\n                            |\n                          (ACL)\n                            |\n                            v\n  [Tenant Management] --OHS--> [Route Planning] <--Partnership--> [Fleet Integration]\n        |       |                    |       |                          |\n        |       |                    |       |                          |\n       C-S     OHS                  C-S    C-S+PL                     C-S\n        |       |                    |       |                          |\n        v       v                    v       v                          v\n    [Billing] [Analytics] <---------+  [Customer Portal] <------------+\n        |\n      (ACL)\n        |\n        v\n  [External Payment]\n\n  Legend:\n    OHS  = Open Host Service\n    C-S  = Customer-Supplier\n    PL   = Published Language\n    ACL  = Anti-Corruption Layer\n    <--> = Partnership (symmetric)\n```\n"}], "grading": null}, {"id": "eval-3-saas-classification-without_skill", "prompt": "(No prompt found)", "eval_id": null, "outputs": [{"name": "analysis.md", "type": "text", "content": "# Domain Analysis: B2B SaaS Logistik-Plattform\n\n## 1. Identified Bounded Contexts and Subdomain Classification\n\n### 1.1 Route Planning Engine -- CORE Domain\n\n**Subdomain type:** Core\n\n**Rationale:** This is the stated USP of the product. The tour planning engine is what differentiates the company from competitors. It encodes proprietary optimization logic (vehicle routing problem variants, time windows, capacity constraints, driver regulations). Competitive advantage lives here.\n\n**Key domain concepts:**\n- Tour (a planned sequence of stops assigned to a vehicle)\n- Stop (delivery/pickup location with time window)\n- Route (geographic path between stops)\n- Vehicle capacity and constraints\n- Optimization run / planning horizon\n- Driver assignment and shift rules (Lenk- und Ruhezeiten)\n\n**Strategic investment:** Highest. Best engineers, deepest domain modeling, most rigorous testing. This context justifies custom development and should never be replaced by off-the-shelf software.\n\n---\n\n### 1.2 Fleet Telemetry Integration -- SUPPORTING Domain\n\n**Subdomain type:** Supporting\n\n**Rationale:** Real-time GPS and telematics data feeds into the core planning engine (live re-optimization) and into reporting. It requires domain knowledge about device protocols (FMS, OBD-II), data normalization, and handling unreliable connections. It is not the USP, but it enables the USP. Off-the-shelf integration platforms could partially cover this, but the specific needs of the planning engine demand custom adapters.\n\n**Key domain concepts:**\n- Telematics device / tracker\n- Position event (lat, lng, timestamp, heading, speed)\n- Vehicle status (ignition, fuel, mileage)\n- Geofence event\n- Connection health / data quality\n\n**Strategic investment:** Medium. Build thin adapters, isolate behind an ACL. Consider third-party middleware if integration count grows.\n\n---\n\n### 1.3 Tenant Management -- GENERIC Domain\n\n**Subdomain type:** Generic\n\n**Rationale:** Multi-tenancy is a standard SaaS concern. It involves organization onboarding, user management, role-based access, tenant-level configuration. There is nothing logistics-specific here. Well-understood patterns exist, and identity providers (Auth0, Keycloak) can handle much of it.\n\n**Key domain concepts:**\n- Tenant / Organization\n- User account and roles\n- Subscription plan / feature flags\n- Tenant configuration and branding\n\n**Strategic investment:** Low. Use existing identity/access management solutions. Keep the shared kernel minimal to avoid coupling.\n\n---\n\n### 1.4 Billing -- SUPPORTING Domain\n\n**Subdomain type:** Supporting\n\n**Rationale:** The billing model is likely usage-based (tours planned, vehicles managed, API calls) which requires domain-specific metering tied to logistics concepts. It is not purely generic (like Stripe checkout for a simple SaaS) because pricing logic depends on the core domain's units. However, it is not the competitive differentiator.\n\n**Key domain concepts:**\n- Billing account (linked to tenant)\n- Usage record (tours, vehicles, API calls)\n- Pricing plan and tiers\n- Invoice and line items\n- Payment status\n\n**Strategic investment:** Medium-low. Use a billing provider (Stripe, Chargebee) for payment processing. Build a thin metering layer that translates domain events into usage records.\n\n---\n\n### 1.5 Reporting & Analytics -- SUPPORTING Domain\n\n**Subdomain type:** Supporting\n\n**Rationale:** Logistics companies need operational KPIs (on-time delivery rate, cost per stop, fleet utilization, CO2 emissions). The reports require logistics domain knowledge to be meaningful, so this is not purely generic BI. However, it does not differentiate the product on its own -- the planning engine does.\n\n**Key domain concepts:**\n- KPI definition (on-time rate, cost per tour, utilization)\n- Report template\n- Dashboard / widget\n- Data aggregation period\n- Export / scheduled delivery\n\n**Strategic investment:** Medium. Consider a hybrid: use a BI tool (Metabase, Redash) for ad-hoc analysis, build custom dashboards for the most valuable logistics-specific KPIs.\n\n---\n\n### 1.6 Customer Portal -- SUPPORTING Domain\n\n**Subdomain type:** Supporting\n\n**Rationale:** The portal lets end customers (the logistics company's clients) track deliveries, view ETAs, and access proof-of-delivery documents. It adds value but is a thin read-model on top of the core planning data. The portal itself does not contain complex business logic.\n\n**Key domain concepts:**\n- Shipment tracking view\n- ETA and delivery notification\n- Proof of delivery (signature, photo)\n- Customer self-service (address book, time preferences)\n\n**Strategic investment:** Low-medium. Primarily a UI/UX concern. Consumes the Open Host Service from Route Planning. Can be developed with a small team or even outsourced.\n\n---\n\n## 2. Subdomain Classification Summary\n\n| Bounded Context           | Subdomain Type | Build vs. Buy          | Strategic Priority |\n|---------------------------|---------------|------------------------|--------------------|\n| Route Planning Engine     | Core          | Build (custom)         | Highest            |\n| Fleet Telemetry Integr.   | Supporting    | Build + buy adapters   | Medium             |\n| Tenant Management         | Generic       | Buy / reuse            | Low                |\n| Billing                   | Supporting    | Buy + thin custom layer| Medium-low         |\n| Reporting & Analytics     | Supporting    | Hybrid (BI tool + custom) | Medium          |\n| Customer Portal           | Supporting    | Build (thin)           | Low-medium         |\n\n---\n\n## 3. Team Topology Alignment (2 -> 4 Teams)\n\n### Current state (2 teams)\n- **Team 1 -- Core Platform:** Route Planning Engine + Fleet Telemetry Integration\n- **Team 2 -- SaaS Services:** Tenant Management + Billing + Customer Portal + Reporting\n\n### Target state (4 teams)\n- **Team 1 -- Route Planning (stream-aligned):** Owns the core domain exclusively. Highest autonomy, deepest domain expertise. This team should never be distracted by generic concerns.\n- **Team 2 -- Fleet & Integration (stream-aligned):** Owns telemetry integration and external system adapters. Provides real-time data to the planning engine. Clear ACL boundary.\n- **Team 3 -- Customer Experience (stream-aligned):** Owns Customer Portal and Reporting/Analytics. Both are outward-facing, read-heavy, and benefit from shared UX investment.\n- **Team 4 -- Platform (platform team):** Owns Tenant Management, Billing, and cross-cutting infrastructure (CI/CD, observability, shared libraries). Provides self-service capabilities to the other three teams.\n\n### Key principle\nThe Core domain (Route Planning) gets a dedicated team with full ownership. No shared responsibility for the USP. The bounded context boundaries align with team boundaries to minimize cross-team coordination (Conway's Law).\n\n---\n\n## 4. Risks and Recommendations\n\n1. **Protect the Core domain boundary.** The biggest risk is that tenant management, billing, or portal concerns leak into the Route Planning codebase. Enforce the context boundaries via separate deployable units or at minimum separate modules with explicit APIs.\n\n2. **ACL for telemetry is non-negotiable.** GPS tracker vendors change APIs, add devices, and deprecate protocols. The Anti-Corruption Layer must fully insulate Route Planning from these changes.\n\n3. **Billing metering requires a contract with Route Planning.** Define a Published Language for usage events early. If the metering model changes (e.g., from per-tour to per-stop pricing), both teams need to coordinate -- keep this interface explicit and versioned.\n\n4. **Reporting must not query the core database directly.** Use event-driven data replication (CQRS-style) to populate a read-optimized analytics store. Direct database access creates hidden coupling and performance interference.\n\n5. **Tenant Management as Shared Kernel must stay thin.** Only tenant identity and coarse-grained authorization belong in the shared kernel. Business rules about what a tenant can do belong in the respective bounded contexts.\n"}, {"name": "context-map.md", "type": "text", "content": "# Context Map: B2B SaaS Logistik-Plattform\n\n## Bounded Contexts\n\n```\n+---------------------------------------------------------------------+\n|                                                                     |\n|  +---------------------+        +---------------------+            |\n|  |   Route Planning    |        |  Fleet Telemetry    |            |\n|  |     (Core)          |------->|   Integration       |            |\n|  |                     |  ACL   |   (Supporting)      |            |\n|  +---------------------+        +---------------------+            |\n|         |        |                       |                          |\n|         |        |                       |                          |\n|         | OHS    | PUB                   |                          |\n|         |        |                       |                          |\n|         v        v                       |                          |\n|  +-------------+ +---------------------+|                          |\n|  |  Customer   | |    Reporting &      ||                          |\n|  |   Portal    | |    Analytics        |<-----------+              |\n|  | (Supporting)| |   (Supporting)      |            |              |\n|  +-------------+ +---------------------+            |              |\n|         |                    ^                       |              |\n|         |                    |                       |              |\n|         |                    |                       |              |\n|  +---------------------+    |          +---------------------+     |\n|  |   Tenant            |    |          |    Billing          |     |\n|  |   Management        |----+          |    (Supporting)     |     |\n|  |   (Generic)         |               |                     |     |\n|  +---------------------+               +---------------------+     |\n|                                                                     |\n+---------------------------------------------------------------------+\n```\n\n## Relationships\n\n| Upstream              | Downstream            | Relationship Pattern         |\n|-----------------------|-----------------------|------------------------------|\n| Route Planning        | Customer Portal       | Open Host Service (OHS)      |\n| Route Planning        | Reporting & Analytics | Published Language (PUB)     |\n| Fleet Telemetry Int.  | Route Planning        | Anti-Corruption Layer (ACL)  |\n| Fleet Telemetry Int.  | Reporting & Analytics | Conformist                   |\n| Tenant Management     | All other contexts    | Shared Kernel                |\n| Billing               | Reporting & Analytics | Conformist                   |\n| Route Planning        | Billing               | Customer-Supplier            |\n\n## Relationship Details\n\n### Route Planning <-> Fleet Telemetry Integration (ACL)\nThe Route Planning context consumes real-time GPS data from external telematics providers. An Anti-Corruption Layer translates external device protocols and data models into the route planning domain model. This protects the core domain from instability in third-party APIs.\n\n### Route Planning -> Customer Portal (OHS)\nRoute Planning exposes a stable API (Open Host Service) that the Customer Portal consumes to display tour status, ETAs, and route details to end customers. The portal has no influence on the core model.\n\n### Route Planning -> Reporting & Analytics (PUB)\nRoute Planning publishes domain events (tour completed, delay detected, route optimized) in a well-defined Published Language. Reporting subscribes to these events for aggregation and analysis.\n\n### Tenant Management -> All Contexts (Shared Kernel)\nTenant identity, organization structure, and access policies form a thin shared kernel consumed by every bounded context for authorization and data isolation.\n\n### Route Planning -> Billing (Customer-Supplier)\nBilling depends on usage data from Route Planning (tours planned, vehicles dispatched) to calculate charges. Route Planning is the supplier; Billing is the customer that negotiates what data it needs.\n\n### Fleet Telemetry Integration -> Reporting & Analytics (Conformist)\nReporting conforms to the telemetry data model for fleet utilization dashboards. No translation -- it uses the integration context's model directly.\n"}], "grading": null}, {"id": "eval-4-legacy-decomposition-with_skill", "prompt": "(No prompt found)", "eval_id": null, "outputs": [{"name": "analysis.md", "type": "text", "content": "# Bounded Context Analysis: Legacy-Versicherungsmonolith\n\n## Last Updated: 2026-03-29\n\n## Ausgangslage\n\nEin 10 Jahre alter Java-Monolith fuer Versicherungsverwaltung. Alle Geschaeftsbereiche \u2014 Vertragsmanagement, Schadensbearbeitung, Kundenverwaltung, Dokumentengenerierung, Praemienberechnung \u2014 sind in einer Codebasis verschmolzen, gestuetzt auf eine Oracle-Datenbank mit 400 Tabellen. Ziel ist schrittweise Modernisierung (kein Big-Bang).\n\n## Subdomain-Klassifikation\n\n| Subdomain | Typ | Begruendung |\n|---|---|---|\n| Vertragsmanagement | **Core** | Kerngeschaeft des Versicherers. Der Versicherungsvertrag ist das zentrale Produkt. Komplexe Geschaeftsregeln fuer Policierung, Nachtraege, Kuendigungen sind Wettbewerbsvorteil. |\n| Schadensbearbeitung | **Core** | Direkt umsatzrelevant. Schnelle, faire Schadenregulierung ist Differenzierungsmerkmal gegenueber Wettbewerbern. Hohe regulatorische Anforderungen. |\n| Praemienberechnung | **Core** | Aktuarielle Kompetenz und Preisgestaltung sind wettbewerbsentscheidend. Wer besser tarifiert, gewinnt im Markt. |\n| Kundenverwaltung | **Supporting** | Notwendig, aber kein Differenzierungsmerkmal. Stammdaten, Rollen, Kontaktmanagement \u2014 wichtig, aber branchenueblich. |\n| Dokumentengenerierung | **Supporting** | Notwendig fuer Geschaeftsbetrieb (Policen-Druck, Schadenbriefe), aber kein Wettbewerbsvorteil. Austauschbar durch Standard-Dokumentenloesungen. |\n\n## Bounded Context Boundaries \u2014 Entscheidungsbegruendung\n\n### Warum 5 neue Kontexte + 1 Legacy-Kontext?\n\nDie Zerlegung folgt dem **linguistischen Test**: Dieselben Begriffe bedeuten in verschiedenen Bereichen unterschiedliches.\n\n**\"Kunde\" hat verschiedene Bedeutungen:**\n- In Vertragswesen: Versicherungsnehmer (haelt Police, zahlt Praemie)\n- In Schadenregulierung: Anspruchsteller (kann Dritter sein, kein Vertragspartner)\n- In der Legacy-DB: Eine Zeile in der Kundentabelle mit einem \"Typ\"-Feld\n\n**\"Vertrag\" hat verschiedene Bedeutungen:**\n- In Vertragswesen: Lebendiges Objekt mit Zustand, Deckungen, Nachtraegen\n- In Schadenregulierung: Referenz zur Deckungspruefung (nur Deckungsumfang relevant)\n- In Praemienberechnung: Risikotraeger mit Merkmalen zur Tarifierung\n- In der Legacy-DB: Flache Zeile mit 80 Spalten\n\n**\"Dokument\" hat verschiedene Bedeutungen:**\n- In Dokumentenservice: Template + generiertes PDF mit Archivierungspflicht\n- In Vertragswesen: Die Police, die dem Kunden zugestellt wird\n- In der Legacy-DB: BLOB-Referenz in einer Dokumententabelle\n\n### Warum Kundendomaene als eigener Kontext?\n\nAlternativ waere \"Kunde\" Teil von Vertragswesen. Aber:\n- Schadensbearbeitung braucht Kundendaten unabhaengig vom Vertrag\n- Kundendomaene aendert sich seltener als Vertragswesen\n- Zentrale Kundensicht (360-Grad-Sicht) ist ein eigenes fachliches Anliegen\n- Mehrere Kontexte konsumieren Kundendaten \u2014 Open Host Service ist sauberer als N:1-Kopplung\n\n### Warum Dokumentenservice als eigener Kontext?\n\nAlternativ waere Dokumentengenerierung Teil jedes fachlichen Kontexts. Aber:\n- Dokumentenlogik (Vorlagen, Rendering, Archivierung) ist orthogonal zu Fachlichkeit\n- Einheitliche Archivierung und Compliance-Anforderungen\n- Kann als reaktiver Service hinter Events arbeiten (lose Kopplung)\n\n## Anti-Corruption Layer Strategie\n\n**Dies ist der zentrale Architekturentscheid fuer die Migration.**\n\nJeder neue Bounded Context kommuniziert mit dem Monolith **ausschliesslich** ueber einen Anti-Corruption Layer. Der ACL:\n\n1. **Uebersetzt Datenmodelle:** Legacy-Tabellenstruktur wird in das reiche Domaenenmodell des neuen Kontexts transformiert. Nie direkte SQL-Queries gegen Legacy-Tabellen aus neuem Code.\n\n2. **Kapselt Protokolle:** Ob der Monolith ueber REST, SOAP, direkten DB-Zugriff oder Messaging angebunden wird \u2014 der ACL verbirgt das vor der Domaene.\n\n3. **Ermoeglicht schrittweise Migration:** Durch das Strangler-Fig-Pattern kann der ACL schrittweise Anfragen vom Monolith auf den neuen Kontext umleiten. Der ACL wird zur Weiche.\n\n### ACL-Implementierung pro Kontext\n\n```\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502   Neuer Bounded      \u2502\n\u2502   Context            \u2502\n\u2502   (reines Domaenen-  \u2502\n\u2502    modell)           \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502   ACL / Adapter      \u2502  \u2190 Uebersetzungsschicht\n\u2502   - LegacyVertrag    \u2502\n\u2502     \u2192 Police         \u2502\n\u2502   - LegacyKunde     \u2502\n\u2502     \u2192 Versicherungs- \u2502\n\u2502       nehmer         \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502   Legacy-Zugriff     \u2502  \u2190 REST/SOAP/DB-View\n\u2502   (Monolith-API      \u2502\n\u2502    oder DB-Views)    \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n```\n\n**Konkret fuer den Versicherungsmonolith:**\n\n| Neuer Kontext | ACL uebersetzt | Legacy-Anbindung |\n|---|---|---|\n| Tarifierung & Praemie | Legacy-Berechnungsparameter \u2192 Risikomerkmale + Tarif | DB-Views auf Vertragstabellen (read-only) |\n| Kundendomaene | Undifferenzierte Legacy-Kundentabelle \u2192 Rollenmodell (VN, Makler, Geschaedigter) | Synchronisation ueber Change-Data-Capture oder Batch |\n| Dokumentenservice | Legacy-Drucksteuerung \u2192 Event-basierte Dokumentengenerierung | Messaging (Events von neuen Kontexten), Legacy-Bridge fuer alte Prozesse |\n| Vertragswesen | 80-Spalten-Vertragstabelle \u2192 Police-Aggregat mit Deckungen, Nachtraegen | DB-Views + REST-API am Monolith, schrittweise Uebernahme |\n| Schadenregulierung | Verschmolzene Schaden/Vertrag-Struktur \u2192 Eigenstaendiges Schadenfall-Aggregat | REST-API fuer Vertragsdaten (ueber Vertragswesen-ACL) |\n\n## Migrationsreihenfolge und Begruendung\n\n### Phase 1: Tarifierung & Praemie (Risiko: Niedrig)\n\n**Warum zuerst?**\n- Klar abgrenzbare Berechungslogik (Input \u2192 Output)\n- Kann im **Shadow-Mode** parallel zum Legacy laufen: Beide berechnen, Ergebnisse vergleichen\n- Keine Downstream-Abhaengigkeiten \u2014 kein anderer Kontext konsumiert direkt\n- Verifizierbarkeit: Gleiche Praemie = korrekte Migration\n- Aktuarielle Regeln muessen ohnehin regelmaessig aktualisiert werden \u2014 neuer Kontext macht das einfacher\n\n### Phase 2: Kundendomaene (Risiko: Mittel)\n\n**Warum frueh?**\n- Wird von ALLEN anderen Kontexten benoetigt (Vertrag, Schaden, Dokumente)\n- Fruehe Extraktion schafft Grundlage fuer alle weiteren Kontexte\n- Open Host Service als einheitliche Kundenschnittstelle\n\n**Risiken:**\n- Stammdatenmigration aus 400-Tabellen-DB ist komplex\n- Datenqualitaet im Legacy (Dubletten, fehlende Rollen-Differenzierung)\n- Uebergangszeitraum: Beide Systeme fuehren Kundendaten\n\n### Phase 3: Dokumentenservice (Risiko: Niedrig)\n\n**Warum nach Kundendomaene?**\n- Rein reaktiv: Empfaengt Events, generiert Dokumente\n- Keine eigene komplexe Geschaeftslogik\n- Kann Event-getrieben angebunden werden (lose Kopplung)\n- Legacy-Druckstrasse laeuft parallel weiter\n\n### Phase 4: Vertragswesen (Risiko: Hoch)\n\n**Warum nicht frueher?**\n- Zentralster und komplexester Kontext\n- Benoetigt Kundendomaene (Phase 2) und Tarifierung (Phase 1)\n- Nicht als Big-Bang extrahierbar \u2014 schrittweise per Vertragsart oder Nachtrag-Typ\n\n**Strategie:**\n- Zuerst Leseoperationen migrieren (Vertragsauskunft)\n- Dann Schreiboperationen schrittweise (Nachtrag fuer Nachtrag)\n- Strangler Fig mit Feature-Toggles\n\n### Phase 5: Schadenregulierung (Risiko: Hoch)\n\n**Warum zuletzt?**\n- Benoetigt stabiles Vertragswesen fuer Deckungspruefung\n- Benoetigt Kundendomaene fuer Anspruchsteller\n- Komplexe Regulierungslogik mit vielen Sonderfaellen\n- Regulatorische Anforderungen (Dokumentationspflicht, Fristen)\n\n## Datenbank-Strategie\n\nDie 400-Tabellen-Oracle-DB wird NICHT auf einmal zerlegt.\n\n1. **Sofort:** DB-Views als saubere Leseschnittstelle fuer neue Kontexte (Teil des ACL)\n2. **Pro Phase:** Neuer Kontext erhaelt eigenes Schema/eigene DB fuer seine Schreiboperationen\n3. **Uebergang:** Dual-Write oder Change-Data-Capture fuer Synchronisation\n4. **Langfristig:** Jeder Bounded Context besitzt seine Daten. Legacy-Tabellen schrumpfen mit jeder Phase.\n\n```\nPhase 1-2:  Monolith-DB (400 Tabellen)  +  Tarif-DB  +  Kunden-DB\nPhase 3:    Monolith-DB (380 Tabellen)  +  Tarif-DB  +  Kunden-DB  +  Dokument-DB\nPhase 4:    Monolith-DB (300 Tabellen)  +  alle neuen DBs\nPhase 5:    Monolith-DB (200 Tabellen)  +  alle neuen DBs\nEndzustand: Monolith-DB abgeschaltet\n```\n\n## Red Flags gepreuft\n\n- [x] **Keine technischen Boundaries:** Alle Kontexte sind fachlich motiviert, nicht \"Frontend/Backend/Datenbank\"\n- [x] **Keine Entity-per-Context-Aufspaltung:** \"Vertragswesen\" ist nicht \"Vertragskontext\" \u2014 es umfasst Police, Nachtrag, Antrag als zusammengehoerende Geschaeftsfaehigkeit\n- [x] **Angemessene Anzahl:** 5 neue Kontexte + 1 Legacy-Kontext fuer ein System dieser Groesse ist angemessen\n- [x] **Ubiquitaere Sprache definiert:** Jeder Kontext hat eigene Fachbegriffe mit klarer Bedeutung\n- [x] **ACL fuer alle Legacy-Integrationen:** Kein neuer Kontext greift direkt auf Legacy-Datenmodell zu\n\n## Offene Fragen fuer die naechste Phase\n\n1. **Team-Schnitt:** Wie viele Teams stehen zur Verfuegung? Conway's Law bestimmt, wie viele Kontexte parallel extrahiert werden koennen.\n2. **Regulatorik:** Welche BaFin/Solvency-II-Anforderungen beeinflussen die Datenhaltung?\n3. **Bestandsmigration:** Werden alle Altvertraege migriert oder nur Neugeschaeft in neue Kontexte?\n4. **Event-Infrastruktur:** Kafka, RabbitMQ oder anderes Messaging fuer die Published-Language-Integration?\n5. **API-Gateway:** Wie wird die Umschaltung zwischen Legacy und neuen Kontexten gesteuert (Routing)?\n"}, {"name": "context-map.md", "type": "text", "content": "# Context Map\n\n## Last Updated: 2026-03-29\n\n## Subdomains\n\n| Subdomain | Type | Bounded Context(s) |\n|---|---|---|\n| Vertragsmanagement | Core | Vertragswesen |\n| Schadensbearbeitung | Core | Schadenregulierung |\n| Praemienberechnung | Core | Tarifierung & Praemie |\n| Kundenverwaltung | Supporting | Kundendomaene |\n| Dokumentengenerierung | Supporting | Dokumentenservice |\n| Bestandsfuehrung (Legacy) | \u2014 | Monolith (Bestandssystem) |\n\n## Bounded Contexts\n\n### Monolith (Bestandssystem)\n\n- **Subdomain:** Legacy (alle Subdomains derzeit verschmolzen)\n- **Responsibility:** Der existierende Java-Monolith mit 400-Tabellen-Oracle-DB, der aktuell alle Geschaeftsfunktionen abbildet. Wird schrittweise abgeloest, bleibt aber waehrend der Migration das System of Record.\n- **Team:** Bestandsteam (bestehendes Entwicklungsteam)\n- **Ubiquitous Language:**\n  | Term | Meaning |\n  |---|---|\n  | Vertrag | Datenbanksatz in der zentralen Vertragstabelle \u2014 vermischt Police, Nachtrag, Antrag |\n  | Schaden | Schadensfall mit Verknuepfung zu Vertrag, Kunde, Zahlung in einer Struktur |\n  | Kunde | Einzelne Entitaet fuer Versicherungsnehmer, Ansprechpartner, Makler, Geschaedigten |\n  | Praemie | Berechnungsergebnis, fest verdrahtet mit Vertragslogik |\n  | Dokument | Generiertes PDF, gekoppelt an Drucksteuerung, Vorlagen, Archivierung |\n\n### Vertragswesen\n\n- **Subdomain:** Core\n- **Responsibility:** Verwaltung des gesamten Vertragslebenszyklus \u2014 Antrag, Policierung, Nachtrag, Kuendigung, Wiederinkraftsetzung.\n- **Team:** Team Vertrag (neues Team, erstes Extraktionsziel)\n- **Ubiquitous Language:**\n  | Term | Meaning |\n  |---|---|\n  | Antrag | Versicherungsantrag vor Policierung \u2014 hat Risikopruefungsstatus |\n  | Police | Aktiver, policierter Versicherungsvertrag mit definierten Deckungen |\n  | Nachtrag | Aenderung an einer bestehenden Police (Deckungserweiterung, Adressaenderung, etc.) |\n  | Versicherungsnehmer | Die Person oder Organisation, die den Vertrag haelt (NICHT der Geschaedigte im Schadenfall) |\n  | Deckung | Einzelne versicherte Gefahr/Leistung innerhalb einer Police |\n  | Vertragsstatus | Lebenszyklus-Zustand: beantragt, aktiv, ruhend, gekuendigt |\n\n### Schadenregulierung\n\n- **Subdomain:** Core\n- **Responsibility:** Aufnahme, Pruefung und Regulierung von Versicherungsschaeden \u2014 von der Schadenmeldung bis zur Auszahlung.\n- **Team:** Team Schaden\n- **Ubiquitous Language:**\n  | Term | Meaning |\n  |---|---|\n  | Schadenmeldung | Erstmeldung eines Schadensereignisses durch den Versicherungsnehmer oder Makler |\n  | Schadenfall | Registrierter, gepruefter Schaden mit eigener Schadennummer |\n  | Regulierung | Entscheidungsprozess: Deckungspruefung, Schadenshoehe, Auszahlung oder Ablehnung |\n  | Leistung | Ausgezahlter Betrag an den Anspruchsteller |\n  | Anspruchsteller | Person mit Anspruch auf Leistung (kann Versicherungsnehmer oder Dritter sein) |\n  | Reserve | Geschaetzter Betrag, der fuer einen offenen Schadenfall zurueckgestellt wird |\n\n### Tarifierung & Praemie\n\n- **Subdomain:** Core\n- **Responsibility:** Berechnung von Versicherungspraemien basierend auf Tarifen, Risikomerkmalen und Geschaeftsregeln.\n- **Team:** Team Aktuariat/Tarif\n- **Ubiquitous Language:**\n  | Term | Meaning |\n  |---|---|\n  | Tarif | Regelwerk zur Praemienberechnung fuer eine Versicherungsart |\n  | Praemie | Berechneter Jahresbeitrag fuer eine bestimmte Deckung und Risikosituation |\n  | Risikomerkmale | Eigenschaften des versicherten Objekts/Person, die die Praemie beeinflussen |\n  | Beitragsanpassung | Jaehrliche Neuberechnung bei Aenderung von Tarifgrundlagen |\n  | Rabatt/Zuschlag | Modifikator auf die Grundpraemie (Schadenfreiheit, Selbstbeteiligung, etc.) |\n\n### Kundendomaene\n\n- **Subdomain:** Supporting\n- **Responsibility:** Einheitliche Kundensicht \u2014 Stammdaten, Kontaktinformationen, Rollen (Versicherungsnehmer, Makler, Geschaedigter), Kommunikationspraeferenzen.\n- **Team:** Team Kunde/Plattform\n- **Ubiquitous Language:**\n  | Term | Meaning |\n  |---|---|\n  | Kunde | Eine natuerliche oder juristische Person mit Geschaeftsbeziehung zum Versicherer |\n  | Rolle | Funktion des Kunden: Versicherungsnehmer, Makler, Geschaedigter, Beguenstigter |\n  | Kontaktkanal | Bevorzugte Erreichbarkeit: E-Mail, Post, Telefon, Portal |\n  | Kundenhistorie | Chronologische Uebersicht aller Interaktionen und Vorgaenge |\n\n### Dokumentenservice\n\n- **Subdomain:** Supporting\n- **Responsibility:** Generierung, Versionierung und Archivierung aller Versicherungsdokumente \u2014 Policen, Nachtraege, Schadenbriefe, Korrespondenz.\n- **Team:** Team Plattform/Dokumente\n- **Ubiquitous Language:**\n  | Term | Meaning |\n  |---|---|\n  | Vorlage | Template fuer einen Dokumententyp mit Platzhaltern |\n  | Dokument | Generiertes, finales Schriftstueck (PDF/Brief) mit Archivierungspflicht |\n  | Dokumententyp | Klassifikation: Police, Nachtrag, Schadenmitteilung, Mahnung, etc. |\n  | Versand | Zustellung ueber den gewaehlten Kanal (Post, E-Mail, Portal-Download) |\n\n## Context Relationships\n\n| Upstream | Downstream | Pattern | Notes |\n|---|---|---|---|\n| Monolith (Bestandssystem) | Vertragswesen | **Anti-Corruption Layer** | ACL uebersetzt das flache Legacy-Vertragsmodell in das reiche Domaenenmodell. Strangler-Fig-Pattern: Vertragswesen uebernimmt schrittweise Lese- und Schreiboperationen. |\n| Monolith (Bestandssystem) | Schadenregulierung | **Anti-Corruption Layer** | ACL entkoppelt die verschmolzene Legacy-Schaden/Vertrag-Struktur. Schadenregulierung liest Vertragsdaten ueber definierte Schnittstelle, nie direkt aus Legacy-Tabellen. |\n| Monolith (Bestandssystem) | Tarifierung & Praemie | **Anti-Corruption Layer** | ACL isoliert die neue Tarifengine von den hardcodierten Legacy-Berechnungsregeln. Parallelbetrieb moeglich (Shadow-Mode). |\n| Monolith (Bestandssystem) | Kundendomaene | **Anti-Corruption Layer** | ACL uebersetzt die undifferenzierte Legacy-Kundentabelle in das rollenbasierte Kundenmodell. |\n| Monolith (Bestandssystem) | Dokumentenservice | **Anti-Corruption Layer** | ACL kapselt die Legacy-Drucksteuerung. Neue Kontexte generieren Dokumente ueber den neuen Service, Legacy nutzt weiterhin die alte Druckstrasse. |\n| Vertragswesen | Schadenregulierung | **Customer-Supplier** | Vertragswesen liefert Deckungsinformationen, die Schadenregulierung fuer die Deckungspruefung benoetigt. |\n| Vertragswesen | Tarifierung & Praemie | **Customer-Supplier** | Tarifierung berechnet Praemien fuer Vertraege; Vertragswesen liefert Risikodaten und erhaelt berechnete Praemien zurueck. |\n| Kundendomaene | Vertragswesen | **Open Host Service** | Kundenstammdaten werden ueber eine definierte API bereitgestellt. Alle Kontexte konsumieren dieselbe Schnittstelle. |\n| Kundendomaene | Schadenregulierung | **Open Host Service** | Gleiche API wie oben \u2014 Schadenregulierung bezieht Anspruchsteller-Daten. |\n| Vertragswesen | Dokumentenservice | **Published Language** | Vertragswesen publiziert Ereignisse (PoliceErstellt, NachtragDurchgefuehrt) als strukturierte Events, Dokumentenservice reagiert darauf und generiert Dokumente. |\n| Schadenregulierung | Dokumentenservice | **Published Language** | Schadenereignisse (SchadenAnerkannt, LeistungAusgezahlt) triggern Dokumentengenerierung. |\n\n## Relationship Diagram\n\n```\n                    \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n                    \u2502         MONOLITH (Bestandssystem)               \u2502\n                    \u2502   Java \u00b7 400 Oracle-Tabellen \u00b7 10 Jahre alt    \u2502\n                    \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                      ACL  \u2502   ACL  \u2502   ACL  \u2502  ACL  \u2502   ACL  \u2502\n                    \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u25bc\u2500\u2500\u2510 \u250c\u2500\u2500\u2500\u25bc\u2500\u2500\u2500\u2500\u2510 \u250c\u2500\u25bc\u2500\u2500\u2500\u2500\u2500\u2500\u2510\u2502  \u250c\u2500\u2500\u2500\u2500\u2500\u25bc\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n                    \u2502Vertrags-\u2502 \u2502Schaden-\u2502 \u2502Tarif. &\u2502\u2502  \u2502Dokumenten- \u2502\n                    \u2502 wesen   \u2502 \u2502regul.  \u2502 \u2502Praemie \u2502\u2502  \u2502 service    \u2502\n                    \u2502 (Core)  \u2502 \u2502(Core)  \u2502 \u2502(Core)  \u2502\u2502  \u2502(Supporting)\u2502\n                    \u2514\u2500\u2500\u252c\u2500\u2500\u252c\u2500\u2500\u2500\u2518 \u2514\u2500\u2500\u2500\u25b2\u2500\u2500\u25b2\u2500\u2518 \u2514\u2500\u2500\u25b2\u2500\u2500\u2500\u2500\u2500\u2518\u2502  \u2514\u2500\u2500\u25b2\u2500\u2500\u2500\u2500\u25b2\u2500\u2500\u2500\u2518\n                       \u2502  \u2502  C-S    \u2502  \u2502  C-S  \u2502      \u2502     \u2502    \u2502\n                       \u2502  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518  \u2502       \u2502      \u2502     \u2502    \u2502\n                       \u2502       C-S     \u2502\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518      \u2502     \u2502    \u2502\n                       \u2502               \u2502              \u2502     \u2502    \u2502\n                       \u2502  Pub.Lang.    \u2502  Pub.Lang.   \u2502     \u2502    \u2502\n                       \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2518    \u2502\n                                       \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                                                      \u2502\n                                               \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u25bc\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n                                               \u2502  Kunden-    \u2502\n                                               \u2502  domaene    \u2502\n                                               \u2502 (Supporting)\u2502\n                                               \u2502   OHS API   \u2502\n                                               \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n\nLegende:\n  ACL        = Anti-Corruption Layer (gegen Legacy)\n  C-S        = Customer-Supplier\n  OHS        = Open Host Service\n  Pub.Lang.  = Published Language (Event-basiert)\n```\n\n## Migration Sequence (Strangler Fig)\n\n| Phase | Kontext extrahieren | Abhaengigkeit | Risiko |\n|---|---|---|---|\n| 1 | **Tarifierung & Praemie** | Keine Downstream-Abhaengigkeiten; kann im Shadow-Mode parallel laufen | Niedrig \u2014 Ergebnis ist verifizierbar (gleiche Praemie?) |\n| 2 | **Kundendomaene** | Wird von allen anderen Kontexten benoetigt \u2014 frueh extrahieren | Mittel \u2014 Stammdatenmigration komplex |\n| 3 | **Dokumentenservice** | Rein reaktiv, konsumiert Events, keine Business-Logik-Abhaengigkeit | Niedrig \u2014 kann Event-getrieben angebunden werden |\n| 4 | **Vertragswesen** | Core, hoechste Komplexitaet, benoetigt Kunde + Tarif | Hoch \u2014 zentraler Kontext, schrittweise per Nachtrag-Typ |\n| 5 | **Schadenregulierung** | Benoetigt Vertrag + Kunde, komplexe Regulierungslogik | Hoch \u2014 erst nach stabilem Vertragswesen |\n"}], "grading": null}, {"id": "eval-4-legacy-decomposition-without_skill", "prompt": "(No prompt found)", "eval_id": null, "outputs": [{"name": "analysis.md", "type": "text", "content": "# Bounded Context Analysis: Legacy-Versicherungsmonolith\n\n## Ausgangslage\n\nEin 10 Jahre alter Java-Monolith fuer Versicherungsverwaltung mit:\n- Vertragsmanagement, Schadensbearbeitung, Kundenverwaltung, Dokumentengenerierung, Praemienberechnung als eng gekoppelte Module\n- Eine zentrale Oracle-Datenbank mit ca. 400 Tabellen\n- Anforderung: schrittweise Modernisierung, kein Big-Bang\n\n## Methodik zur Grenzziehung\n\n### Angewandte Heuristiken\n\n1. **Geschaeftsfaehigkeiten (Business Capabilities):** Jeder Bounded Context entspricht einer eigenstaendigen Geschaeftsfaehigkeit, die fuer sich allein Wert liefert.\n2. **Dateneigentumsrecht:** Welche Tabellen gehoeren logisch zusammen? Welche Entitaet ist der \"System of Record\"?\n3. **Aenderungszyklen:** Module, die sich gemeinsam aendern, gehoeren zusammen. Module mit unterschiedlichen Release-Kadenzen sollten getrennt werden.\n4. **Teamstruktur:** Welche Teams arbeiten an welchen Bereichen? (Conway's Law)\n5. **Regulatorische Grenzen:** Schadensbearbeitung unterliegt anderen Compliance-Anforderungen als Kundenverwaltung.\n\n### Identifizierte Bounded Contexts\n\nSieben Kontexte wurden identifiziert (Details siehe context-map.md):\n\n1. **Vertragsmanagement** -- Kern des Systems, hoechste Kopplung\n2. **Schadensbearbeitung** -- Eigenstaendiger Lebenszyklus mit klaren Ein-/Ausgaengen\n3. **Kundenverwaltung** -- Stammdaten-Service, viele Konsumenten\n4. **Praemienberechnung** -- Berechnungslogik, gut isolierbar\n5. **Dokumentengenerierung** -- Reine Ausgabe-Funktion, technisch gut trennbar\n6. **Partner & Vertrieb** -- Eigene Domaene mit Provisionslogik\n7. **Inkasso & Buchhaltung** -- Finanznahe Prozesse, eigene Compliance\n\n## Analyse der Kopplungspunkte\n\n### Kritische Shared-Data-Probleme\n\nDie groesste Herausforderung im Monolith sind die gemeinsam genutzten Tabellen. Typische Muster in einem solchen System:\n\n| Problem | Beispiel | Auswirkung |\n|---------|----------|------------|\n| Gott-Tabelle \"VERTRAG\" | Wird von Vertrags-, Schaden-, Praemien- und Dokumentenlogik geschrieben | Jede Aenderung hat Seiteneffekte |\n| Gott-Tabelle \"KUNDE\" | Wird von allen Modulen gelesen und teilweise geschrieben | Keine klare Datenhoheit |\n| Stored Procedures | PL/SQL-Logik in der Datenbank implementiert Geschaeftsregeln | Logik ist unsichtbar fuer die Java-Schicht |\n| Fremdschluessel quer durch Domaenen | SCHADEN -> VERTRAG -> KUNDE -> ADRESSE | Datenbank erzwingt Kopplung |\n\n### Implizite Kontextgrenzen im bestehenden Code\n\nAuch im Monolith gibt es bereits Grenzen, die man nutzen kann:\n- **Package-Struktur:** Wenn die Java-Packages bereits nach Fachlichkeit strukturiert sind (z.B. `de.versicherung.vertrag`, `de.versicherung.schaden`), sind das Hinweise auf natuerliche Grenzen.\n- **Datenbank-Schemata:** Falls bereits Oracle-Schemata existieren, koennen diese als Ausgangspunkt dienen.\n- **Bestehende Service-Interfaces:** Interne APIs oder Fassaden zwischen Modulen deuten auf intentionale Grenzen hin.\n\n## Empfohlene Migrationsstrategie\n\n### Phase 1: Strangler Fig -- Dokumentengenerierung extrahieren (Monate 1-4)\n\n**Warum zuerst:** Dokumentengenerierung ist ein reiner Konsument, schreibt keine Geschaeftsdaten zurueck und hat die geringste bidirektionale Kopplung.\n\n**Vorgehen:**\n1. Neuen Dokumenten-Service aufsetzen (z.B. Spring Boot + Template-Engine)\n2. API definieren, die Vertragsdaten, Kundendaten und Schadensdaten als Input erhaelt\n3. Im Monolith einen Adapter bauen, der die neue API aufruft statt der alten Dokumentenlogik\n4. Alten Code im Monolith stilllegen\n\n**Risiken:** Gering. Rollback-Faehigkeit bleibt erhalten, da der Monolith die alte Logik noch hat.\n\n### Phase 2: Kundenverwaltung als eigenen Service (Monate 3-8)\n\n**Warum als Zweites:** Kundenverwaltung ist ein zentraler Datenlieferant. Die Extraktion erzwingt die Definition einer klaren Daten-API und ist die Grundlage fuer alle weiteren Extraktionen.\n\n**Vorgehen:**\n1. Customer-API definieren (REST oder gRPC)\n2. Anti-Corruption Layer im Monolith: alle Kundenzugriffe ueber eine Fassade leiten\n3. Daten in den neuen Service migrieren (Dual-Write-Phase mit Konsistenzpruefung)\n4. Monolith schrittweise auf die neue API umstellen\n5. Kundentabellen im Monolith zu Read-Only-Views degradieren, dann entfernen\n\n**Risiken:** Mittel. Dual-Write-Konsistenz muss sorgfaeltig ueberwacht werden.\n\n### Phase 3: Praemienberechnung extrahieren (Monate 6-10)\n\n**Warum:** Praemienberechnung ist rechenlastig, aendert sich haeufig (neue Tarife) und profitiert am meisten von unabhaengigem Deployment.\n\n**Vorgehen:**\n1. Berechnungslogik als zustandslosen Service implementieren\n2. Eingabe: Vertragsdaten + Risikofaktoren. Ausgabe: Praemie\n3. Synchroner Aufruf aus dem Monolith, da Ergebnis sofort benoetigt wird\n4. PL/SQL-Logik in der Datenbank identifizieren und in den neuen Service migrieren\n\n### Phase 4: Schadensbearbeitung (Monate 9-15)\n\n**Warum spaeter:** Hohe Komplexitaet, eigener Workflow, regulatorische Anforderungen. Profitiert davon, dass Kunde und Praemie bereits extrahiert sind.\n\n### Phase 5: Vertragsmanagement (Monate 14-24)\n\n**Zuletzt:** Vertragsmanagement ist der Kern mit der hoechsten Kopplung. Erst extrahieren, wenn die umgebenden Kontexte bereits eigenstaendig sind.\n\n## Datenstrategie\n\n### Datenhoheit pro Kontext\n\n| Bounded Context       | Besitzt die Daten fuer          | Bietet anderen an via        |\n|-----------------------|---------------------------------|------------------------------|\n| Kundenverwaltung      | Kunde, Adresse, Kontakt         | Kunden-API (ID, Name, Rolle)|\n| Vertragsmanagement    | Vertrag, Deckung, Nachtrag      | Vertrags-API (ID, Status)   |\n| Schadensbearbeitung   | Schaden, Regulierung, Gutachten | Schadens-API (ID, Status)   |\n| Praemienberechnung    | Tarif, Risikofaktor, Praemie    | Berechnungs-API (sync)      |\n| Dokumentengenerierung | Vorlage, Dokument, Druckauftrag | Generierungs-API (async)    |\n| Partner & Vertrieb    | Vermittler, Provision           | Partner-API (ID, Provision) |\n| Inkasso & Buchhaltung | Beitragskonto, Mahnung          | Konto-API (Saldo, Status)   |\n\n### Umgang mit den 400 Tabellen\n\n1. **Zuordnung:** Jede Tabelle genau einem Bounded Context zuordnen. Tabellen, die von mehreren Kontexten beschrieben werden, sind Kandidaten fuer Aufspaltung.\n2. **Views fuer die Uebergangsphase:** Solange Kontexte noch in der gemeinsamen Datenbank leben, Views erstellen, die nur die Spalten exponieren, die der jeweilige Kontext benoetigt.\n3. **Datenmigration:** Pro extrahiertem Kontext die zugehoerigen Tabellen in eine eigene Datenbank migrieren. Change Data Capture (z.B. Debezium) fuer die Synchronisation waehrend der Uebergangsphase.\n\n## Risiken und Gegenmassnahmen\n\n| Risiko | Wahrscheinlichkeit | Gegenmassnahme |\n|--------|---------------------|----------------|\n| Verteilte Transaktionen | Hoch | Saga-Pattern statt 2PC; Eventual Consistency akzeptieren |\n| Datenkonsistenz bei Dual-Write | Hoch | Change Data Capture (Debezium), Konsistenz-Monitoring |\n| PL/SQL-Geschaeftslogik uebersehen | Mittel | Systematisches Audit aller Stored Procedures, Trigger, Views |\n| Performance-Regression durch Netzwerk-Hops | Mittel | Caching, Bulk-APIs, asynchrone Kommunikation wo moeglich |\n| Team-Ueberlastung durch parallele Migration und Feature-Entwicklung | Hoch | Feature-Freeze fuer betroffene Module waehrend Extraktion |\n| Unerkannte Kopplungen in der Datenbank | Hoch | Datenbankanalyse-Tools einsetzen (z.B. SchemaSpy, Oracle DBA-Views fuer FK-Abhaengigkeiten) |\n\n## Empfehlungen\n\n1. **Sofort starten:** Dokumentengenerierung als ersten Kandidaten extrahieren -- geringes Risiko, hoher Lerneffekt.\n2. **Datenbank-Archaeologie:** Vor jeder Extraktion die betroffenen Tabellen, Views, Stored Procedures und Trigger vollstaendig erfassen.\n3. **Event-Backbone frueh einfuehren:** Bereits in Phase 1 einen Event-Bus (z.B. Kafka) aufsetzen, auch wenn anfangs nur wenige Events fliessen.\n4. **Feature-Toggles:** Jede Extraktion hinter einem Feature-Toggle ausfuehren, um schnell zurueckrollen zu koennen.\n5. **Observability:** Distributed Tracing (z.B. OpenTelemetry) von Anfang an einbauen, um Netzwerk-bedingte Probleme sichtbar zu machen.\n"}, {"name": "context-map.md", "type": "text", "content": "# Context Map: Versicherungsverwaltung Legacy-Monolith\n\n## Identified Bounded Contexts\n\n```\n+------------------------------------------------------------------+\n|                                                                  |\n|  +------------------+       +---------------------+              |\n|  | Vertrags-        |       | Schaden-            |              |\n|  | management       |<----->| bearbeitung         |              |\n|  | (Policy Mgmt)    |       | (Claims Processing) |              |\n|  +--------+---------+       +----------+----------+              |\n|           |                            |                         |\n|           | ACL                        | ACL                     |\n|           v                            v                         |\n|  +------------------+       +---------------------+              |\n|  | Praemien-        |       | Kunden-             |              |\n|  | berechnung       |<------| verwaltung          |              |\n|  | (Premium Calc)   |       | (Customer Mgmt)     |              |\n|  +--------+---------+       +----------+----------+              |\n|           |                            |                         |\n|           |                            |                         |\n|           v                            v                         |\n|  +------------------+       +---------------------+              |\n|  | Dokument-        |       | Partner &           |              |\n|  | generierung      |       | Vertrieb            |              |\n|  | (Document Gen)   |       | (Distribution)      |              |\n|  +------------------+       +---------------------+              |\n|                                                                  |\n+------------------------------------------------------------------+\n```\n\n## Bounded Contexts\n\n### 1. Vertragsmanagement (Policy Management)\n- **Kernaufgabe:** Lebenszyklus von Versicherungsvertraegen (Antrag, Police, Nachtrag, Kuendigung)\n- **Entitaeten:** Vertrag, Antrag, Nachtrag, Tarif, Deckung, Versicherungsobjekt\n- **Geschaetzter Tabellenanteil:** ~100 Tabellen\n\n### 2. Schadensbearbeitung (Claims Processing)\n- **Kernaufgabe:** Schadensmeldung, Pruefung, Regulierung, Auszahlung\n- **Entitaeten:** Schaden, Schadensfall, Regulierung, Zahlung, Gutachten, Leistung\n- **Geschaetzter Tabellenanteil:** ~80 Tabellen\n\n### 3. Kundenverwaltung (Customer Management)\n- **Kernaufgabe:** Stammdaten, Rollen (VN, VP, Begguenstigter), Kommunikation\n- **Entitaeten:** Kunde, Adresse, Kontakt, Rolle, Bankverbindung, Kommunikationshistorie\n- **Geschaetzter Tabellenanteil:** ~60 Tabellen\n\n### 4. Praemienberechnung (Premium Calculation)\n- **Kernaufgabe:** Tarifierung, Risikoberechnung, Praemienermittlung\n- **Entitaeten:** Tarif, Risikofaktor, Praemie, Rabatt, Beitragsverlauf\n- **Geschaetzter Tabellenanteil:** ~50 Tabellen\n\n### 5. Dokumentengenerierung (Document Generation)\n- **Kernaufgabe:** Erstellung von Policen, Nachtraegen, Korrespondenz, Bescheiden\n- **Entitaeten:** Vorlage, Dokument, Druckauftrag, Archivdokument\n- **Geschaetzter Tabellenanteil:** ~40 Tabellen\n\n### 6. Partner & Vertrieb (Distribution)\n- **Kernaufgabe:** Vermittler, Provisionen, Vertriebswege\n- **Entitaeten:** Vermittler, Provision, Courtage, Vertriebskanal, Abrechnungslauf\n- **Geschaetzter Tabellenanteil:** ~40 Tabellen\n\n### 7. Inkasso & Buchhaltung (Billing & Accounting)\n- **Kernaufgabe:** Beitragseinzug, Mahnwesen, Hauptbuchintegration\n- **Entitaeten:** Beitragskonto, Mahnung, Zahlung, Buchungssatz, SEPA-Mandat\n- **Geschaetzter Tabellenanteil:** ~30 Tabellen\n\n## Beziehungen zwischen Kontexten\n\n| Upstream              | Downstream            | Beziehungstyp               |\n|-----------------------|-----------------------|-----------------------------|\n| Kundenverwaltung      | Vertragsmanagement    | Customer-Supplier           |\n| Kundenverwaltung      | Schadensbearbeitung   | Customer-Supplier           |\n| Vertragsmanagement    | Praemienberechnung    | Conformist                  |\n| Vertragsmanagement    | Schadensbearbeitung   | Customer-Supplier           |\n| Vertragsmanagement    | Dokumentengenerierung | Customer-Supplier           |\n| Praemienberechnung    | Inkasso & Buchhaltung | Customer-Supplier           |\n| Schadensbearbeitung   | Dokumentengenerierung | Customer-Supplier           |\n| Vertragsmanagement    | Partner & Vertrieb    | Partnership                 |\n\n## Integrationsmuster\n\n### Anti-Corruption Layer (ACL)\nJeder neue extrahierte Service muss einen ACL gegen die Legacy-Datenbank betreiben, solange die Migration laeuft.\n\n### Shared Kernel (Uebergangsphase)\nWaehrend der Migration teilen sich Kontexte unvermeidlich die Oracle-Datenbank. Diese Kopplung wird schrittweise durch Events und APIs ersetzt.\n\n### Domain Events (Zielzustand)\n- `VertragAbgeschlossen` --> Praemienberechnung, Dokumentengenerierung, Partner\n- `SchadenGemeldet` --> Dokumentengenerierung, Kundenverwaltung\n- `PraemieBerechnet` --> Inkasso, Vertragsmanagement\n- `KundeAktualisiert` --> Vertragsmanagement, Schadensbearbeitung\n"}], "grading": null}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"skill_name": "bounded-context-design", "iteration": 1, "configurations": [{"name": "with_skill", "evals": [{"eval_name": "ecommerce", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0}, {"eval_name": "single-context", "assertions_passed": 7, "assertions_total": 7, "pass_rate": 1.0}, {"eval_name": "saas-classification", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0}, {"eval_name": "legacy-decomposition", "assertions_passed": 6, "assertions_total": 6, "pass_rate": 1.0}], "aggregate": {"mean_pass_rate": 1.0, "total_passed": 25, "total_assertions": 25}}, {"name": "without_skill", "evals": [{"eval_name": "ecommerce", "assertions_passed": 3, "assertions_total": 6, "pass_rate": 0.5}, {"eval_name": "single-context", "assertions_passed": 2, "assertions_total": 7, "pass_rate": 0.29}, {"eval_name": "saas-classification", "assertions_passed": 2.5, "assertions_total": 6, "pass_rate": 0.42}, {"eval_name": "legacy-decomposition", "assertions_passed": 2, "assertions_total": 6, "pass_rate": 0.33}], "aggregate": {"mean_pass_rate": 0.38, "total_passed": 9.5, "total_assertions": 25}}], "delta": {"pass_rate_improvement": 0.62}, "analysis": {"key_findings": ["with_skill: 25/25 (100%) vs without_skill: 9.5/25 (38%) \u2014 LARGEST DELTA of any skill (+62%)", "ALL 8 agents completed successfully", "A1 (subdomain classification): 4/4 with, 0.5/4 without \u2014 baseline rarely classifies Core/Supporting/Generic", "A5 (structured format): 4/4 with, 0/4 without \u2014 baseline never produces structured context-map.md", "A3 (ubiquitous language): 4/4 with, 1/4 without \u2014 baseline occasionally defines terms but not consistently", "A6 (single context): with_skill correctly identifies 1 context; without_skill creates 3 for a CRUD app", "This skill has the highest value-add of any skill we've built \u2014 DDD strategic design is not in Claude's default repertoire"]}}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>
