@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guardrail Integrity Report — 2026-03-30</title>
+  <style>
+    :root{--bg:#0f1117;--surface:#1a1d27;--sh:#242836;--border:#2d3244;--text:#e4e6ed;--muted:#8b8fa3;--accent:#6366f1;--green:#22c55e;--yellow:#eab308;--red:#ef4444;--blue:#3b82f6;--gbg:rgba(34,197,94,.1);--ybg:rgba(234,179,8,.1);--rbg:rgba(239,68,68,.1);--abg:rgba(99,102,241,.1);--bbg:rgba(59,130,246,.1)}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;line-height:1.6;padding:2rem;max-width:1200px;margin:0 auto}
+    h1{font-size:1.75rem;margin-bottom:.5rem}h2{font-size:1.25rem;margin-bottom:1rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:.5rem}h3{font-size:1rem;margin-bottom:.75rem}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin-bottom:1rem}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin-bottom:1rem}
+    .stat{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+    .sv{font-size:2.2rem;font-weight:700;font-family:'JetBrains Mono','Fira Code',monospace}.sl{color:var(--muted);font-size:.8rem;margin-top:.2rem}
+    .badge{display:inline-block;padding:.1rem .5rem;border-radius:4px;font-size:.75rem;font-weight:600;font-family:'JetBrains Mono',monospace}
+    .bg{background:var(--gbg);color:var(--green)}.by{background:var(--ybg);color:var(--yellow)}.br{background:var(--rbg);color:var(--red)}.ba{background:var(--abg);color:var(--accent)}.bb{background:var(--bbg);color:var(--blue)}
+    table{width:100%;border-collapse:collapse;font-size:.88rem}th,td{padding:.5rem .7rem;text-align:left;border-bottom:1px solid var(--border)}th{color:var(--muted);font-weight:600;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}tr:hover{background:var(--sh)}
+    .mono{font-family:'JetBrains Mono','Fira Code',monospace}
+    .bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.4rem}.bar-label{width:170px;font-size:.85rem;flex-shrink:0}.bar-bg{flex:1;height:22px;background:var(--sh);border-radius:4px;overflow:hidden}.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:.4rem;font-size:.7rem;font-weight:600;transition:width .4s}
+    .warn-card{padding:.8rem 1rem;border-radius:8px;margin-bottom:.5rem;display:flex;gap:.6rem;align-items:flex-start;font-size:.9rem}
+    .section{margin-bottom:2rem}
+    .tl{display:flex;align-items:center;position:relative;padding:1rem 0;user-select:none}
+    .tl-line{position:absolute;top:50%;left:40px;right:40px;height:2px;background:var(--border)}
+    .tl-dot{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;cursor:pointer}
+    .tl-circle{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);transition:all .25s}
+    .tl-circle.active{transform:scale(1.5);box-shadow:0 0 16px currentColor;border-color:currentColor}
+    .tl-name{font-size:.65rem;color:var(--muted);margin-top:.4rem;text-align:center;max-width:100px;transition:color .2s}
+    .tl-dot.active .tl-name{color:var(--text);font-weight:600}
+    .tl-nav{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.3rem .8rem;cursor:pointer;color:var(--text);font-size:1rem;z-index:3}
+    .tl-nav:hover{background:var(--sh)}
+    .tl-nav:disabled{opacity:.3;cursor:default}
+    .hl{background:var(--ybg)}
+    .routing-step{display:flex;gap:.8rem;padding:.6rem 0;border-bottom:1px solid var(--border);align-items:flex-start;transition:opacity .3s}
+    .routing-step.future{opacity:.25}
+    .rnum{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0}
+    .fade-in{animation:fadeIn .3s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .cycle-label{font-size:.85rem;color:var(--muted);margin-bottom:.3rem}
+    @media(max-width:768px){body{padding:1rem}.grid{grid-template-columns:1fr 1fr}.bar-label{width:110px}}
+  </style>
+</head>
+<body>
+
+<div class="section">
+  <h1>Guardrail Integrity Report</h1>
+  <p style="color:var(--muted);margin-bottom:.3rem">Generiert am 2026-03-30 aus der Git-Historie von superflowers</p>
+  <p id="cycle-indicator" class="cycle-label"></p>
+  <div id="summary" class="grid"></div>
+  <div id="findings" class="card"></div>
+</div>
+
+<div class="section">
+  <h2>Timeline</h2>
+  <div style="display:flex;align-items:center;gap:.5rem;">
+    <button class="tl-nav" id="prev-btn" onclick="nav(-1)">&#9664;</button>
+    <div class="tl" id="timeline"><div class="tl-line"></div></div>
+    <button class="tl-nav" id="next-btn" onclick="nav(1)">&#9654;</button>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Guardrail-Integrität nach Kategorie</h2>
+  <div id="integrity-bars" class="card"></div>
+  <h3 style="margin-top:1rem">Guardrail-Wachstum</h3>
+  <div id="growth-chart" class="card"></div>
+</div>
+
+<div class="section">
+  <h2 id="hardgate-title">HARD-GATE-Übersicht</h2>
+  <div id="hardgate-table" class="card" style="overflow-x:auto"></div>
+</div>
+
+<div class="section">
+  <h2>Routing-Regel-Evolution</h2>
+  <p style="color:var(--muted);margin-bottom:.8rem;font-size:.9rem">Die "terminal state" Regel bestimmt welche Skills nach dem Brainstorming aufgerufen werden.</p>
+  <div id="routing" class="card"></div>
+</div>
+
+<div class="section">
+  <h2>Zyklus-Detail</h2>
+  <div id="cycle-detail" class="card"></div>
+</div>
+
+<div class="section">
+  <h2>Drift-Warnungen</h2>
+  <div id="warnings"></div>
+</div>
+
+<div class="section">
+  <h2>Empfehlungen</h2>
+  <div class="card">
+    <ol style="padding-left:1.5rem">
+      <li style="padding:.4rem 0"><strong>Nächstes Feature mit vollem Workflow</strong> — Compliance-Score soll von 0% auf &gt;80% steigen.</li>
+      <li style="padding:.4rem 0"><strong>ADR-Verzeichnis erstellen</strong> — Bestehende Entscheidungen retroaktiv dokumentieren.</li>
+      <li style="padding:.4rem 0"><strong>Artefakte committen</strong> — architecture.md, quality-scenarios.md, Feature Files.</li>
+      <li style="padding:.4rem 0"><strong>Guardrail-Stabilität monitoren</strong> — Report nach jedem Zyklus, Score &gt;90%.</li>
+    </ol>
+  </div>
+</div>
+
+<footer style="text-align:center;color:var(--muted);font-size:.75rem;padding:1.5rem 0;border-top:1px solid var(--border);margin-top:1.5rem">
+  Guardrail Integrity Report — 2026-03-30 — superflowers compliance-report
+</footer>
+
+<script>
+const D = {
+  generatedAt: "2026-03-30",
+  routing: [
+    {v:1, text:"writing-plans only", change:"Baseline", color:"accent"},
+    {v:2, text:"feature-design (if behavioral) → writing-plans", change:"Erweitert", color:"green"},
+    {v:3, text:"feature-design FIRST → writing-plans", change:"Verschärft", color:"green"},
+    {v:4, text:"writing-plans only", change:"REVERT!", color:"red"},
+    {v:5, text:"check specification skills first", change:"Wieder erweitert", color:"yellow"},
+    {v:6, text:"architecture-assessment + feature-design first", change:"Verschärft", color:"green"},
+    {v:7, text:"bounded-context → arch → style → quality → features → plans", change:"Finale Version", color:"green"}
+  ],
+  cycles: [
+    { id:1, name:"BDD Skills Foundation", date:"2026-03-28", files:7, lines:995,
+      snapshot: {
+        total:0, score:null, hardGateCount:0, doNotCount:0, immutCount:0, verifCount:0, routingVersion:1,
+        hardGates:[],
+        events:[],
+        warnings:[]
+      }
+    },
+    { id:2, name:"BDD Hardening & Spec Integration", date:"2026-03-28/29", files:17, lines:1104,
+      snapshot: {
+        total:22, score:100, hardGateCount:10, doNotCount:8, immutCount:0, verifCount:4, routingVersion:3,
+        hardGates:[
+          {skill:"brainstorming",rule:"Design-Genehmigung vor Implementierung",status:"active",new:true},
+          {skill:"brainstorming",rule:"Kein Skip für einfache Projekte",status:"active",new:true},
+          {skill:"feature-design",rule:"Kein Plan ohne Feature Files",status:"active",new:true},
+          {skill:"fitness-functions",rule:"Keine Completion ohne alle FFs bestanden",status:"active",new:true},
+          {skill:"fitness-functions",rule:"FF-Immutabilität: keine Schwell-Absenkung",status:"active",new:true},
+          {skill:"fitness-functions",rule:"FF-Immutabilität: keine Löschung",status:"active",new:true},
+          {skill:"fitness-functions",rule:"Nur User darf architecture.md ändern",status:"active",new:true},
+          {skill:"bdd-testing",rule:"Keine Completion ohne alle Szenarien bestanden",status:"active",new:true},
+          {skill:"bdd-testing",rule:"Test-Immutabilität: keine Szenario-Änderung",status:"active",new:true},
+          {skill:"bdd-testing",rule:"Nur User darf Szenarien ändern",status:"active",new:true}
+        ],
+        events:[
+          {type:"added",cat:"HARD-GATEs",count:10},{type:"added",cat:"Do-NOT-Regeln",count:8},{type:"added",cat:"Verifikations-Gates",count:4}
+        ],
+        warnings:[]
+      }
+    },
+    { id:3, name:"Eval Results & Improvements", date:"2026-03-29", files:166, lines:11756,
+      snapshot: {
+        total:28, score:100, hardGateCount:13, doNotCount:10, immutCount:2, verifCount:4, routingVersion:3,
+        hardGates:[
+          {skill:"brainstorming",rule:"Design-Genehmigung vor Implementierung",status:"active",new:false},
+          {skill:"brainstorming",rule:"Kein Skip für einfache Projekte",status:"active",new:false},
+          {skill:"feature-design",rule:"Kein Plan ohne Feature Files",status:"active",new:false},
+          {skill:"feature-design",rule:"User-Genehmigung für Feature-File-Änderungen",status:"active",new:true},
+          {skill:"feature-design",rule:"Keine Rationalisierung bei Konflikten",status:"active",new:true},
+          {skill:"feature-design",rule:"User MUSS antworten vor Änderung",status:"active",new:true},
+          {skill:"fitness-functions",rule:"Keine Completion ohne alle FFs bestanden",status:"active",new:false},
+          {skill:"fitness-functions",rule:"FF-Immutabilität: keine Schwell-Absenkung",status:"active",new:false},
+          {skill:"fitness-functions",rule:"FF-Immutabilität: keine Löschung",status:"active",new:false},
+          {skill:"fitness-functions",rule:"Nur User darf architecture.md ändern",status:"active",new:false},
+          {skill:"bdd-testing",rule:"Keine Completion ohne alle Szenarien bestanden",status:"active",new:false},
+          {skill:"bdd-testing",rule:"Test-Immutabilität: keine Szenario-Änderung",status:"active",new:false},
+          {skill:"bdd-testing",rule:"Nur User darf Szenarien ändern",status:"active",new:false}
+        ],
+        events:[
+          {type:"added",cat:"HARD-GATEs",count:3},{type:"added",cat:"Do-NOT-Regeln",count:2},{type:"added",cat:"Immutabilitätsregeln",count:2},
+          {type:"tightened",cat:"Verifikation",count:1,detail:"BDD-Testing: 3→4 Pflichtschritte"}
+        ],
+        warnings:[]
+      }
+    },
+    { id:4, name:"Eval-Driven Refinement", date:"2026-03-29", files:52, lines:2377,
+      snapshot: {
+        total:28, score:93, hardGateCount:13, doNotCount:10, immutCount:2, verifCount:4, routingVersion:3,
+        hardGates:[
+          {skill:"brainstorming",rule:"Design-Genehmigung vor Implementierung",status:"weakened",new:false,detail:"'approved' → 'confirmed' (niedrigere Hürde)"},
+          {skill:"brainstorming",rule:"Kein Skip für einfache Projekte",status:"active",new:false},
+          {skill:"feature-design",rule:"Kein Plan ohne Feature Files",status:"active",new:false},
+          {skill:"feature-design",rule:"User-Genehmigung für Feature-File-Änderungen",status:"active",new:false},
+          {skill:"feature-design",rule:"Keine Rationalisierung bei Konflikten",status:"active",new:false},
+          {skill:"feature-design",rule:"User MUSS antworten vor Änderung",status:"active",new:false},
+          {skill:"fitness-functions",rule:"Keine Completion ohne alle FFs bestanden",status:"active",new:false},
+          {skill:"fitness-functions",rule:"FF-Immutabilität: keine Schwell-Absenkung",status:"active",new:false},
+          {skill:"fitness-functions",rule:"FF-Immutabilität: keine Löschung",status:"active",new:false},
+          {skill:"fitness-functions",rule:"Nur User darf architecture.md ändern",status:"active",new:false},
+          {skill:"bdd-testing",rule:"Keine Completion ohne alle Szenarien bestanden",status:"active",new:false},
+          {skill:"bdd-testing",rule:"Test-Immutabilität: keine Szenario-Änderung",status:"active",new:false},
+          {skill:"bdd-testing",rule:"Nur User darf Szenarien ändern",status:"active",new:false}
+        ],
+        events:[
+          {type:"weakened",cat:"HARD-GATE",count:1,detail:"brainstorming: Design-Genehmigung abgeschwächt"}
+        ],
+        warnings:[
+          {sev:"warning",msg:"brainstorming HARD-GATE abgeschwächt: Design-Genehmigung → Verständnis-Bestätigung"}
+        ]
+      }
+    },
+    { id:5, name:"Architecture Specification Skills", date:"2026-03-29", files:267, lines:29692,
+      snapshot: {
+        total:43, score:93, hardGateCount:16, doNotCount:18, immutCount:4, verifCount:5, routingVersion:7,
+        hardGates:[
+          {skill:"brainstorming",rule:"Design-Genehmigung vor Implementierung",status:"restored",new:false,detail:"Wiederhergestellt auf Original-Stärke"},
+          {skill:"brainstorming",rule:"Kein Skip für einfache Projekte",status:"active",new:false},
+          {skill:"feature-design",rule:"Kein Plan ohne Feature Files",status:"active",new:false},
+          {skill:"feature-design",rule:"User-Genehmigung für Feature-File-Änderungen",status:"active",new:false},
+          {skill:"feature-design",rule:"Keine Rationalisierung bei Konflikten",status:"active",new:false},
+          {skill:"feature-design",rule:"User MUSS antworten vor Änderung",status:"active",new:false},
+          {skill:"fitness-functions",rule:"Keine Completion ohne alle FFs bestanden",status:"active",new:false},
+          {skill:"fitness-functions",rule:"FF-Immutabilität: keine Schwell-Absenkung",status:"active",new:false},
+          {skill:"fitness-functions",rule:"FF-Immutabilität: keine Löschung",status:"active",new:false},
+          {skill:"fitness-functions",rule:"Nur User darf architecture.md ändern",status:"active",new:false},
+          {skill:"bdd-testing",rule:"Keine Completion ohne alle Szenarien bestanden",status:"active",new:false},
+          {skill:"bdd-testing",rule:"Test-Immutabilität: keine Szenario-Änderung",status:"active",new:false},
+          {skill:"bdd-testing",rule:"Test-Immutabilität: keine Step-Abschwächung",status:"active",new:true},
+          {skill:"bdd-testing",rule:"Nur User darf Szenarien ändern",status:"active",new:false},
+          {skill:"architecture-assessment",rule:"Keine Spec ohne Architektur-Charakteristiken",status:"active",new:true},
+          {skill:"architecture-assessment",rule:"Keine Planung ohne dokumentierte Charakteristiken",status:"active",new:true}
+        ],
+        events:[
+          {type:"added",cat:"HARD-GATEs",count:3},{type:"restored",cat:"HARD-GATE",count:1,detail:"brainstorming Design-Genehmigung"},
+          {type:"added",cat:"Do-NOT-Regeln",count:8},{type:"added",cat:"Immutabilitätsregeln",count:2},{type:"added",cat:"Verifikations-Gate",count:1}
+        ],
+        warnings:[
+          {sev:"warning",msg:"brainstorming HARD-GATE temporär abgeschwächt (Zyklus 4), wiederhergestellt"},
+          {sev:"warning",msg:"Routing-Regel 7x umgeschrieben — inkl. REVERT"},
+          {sev:"info",msg:"Keine Do-NOT-Regel permanent entfernt"},
+          {sev:"info",msg:"Verifikations-Schwelle verschärft: 3→4 Schritte"},
+          {sev:"info",msg:"Bootstrapping abgeschlossen — alle Guardrails aktiv"}
+        ]
+      }
+    }
+  ]
+};
+
+let sel = D.cycles.length - 1;
+
+function sc(v){return v>85?'var(--green)':v>=60?'var(--yellow)':'var(--red)'}
+function scbg(v){return v>85?'var(--gbg)':v>=60?'var(--ybg)':'var(--rbg)'}
+
+function render(){
+  const c=D.cycles[sel], s=c.snapshot;
+  document.getElementById('cycle-indicator').innerHTML=`<span style="color:var(--accent)">&#9654;</span> Stand nach <strong>${c.name}</strong> (${c.date})`;
+
+  // Summary
+  const scoreHtml = s.score!==null ? `<div class="sv" style="color:${sc(s.score)}">${s.score}%</div><div class="sl">Integritäts-Score</div>` : `<div class="sv" style="color:var(--muted)">—</div><div class="sl">Noch keine Guardrails</div>`;
+  document.getElementById('summary').innerHTML=`
+    <div class="stat">${scoreHtml}</div>
+    <div class="stat"><div class="sv" style="color:var(--accent)">${s.total}</div><div class="sl">Guardrails gesamt</div></div>
+    <div class="stat"><div class="sv" style="color:var(--green)">${s.hardGateCount}</div><div class="sl">HARD-GATEs</div></div>
+    <div class="stat"><div class="sv" style="color:var(--green)">${s.doNotCount}</div><div class="sl">Do-NOT-Regeln</div></div>
+    <div class="stat"><div class="sv" style="color:var(--accent)">${s.routingVersion}</div><div class="sl">Routing v${s.routingVersion}</div></div>`;
+
+  // Findings
+  const evHtml = s.events.length ? s.events.map(e=>{
+    const icon = e.type==='added'?'&#43;':e.type==='tightened'?'&#8593;':e.type==='weakened'?'&#9660;':'&#8635;';
+    const col = e.type==='weakened'?'var(--yellow)':e.type==='restored'?'var(--blue)':'var(--green)';
+    return `<li style="padding:.2rem 0"><span style="color:${col}">${icon}</span> <strong>${e.count}x</strong> ${e.cat} ${e.type==='added'?'hinzugefügt':e.type==='tightened'?'verschärft':e.type==='weakened'?'abgeschwächt':'wiederhergestellt'}${e.detail?' — '+e.detail:''}</li>`;
+  }).join('') : '<li style="color:var(--muted)">Keine Guardrail-Änderungen in diesem Zyklus</li>';
+  document.getElementById('findings').innerHTML=`<h3 style="margin-bottom:.5rem">Änderungen in diesem Zyklus</h3><ul style="list-style:none;padding:0">${evHtml}</ul><p style="color:var(--muted);font-size:.8rem;margin-top:.5rem">${c.files} Dateien, +${c.lines.toLocaleString()} Lines</p>`;
+
+  // Timeline
+  document.getElementById('timeline').innerHTML='<div class="tl-line"></div>'+D.cycles.map((cy,i)=>{
+    const col = cy.snapshot.score===null?'var(--muted)':sc(cy.snapshot.score);
+    const active = i===sel?'active':'';
+    return `<div class="tl-dot ${active}" onclick="go(${i})"><div class="tl-circle ${active}" style="background:${i===sel?col:'transparent'};border-color:${col};color:${col}"></div><div class="tl-name">${cy.name.split(' ').slice(0,2).join(' ')}</div></div>`;
+  }).join('');
+  document.getElementById('prev-btn').disabled=sel===0;
+  document.getElementById('next-btn').disabled=sel===D.cycles.length-1;
+
+  // Integrity bars
+  const bars = [
+    {l:`HARD-GATEs (${s.hardGateCount})`,v:s.hardGateCount?100-(s.hardGates.filter(g=>g.status==='weakened').length/s.hardGateCount*100):0},
+    {l:`Do-NOT-Regeln (${s.doNotCount})`,v:s.doNotCount?100:0},
+    {l:`Immutabilitätsregeln (${s.immutCount})`,v:s.immutCount?100:0},
+    {l:`Routing (v${s.routingVersion})`,v:s.routingVersion<=1?100:71},
+    {l:`Verifikations-Gates (${s.verifCount})`,v:s.verifCount?100:0}
+  ];
+  document.getElementById('integrity-bars').innerHTML = s.total===0 ? '<p style="color:var(--muted)">Noch keine Guardrails zu diesem Zeitpunkt.</p>' :
+    bars.map(b=>`<div class="bar-row"><div class="bar-label">${b.l}</div><div class="bar-bg"><div class="bar-fill" style="width:${b.v}%;background:${sc(b.v)}">${b.v?b.v+'%':''}</div></div></div>`).join('');
+
+  // Growth chart
+  const maxT=43, h=150, w=500, pad=50;
+  let pts=D.cycles.map((cy,i)=>({x:pad+i*(w-pad*2)/(D.cycles.length-1),y:h-10-(cy.snapshot.total/maxT)*(h-30),t:cy.snapshot.total,n:cy.name.split(' ')[0]}));
+  let line=pts.map((p,i)=>i===0?`M${p.x},${p.y}`:`L${p.x},${p.y}`).join(' ');
+  let dots=pts.map((p,i)=>`<circle cx="${p.x}" cy="${p.y}" r="${i===sel?7:4}" fill="${i===sel?'var(--accent)':'var(--green)'}" stroke="${i===sel?'var(--text)':'none'}" stroke-width="2"/><text x="${p.x}" y="${p.y-12}" fill="${i===sel?'var(--text)':'var(--muted)'}" font-size="${i===sel?11:9}" text-anchor="middle" font-weight="${i===sel?700:400}">${p.t}</text>`).join('');
+  let xlabels=pts.map(p=>`<text x="${p.x}" y="${h+5}" fill="var(--muted)" font-size="8" text-anchor="middle">${p.n}</text>`).join('');
+  document.getElementById('growth-chart').innerHTML=`<svg viewBox="0 0 ${w} ${h+15}" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">
+    <line x1="${pad}" y1="${h-10}" x2="${w-pad}" y2="${h-10}" stroke="var(--border)"/>
+    <line x1="${pad}" y1="10" x2="${w-pad}" y2="10" stroke="var(--border)" stroke-dasharray="4" stroke-width=".5"/>
+    <path d="${line}" fill="none" stroke="var(--green)" stroke-width="2"/>
+    ${dots}${xlabels}
+    ${D.cycles[3]&&sel>=3?`<circle cx="${pts[3].x}" cy="${pts[3].y-25}" r="5" fill="var(--red)"/><text x="${pts[3].x}" y="${pts[3].y-33}" fill="var(--red)" font-size="7" text-anchor="middle">1 abgeschw.</text>`:''}
+  </svg>`;
+
+  // HARD-GATE table
+  const hg=s.hardGates;
+  document.getElementById('hardgate-title').textContent=`HARD-GATE-Übersicht (${hg.length} Gates)`;
+  if(hg.length===0){
+    document.getElementById('hardgate-table').innerHTML='<p style="color:var(--muted)">Noch keine HARD-GATEs zu diesem Zeitpunkt.</p>';
+  } else {
+    document.getElementById('hardgate-table').innerHTML=`<table><thead><tr><th>Skill</th><th>Regel</th><th>Status</th></tr></thead><tbody>${hg.map(g=>{
+      const cls=g.status==='weakened'?'hl':g.status==='restored'?'hl':'';
+      const badge=g.new?'<span class="badge ba" style="margin-left:.4rem">Neu</span>':g.status==='weakened'?'<span class="badge by" style="margin-left:.4rem">Abgeschwächt</span>':g.status==='restored'?'<span class="badge bb" style="margin-left:.4rem">Wiederhergestellt</span>':'';
+      const det=g.detail?`<div style="font-size:.75rem;color:var(--muted);margin-top:.2rem">${g.detail}</div>`:'';
+      return `<tr class="${cls}"><td class="mono">${g.skill}</td><td>${g.rule}${badge}${det}</td><td><span class="badge ${g.status==='weakened'?'by':g.status==='restored'?'bb':'bg'}">${g.status==='weakened'?'Abgeschwächt':g.status==='restored'?'Wiederhergestellt':'Aktiv'}</span></td></tr>`;
+    }).join('')}</tbody></table>`;
+  }
+
+  // Routing evolution
+  const rv=s.routingVersion;
+  document.getElementById('routing').innerHTML=D.routing.filter(r=>r.v<=rv).map(r=>{
+    const bg=r.color==='red'?'var(--rbg)':r.color==='green'?'var(--gbg)':r.color==='yellow'?'var(--ybg)':'var(--abg)';
+    const fg=r.color==='red'?'var(--red)':r.color==='green'?'var(--green)':r.color==='yellow'?'var(--yellow)':'var(--accent)';
+    const isCurrent=r.v===rv;
+    const wrap=isCurrent||r.color==='red'?`background:${bg};border-radius:6px;padding:.6rem .8rem;`:'';
+    return `<div class="routing-step" style="${wrap}"><div class="rnum" style="background:${bg};color:${fg};${isCurrent||r.color==='red'?'border:2px solid '+fg:''}">${r.v}</div><div style="flex:1"><div class="mono" style="font-size:.85rem;${isCurrent?'color:'+fg+';font-weight:600':''}">${r.text}</div><div style="font-size:.75rem;color:var(--muted)">${r.change}</div></div><span class="badge" style="background:${bg};color:${fg};margin-left:auto">${r.change}</span></div>`;
+  }).join('') + (rv<7?`<div style="color:var(--muted);font-size:.8rem;padding:.5rem 0;text-align:center">${7-rv} weitere Version${7-rv>1?'en':''} in späteren Zyklen</div>`:'');
+
+  // Cycle detail
+  document.getElementById('cycle-detail').innerHTML=`<div class="fade-in">
+    <h3>${c.name}</h3>
+    <p style="color:var(--muted);margin-bottom:.8rem">${c.date} — ${c.files} Dateien, +${c.lines.toLocaleString()} Lines</p>
+    <div class="grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:1rem">
+      <div class="stat"><div class="sv" style="font-size:1.3rem;color:var(--green)">${s.events.filter(e=>e.type==='added').reduce((a,e)=>a+e.count,0)}</div><div class="sl">Hinzugefügt</div></div>
+      <div class="stat"><div class="sv" style="font-size:1.3rem;color:var(--yellow)">${s.events.filter(e=>e.type==='weakened').reduce((a,e)=>a+e.count,0)}</div><div class="sl">Abgeschwächt</div></div>
+      <div class="stat"><div class="sv" style="font-size:1.3rem;color:var(--blue)">${s.events.filter(e=>e.type==='restored'||e.type==='tightened').reduce((a,e)=>a+e.count,0)}</div><div class="sl">Verschärft/Wiederhergestellt</div></div>
+    </div>
+  </div>`;
+
+  // Warnings
+  const ww = s.warnings;
+  document.getElementById('warnings').innerHTML=ww.length===0?'<div class="card" style="color:var(--muted)">Keine Drift-Warnungen bis zu diesem Zeitpunkt.</div>':
+    ww.map(w=>{
+      const bg=w.sev==='warning'?'var(--ybg)':'var(--bbg)';
+      const icon=w.sev==='warning'?'&#9888;':'&#8505;';
+      const col=w.sev==='warning'?'var(--yellow)':'var(--blue)';
+      return `<div class="warn-card" style="background:${bg}"><div style="color:${col}">${icon}</div><div>${w.msg}</div></div>`;
+    }).join('');
+
+  history.replaceState(null,null,'#cycle='+(sel+1));
+}
+
+function go(i){sel=i;render();}
+function nav(d){const n=sel+d;if(n>=0&&n<D.cycles.length){sel=n;render();}}
+
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')nav(-1);if(e.key==='ArrowRight')nav(1);});
+window.addEventListener('hashchange',()=>{const m=location.hash.match(/cycle=(\d+)/);if(m){const i=parseInt(m[1])-1;if(i>=0&&i<D.cycles.length){sel=i;render();}}});
+
+const initHash=location.hash.match(/cycle=(\d+)/);
+if(initHash){const i=parseInt(initHash[1])-1;if(i>=0&&i<D.cycles.length)sel=i;}
+render();
+</script>
+</body>
+</html>
