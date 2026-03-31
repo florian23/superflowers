@@ -24,6 +24,24 @@ Skill macht Arbeit
 
 Reviewer-Agents leben als `.md` Dateien in `agents/` und werden über das Agent Tool dispatcht. Sie sind keine eigenständigen Skills.
 
+## Übergreifendes Immutabilitäts-Prinzip
+
+Alle Reviewer-Agents prüfen neben ihren fachlichen Kriterien auch das **Immutabilitäts-Prinzip**:
+
+> Bestehende Artefakte (Quality Scenarios, .feature Dateien, Fitness Functions) dürfen nicht stillschweigend geändert oder überschrieben werden. Die bevorzugte Lösung ist immer: **neue Tests/Szenarien/FFs hinzufügen**, nicht bestehende ändern.
+
+Wenn ein Agent bestehende Artefakte ändern will:
+1. Reviewer erkennt die Änderung → Status: **CHANGE_REQUIRES_APPROVAL**
+2. Reviewer präsentiert dem User: Was wird geändert? Warum? Was war vorher?
+3. **4-Augen-Prinzip:** User muss die Änderung explizit genehmigen
+4. Erst nach Genehmigung darf der Agent die Änderung durchführen
+5. Bei Fitness Functions: Änderung muss zusätzlich durch ADR begründet sein
+
+Reviewer-Output-Status:
+- **APPROVED** — alles korrekt, keine Änderungen an Bestehendem
+- **ISSUES_FOUND** — fachliche Probleme, Agent soll iterieren
+- **CHANGE_REQUIRES_APPROVAL** — Änderung an bestehendem Artefakt erkannt, User-Genehmigung erforderlich
+
 ## Die 11 Reviewer-Agents
 
 ### Kategorie A: Neue Agents (kein Review vorhanden)
@@ -57,8 +75,11 @@ Reviewer-Agents leben als `.md` Dateien in `agents/` und werden über das Agent 
 - Test-Typ-Diversität: Nicht alles integration-tests?
 - Tradeoffs identifiziert: Gibt es offensichtliche Konflikte die fehlen?
 - Response Measures: Sind alle konkret und messbar?
-**Input:** architecture.md, active constraints, quality-scenarios.md
-**Output:** APPROVED | ISSUES_FOUND
+- **Duplikat-Check:** Gibt es Szenarien die inhaltlich identisch oder redundant zu bestehenden quality-scenarios.md Einträgen sind?
+- **Widerspruchs-Check:** Widersprechen neue Szenarien bestehenden (z.B. unterschiedliche Response Measures für die gleiche Charakteristik)?
+- **Immutabilitäts-Check:** Werden bestehende Szenarien geändert oder überschrieben? Falls ja: STOPP — Änderungen an bestehenden Szenarien erfordern explizite User-Genehmigung (4-Augen-Prinzip)
+**Input:** architecture.md, active constraints, quality-scenarios.md (bestehend + neu)
+**Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL (bei Änderungen an Bestehendem)
 
 #### 4. agents/bdd-step-reviewer.md
 **Aufgerufen von:** bdd-testing (nach Step Definition Implementation)
@@ -67,8 +88,11 @@ Reviewer-Agents leben als `.md` Dateien in `agents/` und werden über das Agent 
 - Keine hardcoded Werte in Steps
 - Steps delegieren an echten Application Code
 - Keine Mock-Behavior die echte Logik simuliert
-**Input:** .feature Dateien, Step-Definition-Code
-**Output:** APPROVED | ISSUES_FOUND
+- **Duplikat-Check:** Gibt es neue Szenarien die inhaltlich identisch zu bestehenden .feature Szenarien sind?
+- **Widerspruchs-Check:** Widersprechen neue Szenarien bestehenden (z.B. gleicher Given/When mit unterschiedlichem Then)?
+- **Immutabilitäts-Check:** Werden bestehende .feature Dateien oder Step Definitions geändert? Falls ja: STOPP — Änderungen erfordern explizite User-Genehmigung (4-Augen-Prinzip). Neue Tests hinzufügen ist bevorzugt gegenüber bestehende zu ändern.
+**Input:** .feature Dateien (bestehend + neu), Step-Definition-Code
+**Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL
 
 #### 5. agents/fitness-function-reviewer.md
 **Aufgerufen von:** fitness-functions (nach FF-Implementation)
@@ -78,8 +102,11 @@ Reviewer-Agents leben als `.md` Dateien in `agents/` und werden über das Agent 
 - Cadence ist korrekt zugewiesen (Atomic/Holistic/Nightly)
 - Style-FFs decken die Stil-Invarianten ab
 - Constraint-bezogene FFs decken die Prüfkriterien ab
-**Input:** architecture.md, active constraints, FF-Code
-**Output:** APPROVED | ISSUES_FOUND
+- **Duplikat-Check:** Gibt es neue FFs die inhaltlich dasselbe prüfen wie bestehende?
+- **Widerspruchs-Check:** Widersprechen neue FF-Thresholds bestehenden (z.B. Coverage 80% vs 90% für dieselbe Characteristic)?
+- **Immutabilitäts-Check:** Werden bestehende Fitness Functions geändert (Thresholds gesenkt, Checks entfernt)? Falls ja: STOPP — Änderungen an bestehenden FFs erfordern explizite User-Genehmigung (4-Augen-Prinzip). Bestehende FFs dürfen nur durch ADR-begründete Superseding-Entscheidung geändert werden.
+**Input:** architecture.md (bestehend + neu), active constraints, FF-Code (bestehend + neu)
+**Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL
 
 ### Kategorie B: Bestehende Reviewer erweitern (Constraint-Awareness)
 
@@ -97,6 +124,9 @@ Reviewer-Agents leben als `.md` Dateien in `agents/` und werden über das Agent 
 - Constraint-Szenarien: Hat jeder aktive Constraint mindestens ein BDD-Szenario?
 - Constraint-Tags: Sind @constraint-SEC-001 etc. Tags vorhanden?
 - Constraint-to-Scenario Traceability: Vollständige Zuordnung?
+- **Duplikat-Check:** Gibt es neue Szenarien die inhaltlich zu bestehenden .feature Files redundant sind?
+- **Widerspruchs-Check:** Widersprechen neue Szenarien bestehenden?
+- **Immutabilitäts-Check:** Werden bestehende .feature Dateien geändert? → CHANGE_REQUIRES_APPROVAL
 
 #### 8. plan-document-reviewer-prompt.md (erweitern)
 **Bereits in:** skills/writing-plans/
