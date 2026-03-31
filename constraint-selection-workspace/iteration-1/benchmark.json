@@ -1,0 +1,32 @@
+{
+  "metadata": {
+    "skill_name": "constraint-selection",
+    "timestamp": "2026-03-31",
+    "evals_run": ["payment-service-constraint-selection"]
+  },
+  "runs": [
+    {
+      "eval_name": "payment-service-constraint-selection",
+      "with_skill": {
+        "pass_rate": 1.0,
+        "passed": 14,
+        "total": 14
+      },
+      "without_skill": {
+        "pass_rate": 0.786,
+        "passed": 11,
+        "total": 14
+      }
+    }
+  ],
+  "run_summary": {
+    "with_skill": { "pass_rate_mean": 1.0 },
+    "without_skill": { "pass_rate_mean": 0.786 },
+    "delta": { "pass_rate": "+21.4%" }
+  },
+  "notes": [
+    "Baseline überraschend stark (78.6%) — Agent liest Constraints auch ohne Skill",
+    "Skill schließt 2 spezifische Lücken: Projekt-Scope-Filterung (PROC-001) und User-Bestätigung",
+    "Noch offen: Eval 2 (CLI Tool) und Eval 3 (kein Repo) für Gegenproben"
+  ]
+}

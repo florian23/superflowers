@@ -1,0 +1,25 @@
+{
+  "eval_id": 1,
+  "eval_name": "payment-service-constraint-selection",
+  "configuration": "with_skill",
+  "summary": "Alle 14 Assertions bestanden. Skill respektiert Projekt-Scope (kein PROC-001), fragt User vor dem Schreiben, übernimmt Prüfkriterien.",
+  "pass_rate": 1.0,
+  "passed": 14,
+  "total": 14,
+  "expectations": [
+    {"text": "Der Agent liest die CLAUDE.md um den Pfad zum Constraint-Repo zu finden", "passed": true, "evidence": "Korrekt"},
+    {"text": "Der Agent liest alle Dateien unter constraints/ im Projekt", "passed": true, "evidence": "Korrekt"},
+    {"text": "Der Agent liest die referenzierten Constraint-Dateien aus dem Unternehmens-Repo", "passed": true, "evidence": "Korrekt"},
+    {"text": "SEC-001 (Encryption at Rest) wird als relevant selektiert", "passed": true, "evidence": "Korrekt"},
+    {"text": "SEC-002 (API Authentication) wird als relevant selektiert", "passed": true, "evidence": "Korrekt"},
+    {"text": "COMP-001 (GDPR Data Retention) wird als relevant selektiert", "passed": true, "evidence": "Korrekt"},
+    {"text": "COMP-002 (Audit Logging) wird als relevant selektiert", "passed": true, "evidence": "Korrekt"},
+    {"text": "TECH-001 (Spring Boot) wird als relevant selektiert", "passed": true, "evidence": "Korrekt"},
+    {"text": "SEC-003 (Network Segmentation) wird ausgeschlossen", "passed": true, "evidence": "Korrekt"},
+    {"text": "PROC-001 (Four-Eyes) wird nicht selektiert", "passed": true, "evidence": "Korrekt — nur Projekt-Constraints berücksichtigt, PROC-001 nicht in constraints/ referenziert"},
+    {"text": "Eine Feature-Constraint-Datei wird unter docs/superflowers/constraints/ geschrieben", "passed": true, "evidence": "Korrekt mit Datums-Namensschema"},
+    {"text": "Die Feature-Constraint-Datei enthält Prüfkriterien pro Constraint", "passed": true, "evidence": "Prüfkriterien aus dem Repo übernommen"},
+    {"text": "Ausgeschlossene Constraints werden mit Begründung aufgelistet", "passed": true, "evidence": "Korrekt"},
+    {"text": "Der Agent präsentiert die Selektion dem User zur Bestätigung", "passed": true, "evidence": "Hat vor dem Schreiben gefragt"}
+  ]
+}
