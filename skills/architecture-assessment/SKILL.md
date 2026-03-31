@@ -73,7 +73,7 @@ This file evolves over time. It is NOT recreated for each feature — it is upda
 
 - **File exists:** Read it, show current characteristics to the user, critically assess whether changes are needed
 - **File does not exist:** Create it through the structured questionnaire dialog
-- **After changes:** Dispatch a fresh verification agent to check consistency (see `architecture-reviewer-prompt.md`)
+- **After changes:** Dispatch a fresh verification agent to check consistency (see `superflowers:architecture-reviewer agent (agents/architecture-reviewer.md)`)
 
 ### architecture.md Format
 
@@ -221,7 +221,7 @@ When `architecture.md` already exists, be SKEPTICAL about changes:
 
 ## Verification
 
-After writing or updating architecture.md, dispatch a fresh agent using `architecture-reviewer-prompt.md` to verify:
+After writing or updating architecture.md, dispatch a fresh agent using `superflowers:architecture-reviewer agent (agents/architecture-reviewer.md)` to verify:
 1. All characteristics have concrete, measurable goals
 2. Top 3 are clearly identified and justified
 3. No contradictions between characteristics
