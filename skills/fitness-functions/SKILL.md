@@ -49,6 +49,12 @@ To verify a FF replacement is legitimate: check that a superseding ADR exists in
 - At verification: before claiming any implementation is complete
 - When new characteristics are added to architecture.md: implement corresponding fitness functions
 
+**Two independent sources of fitness functions:**
+1. **Characteristic FFs** — from the characteristics tables in architecture.md where "Fitness Function" column = "Yes". These exist as soon as architecture-assessment runs, INDEPENDENT of style selection.
+2. **Style FFs** — from the "Architecture Style Fitness Functions" section in architecture.md. These are added by architecture-style-selection.
+
+If architecture-style-selection has not run yet, implement Characteristic FFs anyway. Do NOT skip fitness functions just because no style was selected.
+
 **When NOT to use:**
 - No architecture.md exists (use architecture-assessment first)
 - Changes are purely cosmetic (no architecture impact)
@@ -155,6 +161,11 @@ Dispatch fitness-function-reviewer
   → ISSUES_FOUND → fix issues → re-dispatch → repeat until APPROVED
   → CHANGE_REQUIRES_APPROVAL → existing FFs modified, user must approve + ADR required
 ```
+
+<HARD-GATE>
+Do NOT claim fitness functions are complete until the reviewer returns APPROVED.
+If ISSUES_FOUND: fix and re-dispatch. Only after APPROVED proceed.
+</HARD-GATE>
 
 ## Red Flags — STOP
 

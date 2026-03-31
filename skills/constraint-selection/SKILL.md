@@ -29,11 +29,21 @@ constraints_repo: /path/to/company-constraints
 
 If `constraints_repo` is not configured or the path doesn't exist, skip this skill silently and proceed to architecture-assessment.
 
-The project must have a `constraints/` directory with `.md` files that reference relevant constraints from the repository. If `constraints/` doesn't exist but `constraints_repo` IS configured, inform the user and recommend running `project-constraints`:
+The project must have a `constraints/` directory with `.md` files that reference relevant constraints from the repository.
 
-> "Ein Constraint-Repository ist konfiguriert, aber es gibt noch keine Projekt-Constraints (constraints/ Verzeichnis fehlt). Bitte zuerst `superflowers:project-constraints` ausführen um die Projekt-Constraints einzurichten. Überspringe Constraint-Selektion für dieses Feature."
+<HARD-GATE>
+If constraints/ directory does NOT exist but constraints_repo IS configured:
+1. Inform the user: "Ein Constraint-Repository ist konfiguriert, aber es gibt noch keine Projekt-Constraints (constraints/ Verzeichnis fehlt). Bitte zuerst superflowers:project-constraints ausführen."
+2. STOP — do NOT read the constraint repo directly
+3. Do NOT attempt to select feature constraints without project constraints
+4. Do NOT browse the constraint repo "to help" or "to give context"
+5. Proceed directly to architecture-assessment
 
-Do NOT read the constraint repo directly — project-level constraint selection is handled by `superflowers:project-constraints`. Do NOT silently skip when a repo exists but project constraints are missing — the user should know.
+Reading the constraint repo without project constraints is a HARD-GATE violation.
+The constraint repo may contain hundreds of constraints — without project-level
+filtering, the selection is meaningless. Project-level selection is handled by
+superflowers:project-constraints, not by this skill.
+</HARD-GATE>
 
 ## Process Flow
 
@@ -135,7 +145,11 @@ Dispatch constraint-reviewer
   → ISSUES_FOUND → fix issues → re-dispatch reviewer → repeat until APPROVED
 ```
 
-Do NOT skip this step. The reviewer catches blind spots the original selection missed.
+<HARD-GATE>
+Do NOT present results to the user or proceed to Step 6 until the reviewer
+returns APPROVED. If the reviewer returns ISSUES_FOUND: fix the issues and
+re-dispatch the reviewer. Only after APPROVED proceed.
+</HARD-GATE>
 
 ## Step 6: Write Feature Constraints
 

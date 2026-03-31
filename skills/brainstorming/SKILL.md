@@ -28,12 +28,14 @@ You MUST create a task for each of these items and complete them in order:
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
 6. **Constraint selection** — invoke superflowers:constraint-selection to select organizational constraints relevant to this feature. Constraints inform architecture and spec. Skips automatically if no constraint repo is configured.
 7. **Architecture assessment** — invoke superflowers:architecture-assessment to identify/review architecture characteristics. Architecture informs the spec.
-8. **Write feature files** — invoke superflowers:feature-design to create BDD acceptance criteria as Gherkin scenarios. Scenarios inform the spec.
-9. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit. Spec references architecture.md, .feature files, and active constraints.
-10. **Spec self-review** — check for placeholders, contradictions, ambiguity, scope, architecture alignment, scenario coverage, constraint coverage (see below)
-11. **User reviews written spec** — ask user to review the spec file before proceeding
-12. **Create worktree** — invoke superflowers:using-git-worktrees to create an isolated workspace for implementation
-13. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+8. **Architecture style selection** — invoke superflowers:architecture-style-selection to select best-fitting architecture style based on driving characteristics and generate style fitness functions. Updates architecture.md.
+9. **Quality scenarios** — invoke superflowers:quality-scenarios to create testable quality scenarios from architecture characteristics, categorized by test type.
+10. **Write feature files** — invoke superflowers:feature-design to create BDD acceptance criteria as Gherkin scenarios. Scenarios inform the spec.
+11. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit. Spec references architecture.md, quality-scenarios.md, .feature files, and active constraints.
+12. **Spec self-review** — check for placeholders, contradictions, ambiguity, scope, architecture alignment, scenario coverage, constraint coverage (see below)
+13. **User reviews written spec** — ask user to review the spec file before proceeding
+14. **Create worktree** — invoke superflowers:using-git-worktrees to create an isolated workspace for implementation
+15. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
 ## Process Flow
 

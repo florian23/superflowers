@@ -236,7 +236,10 @@ Dispatch feature-file-reviewer
   → CHANGE_REQUIRES_APPROVAL → existing .feature files modified, user must approve
 ```
 
-If the reviewer finds gaps or quality issues, fix them before presenting to the user.
+<HARD-GATE>
+Do NOT present feature files to the user until the reviewer returns APPROVED.
+If ISSUES_FOUND: fix and re-dispatch. Only after APPROVED proceed to user review.
+</HARD-GATE>
 
 ## Red Flags — STOP and Revisit
 

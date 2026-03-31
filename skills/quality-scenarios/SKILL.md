@@ -159,6 +159,11 @@ Dispatch quality-scenario-reviewer
   → CHANGE_REQUIRES_APPROVAL → present changes to user for 4-eyes approval
 ```
 
+<HARD-GATE>
+Do NOT present results to the user or proceed to Step 6 until the reviewer
+returns APPROVED. If ISSUES_FOUND: fix and re-dispatch. Only after APPROVED proceed.
+</HARD-GATE>
+
 ## Step 6: Write quality-scenarios.md
 
 Persist to `quality-scenarios.md` in the project root.

@@ -151,6 +151,11 @@ Dispatch architecture-style-reviewer
   → CHANGE_REQUIRES_APPROVAL → existing style being changed, user must approve + ADR
 ```
 
+<HARD-GATE>
+Do NOT present style selection to the user or proceed to Step 5 until the reviewer
+returns APPROVED. If ISSUES_FOUND: fix and re-dispatch. Only after APPROVED proceed.
+</HARD-GATE>
+
 ## Step 5: Update architecture.md
 
 After the user confirms a selection, update `architecture.md` with a new section:

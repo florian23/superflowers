@@ -189,6 +189,11 @@ Dispatch project-constraint-reviewer
   → ISSUES_FOUND → fix issues → re-dispatch reviewer → repeat until APPROVED
 ```
 
+<HARD-GATE>
+Do NOT present results to the user or proceed to Step 5 until the reviewer
+returns APPROVED. If ISSUES_FOUND: fix and re-dispatch. Only after APPROVED proceed.
+</HARD-GATE>
+
 ## Step 5: Write constraints/ Files
 
 Create or update `constraints/` directory with one `.md` per category:

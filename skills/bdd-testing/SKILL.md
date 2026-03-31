@@ -189,6 +189,11 @@ Dispatch bdd-step-reviewer
   → CHANGE_REQUIRES_APPROVAL → existing steps modified, user must approve
 ```
 
+<HARD-GATE>
+Do NOT proceed until the reviewer returns APPROVED.
+If ISSUES_FOUND: fix and re-dispatch. Only after APPROVED continue.
+</HARD-GATE>
+
 ## Step Definition Best Practices
 
 - **Thin step definitions:** Parse Gherkin parameters, delegate to real code. Steps are glue, not logic.
