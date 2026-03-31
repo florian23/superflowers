@@ -1,0 +1,22 @@
+{
+  "eval_id": "constraint-awareness",
+  "eval_name": "quality-scenarios-constraint-awareness",
+  "configuration": "without_skill",
+  "iteration": 2,
+  "summary": "15 Szenarien, Constraints berücksichtigt, ATAM-Format. Aber: keine Tradeoffs, keine Sensitivity Points, Test-Typ-Verteilung einseitig (11 integration-tests), kein Summary-Table, kein Test-Type-Distribution Table.",
+  "pass_rate": 0.5,
+  "passed": 5,
+  "total": 10,
+  "expectations": [
+    {"text": "Constraint-Prüfkriterien werden zu Quality Scenarios", "passed": true, "evidence": "11 von 11 Prüfkriterien als Szenarien abgedeckt"},
+    {"text": "Jedes Szenario hat ATAM-Format (Source, Stimulus, Environment, Artifact, Response, Measure)", "passed": true, "evidence": "Alle 15 Szenarien im ATAM-Format"},
+    {"text": "Jedes Szenario hat einen Test-Typ zugewiesen", "passed": true, "evidence": "1 unit, 11 integration, 1 load, 2 fitness-function"},
+    {"text": "Test-Typ-Verteilung ist divers (nicht alles ein Typ)", "passed": false, "evidence": "73% integration-tests — Skill warnt explizit davor ('not all integration tests')"},
+    {"text": "Scenario Summary Table vorhanden (ID, Characteristic, Scenario, Test Type, Priority)", "passed": false, "evidence": "Kein Summary Table, direkt Szenarien"},
+    {"text": "Test Type Distribution Table vorhanden", "passed": false, "evidence": "Keine Distribution-Tabelle"},
+    {"text": "Tradeoffs zwischen Szenarien identifiziert", "passed": false, "evidence": "0 Tradeoff-Erwähnungen"},
+    {"text": "Sensitivity Points identifiziert", "passed": false, "evidence": "Keine Sensitivity Points"},
+    {"text": "Constraint-IDs in Szenarien referenziert", "passed": true, "evidence": "Constraint-IDs in Szenario-Beschreibungen"},
+    {"text": "Szenarien für alle 3 Architektur-Charakteristiken", "passed": true, "evidence": "Security, Compliance, Reliability alle abgedeckt"}
+  ]
+}
