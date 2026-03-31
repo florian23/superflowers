@@ -1,0 +1,22 @@
+{
+  "eval_id": "constraint-awareness",
+  "eval_name": "writing-plans-constraint-awareness",
+  "configuration": "without_skill",
+  "iteration": 1,
+  "summary": "27 Tasks, Constraints referenziert, Phasen-Struktur. Aber: kein standardisierter Plan-Header, keine Checkbox-Steps (nicht bite-sized), keine BDD Step-Definition-Tasks, keine Constraint-Compliance-Task, kein finaler BDD-Verification-Task.",
+  "pass_rate": 0.4,
+  "passed": 4,
+  "total": 10,
+  "expectations": [
+    {"text": "Plan-Header mit allen Feldern (Architecture, Feature Files, Active Constraints, Quality Scenarios, FFs)", "passed": false, "evidence": "Kein standardisierter Header — direkt in Phasen gestartet"},
+    {"text": "Bite-sized Tasks mit Checkbox-Steps (- [ ] Schritt)", "passed": false, "evidence": "0 Checkboxen — Tasks beschrieben aber nicht als Steps aufgebrochen"},
+    {"text": "TDD-Schritte (failing test → implement → pass → commit)", "passed": false, "evidence": "Tests in separater Phase 5 statt test-first pro Task"},
+    {"text": "BDD Step-Definition-Tasks für jede .feature Datei", "passed": false, "evidence": "Keine Step-Definition-Tasks — .feature Files nur als Referenz"},
+    {"text": "Finaler BDD Verification Task", "passed": false, "evidence": "Kein finaler BDD-Suite-Run"},
+    {"text": "Active Constraints im Plan referenziert", "passed": true, "evidence": "Constraint-Abdeckungsmatrix am Ende, Constraint-IDs in Task-Beschreibungen"},
+    {"text": "Constraint-Compliance-Verification-Task", "passed": false, "evidence": "Keine dedizierte Constraint-Verifikation"},
+    {"text": "Quality Scenarios referenziert und als Test-Tasks", "passed": true, "evidence": "QS-IDs in Tasks referenziert"},
+    {"text": "Fitness-Function-Tasks vorhanden", "passed": true, "evidence": "Implizit in Security/Compliance Tasks enthalten"},
+    {"text": "Konkrete Dateipfade und Code-Beispiele pro Task", "passed": true, "evidence": "Dateipfade und Code-Snippets in jeder Task vorhanden"}
+  ]
+}
