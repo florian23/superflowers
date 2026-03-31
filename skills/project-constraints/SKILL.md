@@ -121,15 +121,22 @@ Categorize each constraint as:
 - **Not relevant** — project context doesn't match (with reason)
 - **Uncertain** — could go either way, present to user for decision
 
-**Process and infrastructure constraints** (deployment procedures, network setup, CI/CD rules) are almost always **Uncertain** unless the project context makes the match obvious. Do NOT auto-classify them as Relevant — the user must decide.
+**Process and infrastructure constraints** (deployment procedures, network setup, CI/CD rules) MUST be classified as **Uncertain** — never as Relevant. Examples: Four-Eyes-Prinzip, Change Management, Network Segmentation. These depend on organizational context (team structure, deployment target, operational model) that code analysis alone cannot determine. The user MUST decide.
 
-A constraint's `severity: mandatory` means it's mandatory **when it applies** — not that it applies to every project. A mandatory encryption constraint is irrelevant for a project that doesn't store data.
+If you catch yourself classifying a process constraint as Relevant: STOP. Move it to Uncertain. No exceptions.
+
+A constraint's `severity: mandatory` means it's mandatory **when it applies** — not that it applies to every project. A mandatory encryption constraint is irrelevant for a project that doesn't store data. Mandatory ≠ always relevant.
 
 <HARD-GATE>
-Do NOT write or create the constraints/ directory without presenting the full
-selection to the user and receiving explicit confirmation. "Soll ich die
-Projekt-Constraints so anlegen?" — then WAIT for the answer.
-This applies in both Initial Setup and Review/Update mode.
+BEFORE writing or creating constraints/ files, you MUST:
+1. Present the COMPLETE selection (Relevant, Not Relevant, Uncertain)
+2. Ask: "Soll ich die Projekt-Constraints so anlegen?"
+3. STOP and WAIT for the user's explicit answer
+4. Only AFTER the user confirms: write the files
+
+Writing files before receiving confirmation is a HARD-GATE violation.
+"I'll present what I wrote" is NOT confirmation — confirmation comes BEFORE writing.
+This applies in BOTH Initial Setup and Review/Update mode.
 </HARD-GATE>
 
 ## Step 4: Present to User
