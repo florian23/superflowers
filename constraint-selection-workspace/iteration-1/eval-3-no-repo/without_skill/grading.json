@@ -1,0 +1,26 @@
+{
+  "eval_id": 3,
+  "eval_name": "no-constraint-repo-configured",
+  "configuration": "without_skill",
+  "summary": "Baseline erkennt korrekt dass keine Constraints konfiguriert sind.",
+  "pass_rate": 1.0,
+  "passed": 3,
+  "total": 3,
+  "expectations": [
+    {
+      "text": "Der Agent erkennt dass kein Constraint-Repo konfiguriert ist und überspringt den Schritt",
+      "passed": true,
+      "evidence": "Korrekt übersprungen"
+    },
+    {
+      "text": "Es gibt keinen Fehler oder Crash",
+      "passed": true,
+      "evidence": "Kein Fehler"
+    },
+    {
+      "text": "Der Agent fährt mit dem nächsten Schritt fort",
+      "passed": true,
+      "evidence": "Korrekt weitergemacht"
+    }
+  ]
+}

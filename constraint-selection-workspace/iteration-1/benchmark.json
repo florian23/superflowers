@@ -2,31 +2,36 @@
   "metadata": {
     "skill_name": "constraint-selection",
     "timestamp": "2026-03-31",
-    "evals_run": ["payment-service-constraint-selection"]
+    "evals_run": ["payment-service-constraint-selection", "cli-tool-minimal-constraints", "no-constraint-repo-configured"]
   },
   "runs": [
     {
       "eval_name": "payment-service-constraint-selection",
-      "with_skill": {
-        "pass_rate": 1.0,
-        "passed": 14,
-        "total": 14
-      },
-      "without_skill": {
-        "pass_rate": 0.786,
-        "passed": 11,
-        "total": 14
-      }
+      "with_skill": { "pass_rate": 1.0, "passed": 14, "total": 14 },
+      "without_skill": { "pass_rate": 0.786, "passed": 11, "total": 14 }
+    },
+    {
+      "eval_name": "cli-tool-minimal-constraints",
+      "with_skill": { "pass_rate": 1.0, "passed": 3, "total": 3 },
+      "without_skill": { "pass_rate": 1.0, "passed": 3, "total": 3 }
+    },
+    {
+      "eval_name": "no-constraint-repo-configured",
+      "with_skill": { "pass_rate": 1.0, "passed": 3, "total": 3 },
+      "without_skill": { "pass_rate": 1.0, "passed": 3, "total": 3 }
     }
   ],
   "run_summary": {
-    "with_skill": { "pass_rate_mean": 1.0 },
-    "without_skill": { "pass_rate_mean": 0.786 },
-    "delta": { "pass_rate": "+21.4%" }
+    "with_skill": { "pass_rate_mean": 1.0, "passed_total": 20, "total": 20 },
+    "without_skill": { "pass_rate_mean": 0.929, "passed_total": 17, "total": 20 },
+    "delta": { "pass_rate": "+7.1%", "assertions_fixed": 3 }
   },
   "notes": [
-    "Baseline überraschend stark (78.6%) — Agent liest Constraints auch ohne Skill",
-    "Skill schließt 2 spezifische Lücken: Projekt-Scope-Filterung (PROC-001) und User-Bestätigung",
-    "Noch offen: Eval 2 (CLI Tool) und Eval 3 (kein Repo) für Gegenproben"
+    "Eval 1 (Payment Service): Skill schließt 2 Lücken — Projekt-Scope-Filterung und User-Bestätigung (+21.4%)",
+    "Eval 2 (CLI Tool): Baseline und Skill beide perfekt — offensichtlich irrelevante Features sind einfach",
+    "Eval 3 (Kein Repo): Beide korrekt — Skill gibt zusätzlich Einrichtungshinweis",
+    "Skill-Fix während Iteration: 'skip silently' → 'inform user' wenn constraints/ fehlt aber Repo konfiguriert",
+    "Gesamtdelta: +7.1% (3/20 Assertions die nur der Skill besteht)",
+    "Differenzierung zeigt sich primär bei komplexen Features mit vielen anwendbaren Constraints"
   ]
 }
