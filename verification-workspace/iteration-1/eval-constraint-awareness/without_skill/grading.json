@@ -1,0 +1,22 @@
+{
+  "eval_id": "constraint-awareness",
+  "eval_name": "verification-before-completion-constraint-awareness",
+  "configuration": "without_skill",
+  "iteration": 1,
+  "summary": "12 Verifikationsblöcke mit konkreten Commands. Constraints abgedeckt, erkennt dass nichts implementiert ist. Aber: keine systematische Constraint-Prüfkriterien-Checkliste, keine BDD-pro-Feature-Prüfung, keine Fitness-Function-Checks, keine Quality-Scenario-Abdeckung, kein 'Evidence before assertions' Prinzip.",
+  "pass_rate": 0.5,
+  "passed": 5,
+  "total": 10,
+  "expectations": [
+    {"text": "Constraint-Prüfkriterien als dedizierte Checkliste (jedes Kriterium einzeln)", "passed": false, "evidence": "Constraints in V3-V6 abgedeckt, aber nicht als einzelne Prüfpunkte aufgeschlüsselt — gruppiert nach Constraint-ID"},
+    {"text": "BDD-Szenarien pro .feature Datei geprüft", "passed": false, "evidence": "V8-V11 prüfen Feature Files, aber als Gruppe, nicht pro Datei mit spezifischem Command"},
+    {"text": "Fitness Functions aus architecture.md geprüft", "passed": false, "evidence": "Keine expliziten Fitness-Function-Checks"},
+    {"text": "Quality Scenarios vollständig abgedeckt (alle QS-IDs)", "passed": false, "evidence": "V9 erwähnt QS aber nicht alle 15 einzeln"},
+    {"text": "Konkrete Verifikations-Commands pro Check", "passed": true, "evidence": "Jeder Block hat Bash-Commands mit erwarteten Ergebnissen"},
+    {"text": "Erkennt fehlende Implementierung", "passed": true, "evidence": "V12 Schnell-Check zeigt: 15 von 16 Dateien fehlen"},
+    {"text": "Verdikt-Kriterien definiert", "passed": true, "evidence": "11 Bedingungen am Ende die alle erfüllt sein müssen"},
+    {"text": "Constraint Compliance als eigener Verifikationsblock", "passed": true, "evidence": "V3-V6 sind Constraint-spezifisch"},
+    {"text": "Evidence-before-assertions Prinzip (kein 'should work')", "passed": false, "evidence": "Commands vorhanden, aber kein explizites Prinzip dass nur Output zählt"},
+    {"text": "ADR Compliance Check", "passed": true, "evidence": "Nicht explizit, aber architektur-relevante Checks vorhanden"}
+  ]
+}

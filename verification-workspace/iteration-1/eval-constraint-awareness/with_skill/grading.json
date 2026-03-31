@@ -1,0 +1,22 @@
+{
+  "eval_id": "constraint-awareness",
+  "eval_name": "verification-before-completion-constraint-awareness",
+  "configuration": "with_skill",
+  "iteration": 1,
+  "summary": "100 Checks: Constraint-Prüfkriterien einzeln, alle 7 .feature Files einzeln, 5 Fitness Functions, alle 21 Quality Scenarios, ADR Check, Requirements gegen Plan. Evidence-before-assertions durchgehend. 10/10.",
+  "pass_rate": 1.0,
+  "passed": 10,
+  "total": 10,
+  "expectations": [
+    {"text": "Constraint-Prüfkriterien als dedizierte Checkliste", "passed": true, "evidence": "10 Checks — jedes Kriterium aus SEC-001/002, COMP-001/002 einzeln mit Command"},
+    {"text": "BDD-Szenarien pro .feature Datei geprüft", "passed": true, "evidence": "8 Checks — alle 7 Feature Files einzeln + Full Suite Run (35 Szenarien)"},
+    {"text": "Fitness Functions aus architecture.md geprüft", "passed": true, "evidence": "5 Checks: PII scanner, ArchUnit, transaction boundaries, KMS, coverage gate"},
+    {"text": "Quality Scenarios vollständig abgedeckt", "passed": true, "evidence": "21 Checks — alle QS-001 bis QS-021 mit Test-Typ und Command"},
+    {"text": "Konkrete Verifikations-Commands pro Check", "passed": true, "evidence": "Jeder Check mit konkretem Bash-Command und Expected Output"},
+    {"text": "Erkennt fehlende Implementierung", "passed": true, "evidence": "Section 8: 95% der Implementierung fehlt, 18+ Source Files, 12+ Test Files"},
+    {"text": "Verdikt-Kriterien definiert", "passed": true, "evidence": "100 Checks als Gate — alle müssen bestehen"},
+    {"text": "Constraint Compliance als eigener Block", "passed": true, "evidence": "Dedizierter Block 2 mit 10 Einzelprüfungen"},
+    {"text": "Evidence-before-assertions Prinzip", "passed": true, "evidence": "Skill-Prinzip durchgehend: nur Command-Output zählt, kein 'should work'"},
+    {"text": "ADR Compliance Check", "passed": true, "evidence": "Block 6: ADR check — N/A per Plan, explizit dokumentiert"}
+  ]
+}
