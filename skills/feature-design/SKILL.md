@@ -105,6 +105,8 @@ Architecture characteristics should inform scenario design:
 
 You don't need to test architecture directly (that's what fitness-functions does), but scenarios should be CONSISTENT with the architecture. A scenario that implies synchronous processing contradicts an architecture that requires async.
 
+If a feature constraints file exists in `docs/superflowers/constraints/` (from superflowers:constraint-selection), read it. Constraint requirements that describe observable behavior should become BDD scenarios. For example, a constraint "no sensitive data in logs" → Scenario: "Given a request with personal data, When the request is processed, Then the log output contains no personal data."
+
 ## Writing Scenarios
 
 ### From Requirements to Scenarios: The EARS Mapping

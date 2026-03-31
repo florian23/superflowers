@@ -127,6 +127,13 @@ Quality scenarios define different test types. Verify each type ran:
 ```
 If implementation contradicts an active ADR, either fix the implementation or supersede the ADR — never silently violate it.
 
+**Constraint Compliance (when docs/superflowers/constraints/ exists):**
+```
+✅ [Read active constraints] [Check each verification criterion] "All constraint criteria verified"
+❌ "We considered the constraints" / "Constraints don't apply here"
+```
+Each constraint's verification criteria checklist must be checked. Unchecked criteria = incomplete work.
+
 **Requirements:**
 ```
 ✅ Re-read plan → Create checklist → Verify each → Report gaps or completion

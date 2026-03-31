@@ -131,6 +131,19 @@ If `context-map.md` exists (from superflowers:bounded-context-design), read it b
 
 If no `context-map.md` exists, proceed with the questionnaire as normal.
 
+## Constraint Awareness
+
+If a feature constraints file exists in `docs/superflowers/constraints/` (from superflowers:constraint-selection), read the most recent one before the questionnaire. Active constraints inform the assessment:
+
+- **Security constraints** (encryption, authentication) → elevate Security characteristic priority
+- **Compliance constraints** (audit logging, data retention) → may introduce Compliance as a characteristic
+- **Technology constraints** (specific frameworks, databases) → inform Deployability and Interoperability
+- **Process constraints** (four-eyes, change management) → inform Testability and Deployability
+
+Present the active constraints to the user during the questionnaire: "These organizational constraints are active for this feature and may affect architecture characteristics."
+
+If no constraints file exists, proceed normally.
+
 ## The Questionnaire Dialog (New Projects)
 
 Walk the user through each category. Ask one question at a time. Use the full questionnaire from `questionnaire-template.md`.

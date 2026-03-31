@@ -53,6 +53,12 @@ If specification skills were used before this plan, the plan MUST reference thei
 - After ALL step definition tasks: run the full BDD suite to verify all scenarios pass
 - The plan's final task MUST be a BDD verification task that runs the complete suite
 
+**constraint-selection** (docs/superflowers/constraints/ exists):
+- Read the most recent feature constraints file
+- Include constraint compliance verification as explicit tasks in the plan
+- Each constraint's verification criteria becomes a testable checklist item
+- Group constraint tasks near related implementation tasks (e.g., security constraints near auth tasks)
+
 **REQUIRED SUB-SKILL (when artifacts exist):** Use superflowers:bdd-testing for BDD verification when .feature files exist. Use superflowers:fitness-functions for architecture verification when architecture.md exists. These are NOT optional — the specification verification gate in subagent-driven-development will enforce them.
 
 ## File Structure
@@ -103,6 +109,8 @@ This structure informs the task decomposition. Each task should produce self-con
 **Quality Scenarios:** [List quality scenarios by test type from quality-scenarios.md, or "N/A"]
 
 **Active ADRs:** [List active architecture decisions from doc/adr/ that affect this implementation, or "N/A"]
+
+**Active Constraints:** [List constraints from docs/superflowers/constraints/ with their verification criteria, or "N/A"]
 
 ---
 ```

@@ -80,6 +80,8 @@ For each characteristic, note:
 - The concrete goal (this becomes the response measure)
 - Whether it already has a fitness function
 
+Also read the most recent feature constraints file from `docs/superflowers/constraints/` if it exists. Constraint verification criteria that are testable become additional quality scenarios — categorized by the appropriate test type. For example, "All databases use TDE" → fitness-function, "No sensitive data in logs" → integration-test.
+
 ## Step 2: Generate Scenarios
 
 For each quality goal, create one or more ATAM scenarios. A scenario makes the abstract goal concrete by specifying WHO triggers WHAT under WHICH conditions, and what SUCCESS looks like.

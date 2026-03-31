@@ -26,13 +26,14 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Architecture assessment** — invoke superflowers:architecture-assessment to identify/review architecture characteristics. Architecture informs the spec.
-7. **Write feature files** — invoke superflowers:feature-design to create BDD acceptance criteria as Gherkin scenarios. Scenarios inform the spec.
-8. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit. Spec references architecture.md and .feature files.
-9. **Spec self-review** — check for placeholders, contradictions, ambiguity, scope, architecture alignment, scenario coverage (see below)
-10. **User reviews written spec** — ask user to review the spec file before proceeding
-11. **Create worktree** — invoke superflowers:using-git-worktrees to create an isolated workspace for implementation
-12. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+6. **Constraint selection** — invoke superflowers:constraint-selection to select organizational constraints relevant to this feature. Constraints inform architecture and spec. Skips automatically if no constraint repo is configured.
+7. **Architecture assessment** — invoke superflowers:architecture-assessment to identify/review architecture characteristics. Architecture informs the spec.
+8. **Write feature files** — invoke superflowers:feature-design to create BDD acceptance criteria as Gherkin scenarios. Scenarios inform the spec.
+9. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit. Spec references architecture.md, .feature files, and active constraints.
+10. **Spec self-review** — check for placeholders, contradictions, ambiguity, scope, architecture alignment, scenario coverage, constraint coverage (see below)
+11. **User reviews written spec** — ask user to review the spec file before proceeding
+12. **Create worktree** — invoke superflowers:using-git-worktrees to create an isolated workspace for implementation
+13. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
 ## Process Flow
 
@@ -69,7 +70,9 @@ digraph brainstorming {
     "Invoke architecture-assessment" [shape=doublecircle];
     "Invoke feature-design" [shape=doublecircle];
 
-    "User approves design?" -> "Invoke bounded-context-design" [label="yes"];
+    "User approves design?" -> "Invoke constraint-selection" [label="yes"];
+    "Invoke constraint-selection" [shape=doublecircle];
+    "Invoke constraint-selection" -> "Invoke bounded-context-design";
     "Invoke bounded-context-design" [shape=doublecircle];
     "Invoke bounded-context-design" -> "Invoke architecture-assessment";
     "Invoke architecture-style-selection" [shape=doublecircle];
@@ -86,13 +89,14 @@ digraph brainstorming {
 ```
 
 **After design approval, invoke specification skills BEFORE writing the spec:**
-1. superflowers:bounded-context-design — identify domain boundaries, classify subdomains, create context map (skips automatically if single-domain project)
-2. superflowers:architecture-assessment — identify/review architecture characteristics (informed by context-map.md if it exists)
-3. superflowers:architecture-style-selection — select best-fitting architecture style based on characteristics (context boundaries inform service/module cuts)
-4. superflowers:quality-scenarios — create testable quality scenarios from quality goals, categorized by test type
-5. superflowers:feature-design — create BDD acceptance criteria as Gherkin scenarios (uses ubiquitous language from context-map.md)
-6. Then write the design doc (spec references context-map.md, architecture.md, quality-scenarios.md, and .feature files)
-7. Then invoke writing-plans
+1. superflowers:constraint-selection — select organizational constraints relevant to this feature (skips if no constraint repo configured)
+2. superflowers:bounded-context-design — identify domain boundaries, classify subdomains, create context map (skips automatically if single-domain project)
+3. superflowers:architecture-assessment — identify/review architecture characteristics (informed by context-map.md and active constraints if they exist)
+4. superflowers:architecture-style-selection — select best-fitting architecture style based on characteristics (context boundaries inform service/module cuts)
+5. superflowers:quality-scenarios — create testable quality scenarios from quality goals, categorized by test type
+6. superflowers:feature-design — create BDD acceptance criteria as Gherkin scenarios (uses ubiquitous language from context-map.md, considers active constraints)
+7. Then write the design doc (spec references context-map.md, architecture.md, quality-scenarios.md, .feature files, and active constraints)
+8. Then invoke writing-plans
 
 Do NOT invoke frontend-design, mcp-builder, or any other implementation skill directly.
 
@@ -165,6 +169,7 @@ After writing the spec document, look at it with fresh eyes:
 4. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
 5. **Architecture alignment:** Does the spec align with the characteristics in architecture.md?
 6. **Scenario coverage:** Does the spec cover all BDD scenarios from the .feature files? Are there spec sections without matching scenarios or vice versa?
+7. **Constraint coverage:** If active constraints exist (docs/superflowers/constraints/), does the spec address each constraint's requirements? Are verification criteria reflected in quality scenarios or BDD scenarios?
 
 Fix any issues inline. No need to re-review — just fix and move on.
 
