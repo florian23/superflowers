@@ -7,6 +7,16 @@ description: Use AFTER exploring project context and BEFORE asking design questi
 
 Build a domain profile before design decisions are made. The agent must understand the business domain — its concepts, relationships, rules, and language — before asking design questions or proposing approaches.
 
+## Activation
+
+This skill only runs when no domain profile exists yet. If a domain profile has already been created (in a previous session or earlier in this project), skip this skill and proceed to clarifying questions.
+
+**Check:** Does a domain profile exist? Look for `domain-profile.md` in the project root or `docs/superflowers/`.
+- **Not found:** Run the full domain understanding process.
+- **Found:** Inform the user: "Ein bestehendes Domänen-Profil wurde gefunden. Soll ich damit weiterarbeiten, oder möchtest du es aktualisieren?" Only re-run if the user explicitly opts in.
+
+The user can always opt in to update the domain profile by saying things like "das Domänenverständnis aktualisieren", "die Domäne hat sich geändert", or "domain profile updaten".
+
 **Semantic anchors:** Domain-Driven Design (Eric Evans) for ubiquitous language and domain modeling, Event Storming (Alberto Brandolini) for domain event discovery, Domain Storytelling (Stefan Hofer/Henning Schwentner) for understanding domain workflows, Knowledge Crunching (Eric Evans) for extracting domain knowledge from experts and code.
 
 **Announce at start:** "I'm building a domain profile to understand the business context before we start designing."
@@ -168,10 +178,14 @@ Wait for confirmation. If the user corrects or adds:
 
 The confirmed domain profile informs all subsequent brainstorming questions.
 
+## Step 7: Save Domain Profile
+
+Save the confirmed profile to `domain-profile.md` in the project root. Commit it. This persists the domain understanding across sessions — the next time this skill runs, it finds the file and skips (unless user opts in to update).
+
 ## Integration
 
 **Called after:** Brainstorming Step 1 (Explore project context)
 **Runs before:** Brainstorming Step 3 (Ask clarifying questions)
-**Output:** Domain Profile (presented to user, not written to file — it's working knowledge for the brainstorming session)
+**Output:** `domain-profile.md` in project root
 **Feeds into:** Brainstorming questions use domain language and concepts. Bounded-context-design (later) builds on this understanding.
-**Read by:** bounded-context-design uses the domain profile as input for subdomain classification
+**Read by:** bounded-context-design uses the domain profile as input for subdomain classification. All downstream skills can reference domain-profile.md for ubiquitous language.
