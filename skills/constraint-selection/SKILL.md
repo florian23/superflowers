@@ -119,26 +119,7 @@ Show the user:
 
 Wait for user confirmation.
 
-## Step 5: Independent Verification (Fresh Agent)
-
-After user confirmation but BEFORE writing, dispatch a **fresh subagent** to independently verify the selection. The fresh context prevents blind spots from the original analysis.
-
-The verification agent receives:
-- The approved design description
-- The list of selected constraints (with reasons)
-- The list of excluded constraints (with reasons)
-- The path to the constraint repo
-- The path to the project constraints
-
-The verification agent checks:
-1. **Missed constraints:** Read all project constraints and the repo. Is there a constraint that should be included but wasn't?
-2. **False inclusions:** Is any selected constraint actually irrelevant for this feature?
-3. **Incorrect exclusion reasons:** Are the exclusion reasons factually correct?
-4. **Severity assessment:** Are process/infrastructure constraints correctly marked as Uncertain?
-
-If the verification agent finds issues, present them to the user and revise the selection before writing.
-
-## Step 6: Write Feature Constraints
+## Step 5: Write Feature Constraints
 
 Save to `docs/superflowers/constraints/YYYY-MM-DD-<feature-name>-constraints.md`:
 
