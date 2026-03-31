@@ -117,9 +117,20 @@ For each constraint, assess relevance based on the project profile:
 - **Infrastructure constraints** → relevant if project manages its own infra
 
 Categorize each constraint as:
-- **Relevant** — project context matches constraint's domain
+- **Relevant** — project context clearly matches constraint's domain
 - **Not relevant** — project context doesn't match (with reason)
-- **Uncertain** — could go either way, ask user
+- **Uncertain** — could go either way, present to user for decision
+
+**Process and infrastructure constraints** (deployment procedures, network setup, CI/CD rules) are almost always **Uncertain** unless the project context makes the match obvious. Do NOT auto-classify them as Relevant — the user must decide.
+
+A constraint's `severity: mandatory` means it's mandatory **when it applies** — not that it applies to every project. A mandatory encryption constraint is irrelevant for a project that doesn't store data.
+
+<HARD-GATE>
+Do NOT write or create the constraints/ directory without presenting the full
+selection to the user and receiving explicit confirmation. "Soll ich die
+Projekt-Constraints so anlegen?" — then WAIT for the answer.
+This applies in both Initial Setup and Review/Update mode.
+</HARD-GATE>
 
 ## Step 4: Present to User
 
@@ -181,6 +192,23 @@ Create or update `constraints/` directory with one `.md` per category:
 Group by category (security, compliance, technology, process, etc.). Include exclusions with reasons.
 
 Commit the files.
+
+## Rationalization Prevention
+
+| Excuse | Reality |
+|--------|---------|
+| "It's mandatory, so it applies" | Mandatory means mandatory **when the domain matches**. A mandatory encryption rule doesn't apply to a project that stores nothing. |
+| "Better safe than include it" | Over-including constraints creates noise and wastes effort. Exclude what doesn't apply, mark uncertain ones for user decision. |
+| "I'll just write the files, user can review later" | User confirmation BEFORE writing is a HARD-GATE. Presenting after the fact is not confirmation. |
+| "Process constraints always apply to production projects" | Process constraints depend on deployment target, team structure, and org context — only the user knows these. Mark as Uncertain. |
+| "The project profile is obvious, I'll skip it" | Present the profile explicitly. The user must see what YOU understood about the project to verify your constraint matching is based on correct assumptions. |
+
+## Red Flags — STOP
+
+- Writing constraints/ without user confirmation
+- Classifying all mandatory constraints as Relevant regardless of project match
+- Skipping the Uncertain category — if you have 0 uncertain constraints, you're over-confident
+- Not presenting a project profile — constraint matching is only as good as the context analysis
 
 ## Integration
 
