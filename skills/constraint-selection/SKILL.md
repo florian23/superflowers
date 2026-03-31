@@ -119,7 +119,25 @@ Show the user:
 
 Wait for user confirmation.
 
-## Step 5: Write Feature Constraints
+## Step 5: Independent Verification
+
+After user confirmation, dispatch the `superflowers:constraint-reviewer` agent for independent verification. The reviewer gets:
+- The approved feature design description
+- The selected constraints (with reasons)
+- The excluded constraints (with reasons)
+- The path to the constraint repo and project constraints
+
+The reviewer checks independently for missed constraints, false inclusions, incorrect exclusions, and process constraint classification.
+
+```
+Dispatch constraint-reviewer
+  → APPROVED → proceed to Step 6
+  → ISSUES_FOUND → fix issues → re-dispatch reviewer → repeat until APPROVED
+```
+
+Do NOT skip this step. The reviewer catches blind spots the original selection missed.
+
+## Step 6: Write Feature Constraints
 
 Save to `docs/superflowers/constraints/YYYY-MM-DD-<feature-name>-constraints.md`:
 
