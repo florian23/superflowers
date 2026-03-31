@@ -26,18 +26,17 @@ Reviewer-Agents leben als `.md` Dateien in `agents/` und werden über das Agent 
 
 **Alle Reviewer-Agents leben in `agents/`** — auch die bestehenden die aktuell innerhalb von Skills liegen (z.B. `skills/architecture-assessment/architecture-reviewer-prompt.md`). Diese werden nach `agents/` verschoben. Skills verweisen auf `agents/<name>.md` statt eigene Prompt-Dateien zu halten. Ein Ort, eine Konvention.
 
-## Max-Iterations-Schutz
+## Review-Loop
 
-Der iterative Review-Loop hat ein Limit:
-- **Max 3 Iterationen** pro Reviewer
-- Nach 3 gescheiterten Iterationen: **Eskalation an den User**
-- Der User entscheidet: weiter iterieren, Reviewer-Feedback überstimmen, oder Arbeit abbrechen
+Der Loop läuft bis keine Anmerkungen mehr vorhanden sind. Kein Iterationslimit — der User kann jederzeit abbrechen wenn gewünscht.
 
 ```
-Iteration 1: Reviewer → ISSUES_FOUND → Skill fixt
-Iteration 2: Reviewer → ISSUES_FOUND → Skill fixt
-Iteration 3: Reviewer → ISSUES_FOUND → ESKALATION AN USER
-  User: "Weiter iterieren" | "Reviewer überstimmen" | "Abbrechen"
+Skill macht Arbeit
+  → Dispatch Reviewer (frisch)
+  → ISSUES_FOUND → Skill fixt → Dispatch Reviewer (frisch)
+  → ISSUES_FOUND → Skill fixt → Dispatch Reviewer (frisch)
+  → ... (solange bis)
+  → APPROVED → weiter
 ```
 
 ## Übergreifendes Immutabilitäts-Prinzip
@@ -58,22 +57,52 @@ Reviewer-Output-Status:
 - **ISSUES_FOUND** — fachliche Probleme, Agent soll iterieren
 - **CHANGE_REQUIRES_APPROVAL** — Änderung an bestehendem Artefakt erkannt, User-Genehmigung erforderlich
 
-## Die 11 Reviewer-Agents
+## Agent-Definition-Format
 
-### Kategorie A: Neue Agents (kein Review vorhanden)
+Alle Agents folgen dem code-reviewer.md Muster:
+
+```markdown
+---
+name: <agent-name>
+description: |
+  Use this agent when ... Examples: <example>...</example>
+model: inherit
+---
+
+**Semantic anchors:** <Etablierte Methoden/Frameworks die der Agent kennen muss>
+
+You are a [Role]. Your role is to [Purpose].
+
+When reviewing, you will:
+
+1. **Check Category**: ...
+2. **Check Category**: ...
+...
+
+## Output Protocol
+- **APPROVED**: ...
+- **ISSUES_FOUND**: ...
+- **CHANGE_REQUIRES_APPROVAL**: ...
+```
+
+## Die 12 Reviewer-Agents
+
+### Kategorie A: Neue Agents
 
 #### 1. agents/constraint-reviewer.md
-**Aufgerufen von:** constraint-selection (nach Step 4: User-Bestätigung)
+**Semantic anchors:** TOGAF Principles Catalog for organizational constraint governance, ISO 27001 for security constraint applicability assessment, GDPR Art. 25 (Data Protection by Design) for compliance constraint relevance evaluation.
+**Aufgerufen von:** constraint-selection (nach User-Bestätigung)
 **Prüft:**
 - Missed constraints: Gibt es Projekt-Constraints die hätten selektiert werden sollen?
 - False inclusions: Ist ein selektierter Constraint irrelevant für das Feature?
 - Exclusion reasons: Sind die Ausschluss-Begründungen korrekt?
 - Process constraints: Sind sie als Uncertain markiert, nicht als Relevant?
 **Input:** Approved design, selektierte + ausgeschlossene Constraints, Constraint-Repo-Pfad
-**Output:** APPROVED | ISSUES_FOUND (mit konkreten Punkten)
+**Output:** APPROVED | ISSUES_FOUND
 
 #### 2. agents/project-constraint-reviewer.md
-**Aufgerufen von:** project-constraints (nach Step 4: Präsentation an User)
+**Semantic anchors:** TOGAF Architecture Principles for enterprise constraint mapping, Technology Radar (ThoughtWorks) for tech stack assessment, ISO 27001 Annex A for security control applicability statements.
+**Aufgerufen von:** project-constraints (nach Präsentation an User)
 **Prüft:**
 - Projekt-Profil korrekt? Stimmt die Tech-Stack-Analyse mit dem tatsächlichen Code überein?
 - Missed matches: Gibt es Constraints im Repo deren applies_to zum Projekt passt aber nicht selektiert wurden?
@@ -83,6 +112,7 @@ Reviewer-Output-Status:
 **Output:** APPROVED | ISSUES_FOUND
 
 #### 3. agents/quality-scenario-reviewer.md
+**Semantic anchors:** ATAM (Architecture Tradeoff Analysis Method) for quality attribute scenario validation, ISO 25010 (Software Quality Model) for quality characteristic completeness, arc42 Section 10 (Quality Requirements) for quality tree verification.
 **Aufgerufen von:** quality-scenarios (nach Step 5: Szenarien erstellt)
 **Prüft:**
 - Coverage: Hat jede Charakteristik aus architecture.md mindestens ein Szenario?
@@ -98,6 +128,7 @@ Reviewer-Output-Status:
 **Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL (bei Änderungen an Bestehendem)
 
 #### 4. agents/bdd-step-reviewer.md
+**Semantic anchors:** BDD (Behavior-Driven Development) step definition patterns, Cucumber step expression best practices, Clean Architecture outside-in testing (steps as thin glue between scenarios and application code).
 **Aufgerufen von:** bdd-testing (nach Step Definition Implementation)
 **Prüft ausschließlich Step-Definition-Qualität:**
 - Steps sind thin glue (keine Business-Logik in Steps)
@@ -109,6 +140,7 @@ Reviewer-Output-Status:
 **Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL
 
 #### 4b. agents/feature-file-reviewer.md
+**Semantic anchors:** Gherkin syntax specification for scenario validity, EARS (Easy Approach to Requirements Syntax) for requirement-to-scenario traceability, Domain-Driven Design ubiquitous language for domain term consistency.
 **Aufgerufen von:** feature-design (nach Szenario-Erstellung) UND bdd-testing (bei .feature-Änderungen)
 **Prüft ausschließlich .feature-Datei-Integrität:**
 - **Duplikat-Check:** Gibt es neue Szenarien die inhaltlich identisch zu bestehenden .feature Szenarien sind?
@@ -120,6 +152,7 @@ Reviewer-Output-Status:
 **Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL
 
 #### 5. agents/fitness-function-reviewer.md
+**Semantic anchors:** "Building Evolutionary Architectures" (Ford/Parsons/Kua) for fitness function design principles, ATAM quality attribute scenarios as testable assertions, Clean Architecture dependency rules for structural invariant verification.
 **Aufgerufen von:** fitness-functions (nach FF-Implementation)
 **Prüft:**
 - FFs testen Architektur, nicht Implementation Details
@@ -138,6 +171,7 @@ Reviewer-Output-Status:
 Bestehende Reviewer-Prompts werden aus den Skills nach `agents/` verschoben und um Constraint-Awareness erweitert. Skills verweisen dann auf `agents/<name>.md`.
 
 #### 6. agents/architecture-reviewer.md (verschieben + erweitern)
+**Semantic anchors:** ATAM (Architecture Tradeoff Analysis Method) for quality attribute completeness, arc42 for structured documentation verification, Ford/Richards Architecture Characteristics Worksheet for characteristic definitions, ISO 25010 for quality model coverage.
 **Bisher in:** skills/architecture-assessment/architecture-reviewer-prompt.md → **verschoben nach** agents/
 **Bestehende Checks** bleiben (Completeness, Consistency, Stability, Measurability)
 **Zusätzlich prüfen:**
@@ -150,6 +184,7 @@ Bestehende Reviewer-Prompts werden aus den Skills nach `agents/` verschoben und 
 Feature-File-Review ist jetzt ein eigener Agent (4b) der von feature-design UND bdd-testing aufgerufen wird. Die bestehenden inline-Reviews in feature-design/SKILL.md verweisen auf diesen Agent.
 
 #### 8. agents/plan-reviewer.md (verschieben + erweitern)
+**Semantic anchors:** TDD (Test-Driven Development) RED-GREEN-REFACTOR for task decomposition, BDD step definition wiring patterns, YAGNI (You Aren't Gonna Need It) for scope control.
 **Bisher in:** skills/writing-plans/plan-document-reviewer-prompt.md → **verschoben nach** agents/
 **Bestehende Checks** bleiben (Completeness, Spec alignment, Task decomposition, Buildability)
 **Zusätzlich prüfen:**
@@ -158,6 +193,7 @@ Feature-File-Review ist jetzt ein eigener Agent (4b) der von feature-design UND 
 - BDD Step-Definition-Tasks für Constraint-Szenarien?
 
 #### 9. agents/spec-reviewer.md (verschieben + erweitern)
+**Semantic anchors:** EARS (Easy Approach to Requirements Syntax) for requirement clarity, arc42 for architecture documentation structure, YAGNI for scope control, Definition of Done for completeness assessment.
 **Bisher in:** skills/brainstorming/spec-document-reviewer-prompt.md → **verschoben nach** agents/
 **Bestehende Checks** bleiben (Completeness, Consistency, Clarity, Scope, YAGNI)
 **Zusätzlich prüfen:**
@@ -168,6 +204,7 @@ Feature-File-Review ist jetzt ein eigener Agent (4b) der von feature-design UND 
 ### Kategorie C: Neue Agents für kritische Lücken
 
 #### 10. agents/architecture-style-reviewer.md
+**Semantic anchors:** "Fundamentals of Software Architecture" (Ford/Richards) Architecture Styles Worksheet V2.0 for style scoring validation, "Building Evolutionary Architectures" for style fitness function completeness, ATAM for tradeoff documentation.
 **Aufgerufen von:** architecture-style-selection (nach Stil-Wahl)
 **Prüft:**
 - Wurden alle 8 Stile gegen die Top-3 Charakteristiken bewertet?
@@ -180,6 +217,7 @@ Feature-File-Review ist jetzt ein eigener Agent (4b) der von feature-design UND 
 **Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL
 
 #### 11. agents/completion-verifier.md
+**Semantic anchors:** Definition of Done with evidence-based verification, ATAM quality attribute scenario validation, BDD acceptance criteria as executable specifications, "Building Evolutionary Architectures" fitness function enforcement.
 **Aufgerufen von:** verification-before-completion (als finaler Check)
 **Prüft:**
 - Alle Verifikations-Commands frisch ausführen (nicht aus Cache/Memory)
