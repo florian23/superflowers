@@ -1,0 +1,26 @@
+{
+  "eval_id": 1,
+  "eval_name": "initial-setup",
+  "configuration": "with_skill",
+  "iteration": 2,
+  "summary": "Deutliche Verbesserung nach REFACTOR: Projekt-Profil erstellt, SEC-003 und PROC-001 korrekt als Uncertain markiert mit konkreten Rückfragen, User-Bestätigung eingeholt. 14/14.",
+  "pass_rate": 1.0,
+  "passed": 14,
+  "total": 14,
+  "expectations": [
+    {"text": "Agent liest CLAUDE.md für den Constraint-Repo-Pfad", "passed": true, "evidence": "CLAUDE.md gelesen"},
+    {"text": "Agent analysiert den Projekt-Kontext", "passed": true, "evidence": "Explizites Projekt-Profil: Spring Boot 3.2, PostgreSQL, PII (cardNumber, cardHolder, iban), REST APIs, Docker"},
+    {"text": "Agent liest alle Constraint-Dateien aus dem Repo", "passed": true, "evidence": "Alle 8 Constraints gelesen"},
+    {"text": "SEC-001 als relevant empfohlen", "passed": true, "evidence": "Korrekt mit Begründung (Zahlungsdaten in DB)"},
+    {"text": "SEC-002 als relevant empfohlen", "passed": true, "evidence": "Korrekt mit Begründung (REST APIs)"},
+    {"text": "COMP-001 als relevant empfohlen", "passed": true, "evidence": "Korrekt (PII erkannt)"},
+    {"text": "COMP-002 als relevant empfohlen", "passed": true, "evidence": "Korrekt (schreibende Operationen)"},
+    {"text": "TECH-001 als relevant empfohlen", "passed": true, "evidence": "Korrekt (Spring Boot bereits im Einsatz)"},
+    {"text": "SEC-003 wird ausgeschlossen oder als unsicher markiert", "passed": true, "evidence": "Als UNSICHER markiert mit Frage: 'Wird die Netzwerk-Infrastruktur vom Projekt-Team oder Plattform-Team verwaltet?'"},
+    {"text": "PROC-001 wird als unsicher markiert", "passed": true, "evidence": "Als UNSICHER markiert mit Frage: 'Geht der Service in Produktion? Gibt es ein Team mit mehreren Personen?'"},
+    {"text": "Agent präsentiert ein Projekt-Profil", "passed": true, "evidence": "Knappes aber vollständiges Profil am Anfang"},
+    {"text": "Agent fragt vor dem Schreiben", "passed": true, "evidence": "'Soll ich die Projekt-Constraints so anlegen?' — wartet auf Antwort"},
+    {"text": "Agent erstellt constraints/ Ordner korrekt", "passed": true, "evidence": "Korrekte Struktur"},
+    {"text": "Nicht-relevante Constraints mit Begründung", "passed": true, "evidence": "SEC-003 und PROC-001 als Uncertain mit konkreten Rückfragen"}
+  ]
+}
