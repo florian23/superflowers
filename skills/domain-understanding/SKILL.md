@@ -1,0 +1,177 @@
+---
+name: domain-understanding
+description: Use AFTER exploring project context and BEFORE asking design questions in brainstorming — builds a domain profile by analyzing code, asking domain questions, researching online, and incorporating external knowledge sources (Confluence, SharePoint, ontologies). Ensures the agent understands the business domain before making design decisions.
+---
+
+# Domain Understanding
+
+Build a domain profile before design decisions are made. The agent must understand the business domain — its concepts, relationships, rules, and language — before asking design questions or proposing approaches.
+
+**Semantic anchors:** Domain-Driven Design (Eric Evans) for ubiquitous language and domain modeling, Event Storming (Alberto Brandolini) for domain event discovery, Domain Storytelling (Stefan Hofer/Henning Schwentner) for understanding domain workflows, Knowledge Crunching (Eric Evans) for extracting domain knowledge from experts and code.
+
+**Announce at start:** "I'm building a domain profile to understand the business context before we start designing."
+
+## Why This Exists
+
+Without domain understanding, design questions are superficial. An agent asking "should we use a queue for payments?" without knowing that a payment has states (pending, authorized, captured, refunded) and that state transitions have business rules misses the point entirely. Domain understanding turns generic technical questions into informed domain questions.
+
+## Process Flow
+
+```dot
+digraph domain_understanding {
+  start [shape=ellipse, label="Project context explored"];
+  existing [shape=diamond, label="context-map.md\nexists?"];
+  read_context [label="Read existing\ndomain model"];
+  analyze_code [label="Analyze code for\ndomain concepts"];
+  ask_domain [label="Ask domain questions\n(one at a time)"];
+  external [shape=diamond, label="External knowledge\navailable?"];
+  research [label="Research domain\n(web, docs, user sources)"];
+  build_profile [label="Build domain profile"];
+  present [label="Present profile\nto user"];
+  user_ok [shape=diamond, label="User\nconfirms?"];
+  done [shape=doublecircle, label="Return to brainstorming\n(clarifying questions next)"];
+
+  start -> existing;
+  existing -> read_context [label="yes"];
+  existing -> analyze_code [label="no"];
+  read_context -> analyze_code;
+  analyze_code -> ask_domain;
+  ask_domain -> external;
+  external -> research [label="yes"];
+  external -> build_profile [label="no"];
+  research -> build_profile;
+  build_profile -> present;
+  present -> user_ok;
+  user_ok -> done [label="yes"];
+  user_ok -> ask_domain [label="corrections/gaps"];
+}
+```
+
+## Step 1: Read Existing Domain Artifacts
+
+If `context-map.md` exists (from a previous bounded-context-design run):
+- Read the ubiquitous language definitions
+- Read the bounded contexts and their relationships
+- Note the domain terms that are already established
+
+If domain models exist in the code (entities, value objects, aggregates):
+- Read them to understand the current domain model
+- Note the terminology used in class names, method names, field names
+
+## Step 2: Analyze Code for Domain Concepts
+
+Read the project code to extract domain knowledge:
+
+- **Entities/Models:** What are the core business objects? (User, Payment, Order, Invoice...)
+- **States/Enums:** What states do entities go through? (PaymentStatus: PENDING, AUTHORIZED, CAPTURED, REFUNDED)
+- **Business Rules:** What validation, constraints, or state transitions exist in the code?
+- **Relationships:** How do entities relate? (A Payment belongs to a User, an Order contains Items)
+- **Domain Events:** What happens in the system? (PaymentCreated, RefundRequested, OrderShipped)
+- **Roles:** Who interacts with the system? (Customer, Merchant, Admin, System)
+
+## Step 3: Ask Domain Questions
+
+Ask the user targeted domain questions — one at a time. The goal is to fill gaps that the code doesn't answer.
+
+**Types of questions:**
+
+**Clarifying existing concepts:**
+- "Im Code gibt es PaymentStatus mit PENDING und COMPLETED. Gibt es weitere Zustände die noch nicht implementiert sind?"
+- "RefundPayment hat keine Validierung — darf jede Zahlung storniert werden, oder gibt es Business Rules?"
+
+**Discovering hidden concepts:**
+- "Gibt es Konzepte in der Domäne die noch nicht im Code existieren? Z.B. Reklamationen, Gutschriften, Teilzahlungen?"
+- "Wer sind die Stakeholder? Nur Endkunden, oder auch Händler, Partner, interne Teams?"
+
+**Understanding business rules:**
+- "Was passiert wenn eine Zahlung fehlschlägt? Retry? Eskalation? Benachrichtigung?"
+- "Gibt es zeitliche Constraints? Z.B. Stornierung nur innerhalb von 14 Tagen?"
+
+**Domain language:**
+- "Wenn ihr intern über 'Rückerstattung' sprecht — ist das dasselbe wie 'Refund' im Code?"
+
+Only ask questions where the code leaves ambiguity. Don't ask what the code already clearly answers.
+
+## Step 4: External Knowledge Sources
+
+The domain profile can be enriched from external sources:
+
+**Internet Research:**
+- Research the domain (e.g., "payment processing domain model", "e-commerce order lifecycle")
+- Industry standards and patterns (e.g., PCI-DSS for payments, FHIR for healthcare)
+- Look for established domain models in the industry
+
+**User-Provided Sources:**
+If the user offers access to internal knowledge sources:
+- **Confluence/Wiki:** Read relevant pages about domain concepts, business processes, glossaries
+- **SharePoint:** Read process documentation, business rules documents
+- **Knowledge Graphs/Ontologies:** If the user provides an ontology (OWL, RDF, or custom), use it to understand the domain's formal structure, relationships, and constraints
+- **API Documentation:** Existing API docs often contain implicit domain knowledge
+- **Event Catalogs:** If the team documents domain events, read them
+
+Ask the user: "Gibt es interne Dokumentation zur Domäne? Z.B. in Confluence, einem Wiki, oder einem Glossar? Wenn ja, kann ich diese als Quelle einbeziehen."
+
+Only ask once. If the user says no, proceed with code analysis and domain questions only.
+
+## Step 5: Build Domain Profile
+
+Compile everything into a **Domain Profile** — a concise document that captures the domain understanding:
+
+```markdown
+## Domain Profile: <Project/Feature Name>
+
+### Core Concepts
+| Concept | Description | Code Reference |
+|---------|------------|----------------|
+| Payment | A financial transaction from customer to merchant | PaymentController, Payment entity |
+| Refund | Reversal of a payment, partial or full | refundPayment() |
+
+### Domain States
+| Entity | States | Transitions |
+|--------|--------|-------------|
+| Payment | PENDING → AUTHORIZED → CAPTURED → REFUNDED | PENDING→AUTHORIZED requires gateway response |
+
+### Business Rules
+- Refunds only allowed on CAPTURED payments
+- Refund amount cannot exceed original payment
+- ...
+
+### Roles
+- Customer: initiates payments
+- Merchant: receives payments
+- Admin: manages refunds, disputes
+
+### Ubiquitous Language
+| Term | Meaning | Context |
+|------|---------|---------|
+| Capture | Finalizing an authorized payment | Payment processing |
+| Settlement | Transfer of captured funds to merchant | Accounting |
+
+### Open Questions
+- [Questions that couldn't be answered yet]
+
+### Sources
+- Code analysis: PaymentController.kt, Payment.kt
+- User input: Refund rules, state transitions
+- External: [if any]
+```
+
+## Step 6: Present to User
+
+Present the domain profile and ask:
+> "Hier ist mein Verständnis der Domäne. Stimmt das? Fehlt etwas Wichtiges?"
+
+Wait for confirmation. If the user corrects or adds:
+- Update the profile
+- Ask follow-up questions if needed
+- Re-present until confirmed
+
+The confirmed domain profile informs all subsequent brainstorming questions.
+
+## Integration
+
+**Called after:** Brainstorming Step 1 (Explore project context)
+**Runs before:** Brainstorming Step 3 (Ask clarifying questions)
+**Output:** Domain Profile (presented to user, not written to file — it's working knowledge for the brainstorming session)
+**Feeds into:** Brainstorming questions use domain language and concepts. Bounded-context-design (later) builds on this understanding.
+**Read by:** bounded-context-design uses the domain profile as input for subdomain classification
