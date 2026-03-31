@@ -179,6 +179,16 @@ This applies in BOTH Initial Setup and Review/Update mode.
 
 Wait for user confirmation before writing.
 
+## Step 4b: Independent Verification
+
+After user confirmation, dispatch the `superflowers:project-constraint-reviewer` agent. The reviewer independently reads the project code and constraint repo to verify the analysis.
+
+```
+Dispatch project-constraint-reviewer
+  → APPROVED → proceed to Step 5
+  → ISSUES_FOUND → fix issues → re-dispatch reviewer → repeat until APPROVED
+```
+
 ## Step 5: Write constraints/ Files
 
 Create or update `constraints/` directory with one `.md` per category:

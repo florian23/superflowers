@@ -148,6 +148,17 @@ Show the user:
 
 Wait for user confirmation before writing the file.
 
+## Step 5b: Independent Verification
+
+After user confirmation, dispatch the `superflowers:quality-scenario-reviewer` agent. The reviewer independently verifies coverage, test types, duplicates, conflicts, and immutability.
+
+```
+Dispatch quality-scenario-reviewer
+  → APPROVED → proceed to Step 6
+  → ISSUES_FOUND → fix issues → re-dispatch reviewer → repeat until APPROVED
+  → CHANGE_REQUIRES_APPROVAL → present changes to user for 4-eyes approval
+```
+
 ## Step 6: Write quality-scenarios.md
 
 Persist to `quality-scenarios.md` in the project root.

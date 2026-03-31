@@ -178,6 +178,17 @@ After tests pass, READ the step definition files and check for quality issues:
 
 **All 4 steps must succeed. No exceptions. No "looks good to me". Only code output counts as evidence.**
 
+### Step 5: Independent Step Definition Review
+
+After the quality check passes, dispatch the `superflowers:bdd-step-reviewer` agent for independent verification of step definition quality and immutability.
+
+```
+Dispatch bdd-step-reviewer
+  → APPROVED → step definitions are good
+  → ISSUES_FOUND → fix issues → re-dispatch → repeat until APPROVED
+  → CHANGE_REQUIRES_APPROVAL → existing steps modified, user must approve
+```
+
 ## Step Definition Best Practices
 
 - **Thin step definitions:** Parse Gherkin parameters, delegate to real code. Steps are glue, not logic.

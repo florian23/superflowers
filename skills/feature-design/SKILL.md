@@ -225,30 +225,18 @@ After writing scenarios, review with fresh eyes:
 
 ## Feature File Verification (Fresh Agent)
 
-After self-review, dispatch a **fresh subagent** to independently verify the feature files against the spec. The fresh context prevents blind spots from your own writing.
+After self-review, dispatch the `superflowers:feature-file-reviewer` agent to independently verify the feature files. The fresh context prevents blind spots from your own writing.
 
-The verification agent checks:
-1. **Spec-to-scenario traceability:** Every spec requirement has at least one scenario
-2. **Scenario-to-spec traceability:** Every scenario traces back to a spec requirement (no invented requirements)
-3. **Consistency:** No contradictions between scenarios and spec
-4. **Gherkin validity:** Syntax is correct, no malformed steps
-5. **Completeness:** Error paths, edge cases, boundary conditions covered
+The reviewer checks: spec traceability, duplicates with existing .feature files, conflicts, immutability (no unauthorized changes to existing files), constraint coverage, and Gherkin quality (declarative style, single behavior, domain language, step reusability).
 
-If the verification agent finds gaps, fix them before presenting to the user.
+```
+Dispatch feature-file-reviewer
+  → APPROVED → proceed to user review
+  → ISSUES_FOUND → fix issues → re-dispatch → repeat until APPROVED
+  → CHANGE_REQUIRES_APPROVAL → existing .feature files modified, user must approve
+```
 
-## Feature File Quality Review
-
-Before proceeding to the spec, dispatch a fresh subagent to review the NEW feature files for quality. The reviewer checks:
-
-1. **Declarative style:** Scenarios describe WHAT, not HOW (no UI selectors, no implementation details)
-2. **Single behavior per scenario:** Each scenario tests exactly one thing
-3. **Completeness:** Happy path + error paths + edge cases covered
-4. **Independence:** Scenarios don't depend on execution order
-5. **Domain language:** Uses ubiquitous language, not technical jargon
-6. **Gherkin validity:** Correct syntax, proper use of Background/Outline/Examples
-7. **Step reusability:** Steps are generic enough to be reused across scenarios
-
-If quality issues are found, fix them before presenting to the user.
+If the reviewer finds gaps or quality issues, fix them before presenting to the user.
 
 ## Red Flags — STOP and Revisit
 

@@ -145,6 +145,17 @@ The fitness agent:
 
 **Model selection:** Use a standard model. Fitness function implementation is pattern matching on architecture characteristics.
 
+## Independent Fitness Function Review
+
+After implementing fitness functions, dispatch the `superflowers:fitness-function-reviewer` agent for independent verification of correctness, completeness, and immutability.
+
+```
+Dispatch fitness-function-reviewer
+  → APPROVED → fitness functions are correct and complete
+  → ISSUES_FOUND → fix issues → re-dispatch → repeat until APPROVED
+  → CHANGE_REQUIRES_APPROVAL → existing FFs modified, user must approve + ADR required
+```
+
 ## Red Flags — STOP
 
 - Fitness functions that always pass (not actually testing anything)

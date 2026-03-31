@@ -140,6 +140,17 @@ Use the answers to adjust the recommendation. For example:
 - Tight budget + space-based scores high → may be cost-prohibitive despite technical fit
 - Single team + modular monolith scores well → good fit, can evolve toward services later
 
+## Step 4b: Independent Verification
+
+After user confirms selection, dispatch the `superflowers:architecture-style-reviewer` agent. The reviewer independently scores all 8 styles, verifies the selection, and checks style fitness function completeness.
+
+```
+Dispatch architecture-style-reviewer
+  → APPROVED → proceed to Step 5
+  → ISSUES_FOUND → fix issues → re-dispatch reviewer → repeat until APPROVED
+  → CHANGE_REQUIRES_APPROVAL → existing style being changed, user must approve + ADR
+```
+
 ## Step 5: Update architecture.md
 
 After the user confirms a selection, update `architecture.md` with a new section:
