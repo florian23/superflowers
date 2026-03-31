@@ -29,7 +29,11 @@ constraints_repo: /path/to/company-constraints
 
 If `constraints_repo` is not configured or the path doesn't exist, skip this skill silently and proceed to architecture-assessment.
 
-The project must have a `constraints/` directory with `.md` files that reference relevant constraints from the repository. If `constraints/` doesn't exist, skip silently.
+The project must have a `constraints/` directory with `.md` files that reference relevant constraints from the repository. If `constraints/` doesn't exist but `constraints_repo` IS configured, inform the user:
+
+> "Ein Constraint-Repository ist konfiguriert, aber es gibt noch keine Projekt-Constraints (constraints/ Verzeichnis fehlt). Projekt-Constraints müssen zuerst eingerichtet werden, bevor Feature-Constraints selektiert werden können. Überspringe Constraint-Selektion für dieses Feature."
+
+Do NOT read the constraint repo directly — project-level constraint selection is a separate concern (future `project-constraints` skill). Do NOT silently skip when a repo exists but project constraints are missing — the user should know.
 
 ## Process Flow
 
@@ -51,7 +55,9 @@ digraph constraint_selection {
   check_config -> check_dir [label="yes"];
   check_config -> skip [label="no"];
   check_dir -> read_project [label="yes"];
-  check_dir -> skip [label="no"];
+  inform_user [shape=box, label="Inform user:\nproject constraints missing\n(future: project-constraints skill)"];
+  check_dir -> inform_user [label="no"];
+  inform_user -> done;
   skip -> done;
   read_project -> read_repo;
   read_repo -> assess;
