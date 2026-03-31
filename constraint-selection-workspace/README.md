@@ -39,28 +39,50 @@ test-fixtures/
 
 ### RED Phase (Baseline ohne Skill)
 
-Starte eine Claude Code Session **ohne** superflowers Plugin:
+Superflowers temporär deaktivieren, dann Session starten:
 
+**Option A: Plugin deaktivieren**
+
+In `~/.claude/settings.json` temporär setzen:
+```json
+"superflowers@local": false
+```
+Dann:
 ```bash
 cd constraint-selection-workspace/test-fixtures/test-project
-claude --no-plugins
+claude
 ```
+
+**Option B: Anderes Verzeichnis ohne CLAUDE.md**
+
+```bash
+cd /tmp
+claude -p "$(cat ~/superflowers/constraint-selection-workspace/evals/evals.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["evals"][0]["prompt"])')"
+```
+
+**Option C: Prompt explizit ohne Skill-Nutzung**
+
+Session mit superflowers starten, aber der Prompt enthält:
+"IGNORIERE alle Skills. Antworte als Standard-Claude ohne superflowers Workflow."
 
 Dann den Eval-Prompt aus `evals/evals.json` (eval 1) einfügen.
 Beobachte: Liest der Agent die Constraints? Welche selektiert er? Welche ignoriert er?
 
 Ergebnis dokumentieren in: `iteration-1/eval-1-payment-service/without_skill/`
 
+**Empfohlen: Option A** — sauberste Isolation.
+Nach dem Test `"superflowers@local": true` wieder setzen.
+
 ### GREEN Phase (mit Skill)
 
-Starte eine Claude Code Session **mit** superflowers:
+Superflowers aktiviert lassen (oder wieder aktivieren), dann:
 
 ```bash
 cd constraint-selection-workspace/test-fixtures/test-project
 claude
 ```
 
-Dann den gleichen Eval-Prompt einfügen. Der constraint-selection Skill sollte automatisch greifen.
+Gleichen Eval-Prompt einfügen. Der constraint-selection Skill sollte greifen.
 
 Ergebnis dokumentieren in: `iteration-1/eval-1-payment-service/with_skill/`
 
