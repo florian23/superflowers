@@ -1,5 +1,6 @@
 package com.example.payment
 
+import java.time.LocalDateTime
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -25,6 +26,11 @@ class PaymentController(private val paymentService: PaymentService) {
     fun refundPayment(@PathVariable id: Long): PaymentResponse {
         return paymentService.refund(id)
     }
+
+    @PostMapping("/{id}/cancel")
+    fun cancelPayment(@PathVariable id: Long): CancelPaymentResponse {
+        return paymentService.cancel(id)
+    }
 }
 
 data class CreatePaymentRequest(
@@ -40,4 +46,11 @@ data class PaymentResponse(
     val id: Long,
     val status: String,
     val amount: Double
+)
+
+data class CancelPaymentResponse(
+    val id: Long,
+    val status: String,
+    val amount: Double,
+    val cancelledAt: LocalDateTime
 )
