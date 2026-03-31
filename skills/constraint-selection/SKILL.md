@@ -29,11 +29,11 @@ constraints_repo: /path/to/company-constraints
 
 If `constraints_repo` is not configured or the path doesn't exist, skip this skill silently and proceed to architecture-assessment.
 
-The project must have a `constraints/` directory with `.md` files that reference relevant constraints from the repository. If `constraints/` doesn't exist but `constraints_repo` IS configured, inform the user:
+The project must have a `constraints/` directory with `.md` files that reference relevant constraints from the repository. If `constraints/` doesn't exist but `constraints_repo` IS configured, inform the user and recommend running `project-constraints`:
 
-> "Ein Constraint-Repository ist konfiguriert, aber es gibt noch keine Projekt-Constraints (constraints/ Verzeichnis fehlt). Projekt-Constraints müssen zuerst eingerichtet werden, bevor Feature-Constraints selektiert werden können. Überspringe Constraint-Selektion für dieses Feature."
+> "Ein Constraint-Repository ist konfiguriert, aber es gibt noch keine Projekt-Constraints (constraints/ Verzeichnis fehlt). Bitte zuerst `superflowers:project-constraints` ausführen um die Projekt-Constraints einzurichten. Überspringe Constraint-Selektion für dieses Feature."
 
-Do NOT read the constraint repo directly — project-level constraint selection is a separate concern (future `project-constraints` skill). Do NOT silently skip when a repo exists but project constraints are missing — the user should know.
+Do NOT read the constraint repo directly — project-level constraint selection is handled by `superflowers:project-constraints`. Do NOT silently skip when a repo exists but project constraints are missing — the user should know.
 
 ## Process Flow
 
