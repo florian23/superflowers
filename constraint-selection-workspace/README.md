@@ -39,39 +39,34 @@ test-fixtures/
 
 ### RED Phase (Baseline ohne Skill)
 
-Superflowers temporär deaktivieren, dann Session starten:
+Starte Claude Code ohne superflowers:
 
-**Option A: Plugin deaktivieren**
+**Option A: `--bare` (empfohlen, einfachste)**
 
-In `~/.claude/settings.json` temporär setzen:
-```json
-"superflowers@local": false
-```
-Dann:
 ```bash
 cd constraint-selection-workspace/test-fixtures/test-project
-claude
+claude --bare
 ```
 
-**Option B: Anderes Verzeichnis ohne CLAUDE.md**
+Deaktiviert alle Plugins, Hooks und Skills. Sauberste Baseline.
+
+**Option B: Temporäre Settings**
 
 ```bash
-cd /tmp
-claude -p "$(cat ~/superflowers/constraint-selection-workspace/evals/evals.json | python3 -c 'import sys,json; print(json.load(sys.stdin)["evals"][0]["prompt"])')"
+# Einmal anlegen:
+echo '{"enabledPlugins":{"superflowers@local":false}}' > /tmp/no-superflowers.json
+
+# Dann:
+cd constraint-selection-workspace/test-fixtures/test-project
+claude --settings /tmp/no-superflowers.json
 ```
 
-**Option C: Prompt explizit ohne Skill-Nutzung**
-
-Session mit superflowers starten, aber der Prompt enthält:
-"IGNORIERE alle Skills. Antworte als Standard-Claude ohne superflowers Workflow."
+Merged mit bestehenden Settings, nur superflowers deaktiviert.
 
 Dann den Eval-Prompt aus `evals/evals.json` (eval 1) einfügen.
 Beobachte: Liest der Agent die Constraints? Welche selektiert er? Welche ignoriert er?
 
 Ergebnis dokumentieren in: `iteration-1/eval-1-payment-service/without_skill/`
-
-**Empfohlen: Option A** — sauberste Isolation.
-Nach dem Test `"superflowers@local": true` wieder setzen.
 
 ### GREEN Phase (mit Skill)
 
