@@ -1,0 +1,134 @@
+{
+  "skill_name": "constraint-selection",
+  "evals": [
+    {
+      "id": 1,
+      "name": "payment-service-constraint-selection",
+      "description": "A payment service feature that touches data storage, APIs, and personal data. All 5 active project constraints should be relevant. SEC-003 and PROC-001 are not project-active.",
+      "prompt": "Du arbeitest im Projekt unter /home/flo/superflowers/constraint-selection-workspace/test-fixtures/test-project/. Das Design für einen Payment Service ist genehmigt:\n\n**Feature:** Payment Service\n- REST API für Zahlungsabwicklung (Kreditkarte, SEPA)\n- Speichert Zahlungsdaten und Transaktionshistorie in PostgreSQL\n- Verarbeitet personenbezogene Daten (Name, IBAN, Kreditkartennummer)\n- Exponiert 5 API-Endpunkte (Create Payment, Get Payment, List Payments, Refund, Webhook)\n\nBitte identifiziere welche organisatorischen Randbedingungen aus dem Constraint-Repository für dieses Feature relevant sind. Lese dazu die CLAUDE.md für den Pfad zum Constraint-Repo und die Dateien unter constraints/ für die Projekt-Constraints.\n\nSchreibe eine Feature-Constraint-Datei nach docs/superflowers/constraints/.",
+      "expected_constraints": ["SEC-001", "SEC-002", "COMP-001", "COMP-002", "TECH-001"],
+      "expected_excluded": ["SEC-003", "PROC-001"],
+      "assertions": [
+        {
+          "name": "reads_constraint_repo",
+          "text": "Der Agent liest die CLAUDE.md um den Pfad zum Constraint-Repo zu finden",
+          "type": "process"
+        },
+        {
+          "name": "reads_project_constraints",
+          "text": "Der Agent liest alle Dateien unter constraints/ im Projekt",
+          "type": "process"
+        },
+        {
+          "name": "reads_referenced_constraints",
+          "text": "Der Agent liest die referenzierten Constraint-Dateien aus dem Unternehmens-Repo",
+          "type": "process"
+        },
+        {
+          "name": "selects_sec001",
+          "text": "SEC-001 (Encryption at Rest) wird als relevant selektiert — Feature speichert Zahlungsdaten",
+          "type": "factual"
+        },
+        {
+          "name": "selects_sec002",
+          "text": "SEC-002 (API Authentication) wird als relevant selektiert — Feature hat REST-Endpunkte",
+          "type": "factual"
+        },
+        {
+          "name": "selects_comp001",
+          "text": "COMP-001 (GDPR Data Retention) wird als relevant selektiert — Feature verarbeitet personenbezogene Daten",
+          "type": "factual"
+        },
+        {
+          "name": "selects_comp002",
+          "text": "COMP-002 (Audit Logging) wird als relevant selektiert — Feature hat schreibende Operationen",
+          "type": "factual"
+        },
+        {
+          "name": "selects_tech001",
+          "text": "TECH-001 (Spring Boot) wird als relevant selektiert — Feature ist ein Webservice",
+          "type": "factual"
+        },
+        {
+          "name": "excludes_sec003",
+          "text": "SEC-003 (Network Segmentation) wird ausgeschlossen — nicht im Projekt-Scope",
+          "type": "factual"
+        },
+        {
+          "name": "excludes_proc001",
+          "text": "PROC-001 (Four-Eyes) wird nicht selektiert — nicht in den Projekt-Constraints referenziert",
+          "type": "factual"
+        },
+        {
+          "name": "writes_constraint_file",
+          "text": "Eine Feature-Constraint-Datei wird unter docs/superflowers/constraints/ geschrieben mit Datums-Namensschema",
+          "type": "factual"
+        },
+        {
+          "name": "includes_verification_criteria",
+          "text": "Die Feature-Constraint-Datei enthält Prüfkriterien pro Constraint",
+          "type": "quality"
+        },
+        {
+          "name": "includes_exclusion_reasons",
+          "text": "Ausgeschlossene Constraints werden mit Begründung aufgelistet",
+          "type": "quality"
+        },
+        {
+          "name": "presents_to_user",
+          "text": "Der Agent präsentiert die Selektion dem User zur Bestätigung bevor er die Datei schreibt",
+          "type": "process"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "cli-tool-minimal-constraints",
+      "description": "A CLI tool that doesn't store data or expose APIs. Only TECH-001 might be marginally relevant (but it's a CLI, not a webservice). Most constraints should be excluded.",
+      "prompt": "Du arbeitest im Projekt unter /home/flo/superflowers/constraint-selection-workspace/test-fixtures/test-project/. Das Design für ein CLI-Tool ist genehmigt:\n\n**Feature:** Log Analyzer CLI\n- Kommandozeilen-Tool das Log-Dateien analysiert\n- Liest lokale Dateien, gibt Statistiken auf stdout aus\n- Keine Datenbank, keine API, keine persistente Datenspeicherung\n- Keine Verarbeitung personenbezogener Daten\n- Wird nur intern von Entwicklern genutzt\n\nBitte identifiziere welche organisatorischen Randbedingungen für dieses Feature relevant sind.",
+      "expected_constraints": [],
+      "expected_excluded": ["SEC-001", "SEC-002", "COMP-001", "COMP-002", "TECH-001"],
+      "assertions": [
+        {
+          "name": "excludes_most_constraints",
+          "text": "Die meisten Constraints werden als nicht relevant ausgeschlossen",
+          "type": "factual"
+        },
+        {
+          "name": "explains_exclusions",
+          "text": "Jeder Ausschluss wird begründet (kein API, keine DB, keine PII)",
+          "type": "quality"
+        },
+        {
+          "name": "does_not_force_irrelevant",
+          "text": "Der Agent forciert KEINE irrelevanten Constraints nur weil sie 'mandatory' sind — mandatory bezieht sich auf den Anwendungsfall, nicht auf jedes Feature",
+          "type": "quality"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "no-constraint-repo-configured",
+      "description": "Project has no constraints_repo in CLAUDE.md. Skill should skip gracefully.",
+      "prompt": "Du arbeitest in einem Projekt ohne konfiguriertes Constraint-Repository (keine constraints_repo Angabe in CLAUDE.md, kein constraints/ Verzeichnis). Das Design für ein Feature ist genehmigt.\n\n**Feature:** User Dashboard\n- Web-Frontend für Benutzer-Statistiken\n\nBitte prüfe ob organisatorische Randbedingungen berücksichtigt werden müssen.",
+      "expected_constraints": [],
+      "assertions": [
+        {
+          "name": "skips_gracefully",
+          "text": "Der Agent erkennt dass kein Constraint-Repo konfiguriert ist und überspringt den Schritt",
+          "type": "process"
+        },
+        {
+          "name": "no_error",
+          "text": "Es gibt keinen Fehler oder Crash — der Skill überspringt still",
+          "type": "process"
+        },
+        {
+          "name": "proceeds_to_next_step",
+          "text": "Der Agent fährt mit dem nächsten Schritt fort (Architecture Assessment)",
+          "type": "process"
+        }
+      ]
+    }
+  ]
+}
