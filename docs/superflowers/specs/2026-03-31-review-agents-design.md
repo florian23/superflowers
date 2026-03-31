@@ -24,6 +24,22 @@ Skill macht Arbeit
 
 Reviewer-Agents leben als `.md` Dateien in `agents/` und werden über das Agent Tool dispatcht. Sie sind keine eigenständigen Skills.
 
+**Alle Reviewer-Agents leben in `agents/`** — auch die bestehenden die aktuell innerhalb von Skills liegen (z.B. `skills/architecture-assessment/architecture-reviewer-prompt.md`). Diese werden nach `agents/` verschoben. Skills verweisen auf `agents/<name>.md` statt eigene Prompt-Dateien zu halten. Ein Ort, eine Konvention.
+
+## Max-Iterations-Schutz
+
+Der iterative Review-Loop hat ein Limit:
+- **Max 3 Iterationen** pro Reviewer
+- Nach 3 gescheiterten Iterationen: **Eskalation an den User**
+- Der User entscheidet: weiter iterieren, Reviewer-Feedback überstimmen, oder Arbeit abbrechen
+
+```
+Iteration 1: Reviewer → ISSUES_FOUND → Skill fixt
+Iteration 2: Reviewer → ISSUES_FOUND → Skill fixt
+Iteration 3: Reviewer → ISSUES_FOUND → ESKALATION AN USER
+  User: "Weiter iterieren" | "Reviewer überstimmen" | "Abbrechen"
+```
+
 ## Übergreifendes Immutabilitäts-Prinzip
 
 Alle Reviewer-Agents prüfen neben ihren fachlichen Kriterien auch das **Immutabilitäts-Prinzip**:
@@ -83,15 +99,24 @@ Reviewer-Output-Status:
 
 #### 4. agents/bdd-step-reviewer.md
 **Aufgerufen von:** bdd-testing (nach Step Definition Implementation)
-**Prüft:**
+**Prüft ausschließlich Step-Definition-Qualität:**
 - Steps sind thin glue (keine Business-Logik in Steps)
 - Keine hardcoded Werte in Steps
 - Steps delegieren an echten Application Code
 - Keine Mock-Behavior die echte Logik simuliert
+- **Immutabilitäts-Check:** Werden bestehende Step Definitions geändert? Falls ja: CHANGE_REQUIRES_APPROVAL
+**Input:** Step-Definition-Code (bestehend + neu)
+**Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL
+
+#### 4b. agents/feature-file-reviewer.md
+**Aufgerufen von:** feature-design (nach Szenario-Erstellung) UND bdd-testing (bei .feature-Änderungen)
+**Prüft ausschließlich .feature-Datei-Integrität:**
 - **Duplikat-Check:** Gibt es neue Szenarien die inhaltlich identisch zu bestehenden .feature Szenarien sind?
 - **Widerspruchs-Check:** Widersprechen neue Szenarien bestehenden (z.B. gleicher Given/When mit unterschiedlichem Then)?
-- **Immutabilitäts-Check:** Werden bestehende .feature Dateien oder Step Definitions geändert? Falls ja: STOPP — Änderungen erfordern explizite User-Genehmigung (4-Augen-Prinzip). Neue Tests hinzufügen ist bevorzugt gegenüber bestehende zu ändern.
-**Input:** .feature Dateien (bestehend + neu), Step-Definition-Code
+- **Immutabilitäts-Check:** Werden bestehende .feature Dateien geändert? Falls ja: STOPP → CHANGE_REQUIRES_APPROVAL. Neue Szenarien hinzufügen ist bevorzugt gegenüber bestehende zu ändern.
+- Constraint-Szenarien: Hat jeder aktive Constraint mindestens ein BDD-Szenario?
+- Constraint-Tags: Sind @constraint-SEC-001 etc. Tags vorhanden?
+**Input:** .feature Dateien (bestehend + neu), active constraints
 **Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL
 
 #### 5. agents/fitness-function-reviewer.md
@@ -108,35 +133,33 @@ Reviewer-Output-Status:
 **Input:** architecture.md (bestehend + neu), active constraints, FF-Code (bestehend + neu)
 **Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL
 
-### Kategorie B: Bestehende Reviewer erweitern (Constraint-Awareness)
+### Kategorie B: Bestehende Reviewer nach `agents/` verschieben und erweitern
 
-#### 6. architecture-reviewer-prompt.md (erweitern)
-**Bereits in:** skills/architecture-assessment/
+Bestehende Reviewer-Prompts werden aus den Skills nach `agents/` verschoben und um Constraint-Awareness erweitert. Skills verweisen dann auf `agents/<name>.md`.
+
+#### 6. agents/architecture-reviewer.md (verschieben + erweitern)
+**Bisher in:** skills/architecture-assessment/architecture-reviewer-prompt.md → **verschoben nach** agents/
+**Bestehende Checks** bleiben (Completeness, Consistency, Stability, Measurability)
 **Zusätzlich prüfen:**
 - Constraint-Alignment: Sind aktive Constraints in den Charakteristiken reflektiert?
 - Security-Constraints → Security Characteristic elevated?
 - Compliance-Constraints → Compliance Characteristic vorhanden?
 - Constraint-Tabelle in architecture.md vorhanden?
 
-#### 7. Feature File Verification + Quality Review (erweitern)
-**Bereits in:** skills/feature-design/SKILL.md (inline)
-**Zusätzlich prüfen:**
-- Constraint-Szenarien: Hat jeder aktive Constraint mindestens ein BDD-Szenario?
-- Constraint-Tags: Sind @constraint-SEC-001 etc. Tags vorhanden?
-- Constraint-to-Scenario Traceability: Vollständige Zuordnung?
-- **Duplikat-Check:** Gibt es neue Szenarien die inhaltlich zu bestehenden .feature Files redundant sind?
-- **Widerspruchs-Check:** Widersprechen neue Szenarien bestehenden?
-- **Immutabilitäts-Check:** Werden bestehende .feature Dateien geändert? → CHANGE_REQUIRES_APPROVAL
+#### 7. → abgedeckt durch agents/feature-file-reviewer.md (4b)
+Feature-File-Review ist jetzt ein eigener Agent (4b) der von feature-design UND bdd-testing aufgerufen wird. Die bestehenden inline-Reviews in feature-design/SKILL.md verweisen auf diesen Agent.
 
-#### 8. plan-document-reviewer-prompt.md (erweitern)
-**Bereits in:** skills/writing-plans/
+#### 8. agents/plan-reviewer.md (verschieben + erweitern)
+**Bisher in:** skills/writing-plans/plan-document-reviewer-prompt.md → **verschoben nach** agents/
+**Bestehende Checks** bleiben (Completeness, Spec alignment, Task decomposition, Buildability)
 **Zusätzlich prüfen:**
 - Active Constraints im Plan-Header gelistet?
 - Constraint-Compliance-Tasks im Plan vorhanden?
 - BDD Step-Definition-Tasks für Constraint-Szenarien?
 
-#### 9. spec-document-reviewer-prompt.md (erweitern)
-**Bereits in:** skills/brainstorming/
+#### 9. agents/spec-reviewer.md (verschieben + erweitern)
+**Bisher in:** skills/brainstorming/spec-document-reviewer-prompt.md → **verschoben nach** agents/
+**Bestehende Checks** bleiben (Completeness, Consistency, Clarity, Scope, YAGNI)
 **Zusätzlich prüfen:**
 - Constraint-Section in der Spec vorhanden?
 - Referenziert die Spec die aktive Constraints-Datei?
@@ -152,8 +175,9 @@ Reviewer-Output-Status:
 - Sind die Tradeoffs dokumentiert?
 - Sind die Style-Fitness-Functions vollständig?
 - Stimmt die Stil-Wahl mit den Constraint-Anforderungen überein?
-**Input:** architecture.md mit Stil-Wahl, active constraints
-**Output:** APPROVED | ISSUES_FOUND
+- **Immutabilitäts-Check:** Wenn architecture.md bereits einen "Selected Architecture Style" hat — wird der Stil geändert? Falls ja: CHANGE_REQUIRES_APPROVAL. Ein Stil-Wechsel hat massive Auswirkungen (alle Style-FFs ändern sich, Quality Scenarios betroffen) und muss per ADR dokumentiert werden.
+**Input:** architecture.md (bestehend + neu), active constraints
+**Output:** APPROVED | ISSUES_FOUND | CHANGE_REQUIRES_APPROVAL
 
 #### 11. agents/completion-verifier.md
 **Aufgerufen von:** verification-before-completion (als finaler Check)
@@ -175,31 +199,25 @@ Jeder Skill der einen Reviewer-Agent nutzt, bekommt:
 
 ## Verzeichnisstruktur nach Implementation
 
+Alle Reviewer-Agents an einem Ort:
+
 ```
 agents/
-├── code-reviewer.md                    # Bestehend
+├── code-reviewer.md                    # Bestehend (unverändert)
 ├── constraint-reviewer.md              # Neu (Gap 1)
 ├── project-constraint-reviewer.md      # Neu (Gap 2)
 ├── quality-scenario-reviewer.md        # Neu (Gap 3)
 ├── bdd-step-reviewer.md                # Neu (Gap 4)
+├── feature-file-reviewer.md            # Neu (Gap 4b, ersetzt Gap 7)
 ├── fitness-function-reviewer.md        # Neu (Gap 5)
+├── architecture-reviewer.md            # Verschoben + erweitert (Gap 6)
+├── plan-reviewer.md                    # Verschoben + erweitert (Gap 8)
+├── spec-reviewer.md                    # Verschoben + erweitert (Gap 9)
 ├── architecture-style-reviewer.md      # Neu (Gap 10)
 └── completion-verifier.md              # Neu (Gap 11)
-
-skills/architecture-assessment/
-└── architecture-reviewer-prompt.md     # Erweitern (Gap 6)
-
-skills/feature-design/
-└── SKILL.md                            # Erweitern (Gap 7)
-
-skills/writing-plans/
-└── plan-document-reviewer-prompt.md    # Erweitern (Gap 8)
-
-skills/brainstorming/
-└── spec-document-reviewer-prompt.md    # Erweitern (Gap 9)
 ```
 
-7 neue Agent-Dateien + 4 bestehende Dateien erweitern = 11 Gaps geschlossen.
+8 neue Agent-Dateien + 3 bestehende verschoben und erweitert = 12 Agents total (inkl. code-reviewer).
 
 ## Implementierungsreihenfolge
 
