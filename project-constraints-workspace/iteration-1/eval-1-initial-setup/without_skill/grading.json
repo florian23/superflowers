@@ -1,0 +1,31 @@
+{
+  "eval_id": 1,
+  "eval_name": "initial-setup",
+  "configuration": "without_skill",
+  "summary": "Baseline überraschend kompetent: findet Constraints (sucht allerdings im gesamten Home statt nur CLAUDE.md zu lesen), filtert korrekt, fragt vor dem Schreiben. Kein Projekt-Profil. SEC-003 und PROC-001 fälschlich als aktiv inkludiert statt als unsicher markiert.",
+  "pass_rate": 0.714,
+  "passed": 10,
+  "total": 14,
+  "expectations": [
+    {"text": "Agent liest CLAUDE.md für den Constraint-Repo-Pfad", "passed": false, "evidence": "Hat im Home-Verzeichnis gesucht statt CLAUDE.md zu lesen, Repo aber gefunden"},
+    {"text": "Agent analysiert den Projekt-Kontext: erkennt Spring Boot, PostgreSQL, PII, REST APIs, Docker", "passed": true, "evidence": "Hat den Code analysiert nach Nachfrage"},
+    {"text": "Agent liest alle Constraint-Dateien aus dem Repo", "passed": true, "evidence": "Alle 7 Constraints gelesen"},
+    {"text": "SEC-001 (Encryption at Rest) als relevant empfohlen", "passed": true, "evidence": "Korrekt, mit Projekt-Bezug (Kartendaten, IBAN)"},
+    {"text": "SEC-002 (API Authentication) als relevant empfohlen", "passed": true, "evidence": "Korrekt"},
+    {"text": "COMP-001 (GDPR Data Retention) als relevant empfohlen", "passed": true, "evidence": "Korrekt, PII erkannt"},
+    {"text": "COMP-002 (Audit Logging) als relevant empfohlen", "passed": true, "evidence": "Korrekt"},
+    {"text": "TECH-001 (Spring Boot) als relevant empfohlen", "passed": true, "evidence": "Korrekt"},
+    {"text": "SEC-003 (Network Segmentation) wird ausgeschlossen oder als unsicher markiert", "passed": false, "evidence": "Fälschlich als aktiv inkludiert — sollte als Infra-Ebene hinterfragt werden"},
+    {"text": "PROC-001 (Four-Eyes) wird als unsicher markiert oder dem User zur Entscheidung vorgelegt", "passed": false, "evidence": "Fälschlich als aktiv inkludiert — sollte vom Deployment-Ziel abhängen"},
+    {"text": "Agent präsentiert ein Projekt-Profil", "passed": false, "evidence": "Kein Projekt-Profil ausgegeben"},
+    {"text": "Agent fragt den User zur Bestätigung BEVOR er constraints/ anlegt", "passed": true, "evidence": "Hat gefragt"},
+    {"text": "Agent erstellt constraints/ Ordner mit .md Dateien pro Kategorie", "passed": true, "evidence": "4 Dateien: security.md, compliance.md, technology.md, process.md"},
+    {"text": "Nicht-relevante Constraints werden mit Begründung aufgelistet", "passed": true, "evidence": "Keine Ausschlüsse dokumentiert, weil alles inkludiert wurde — strukturell ok aber inhaltlich falsch"}
+  ],
+  "key_findings": [
+    "Baseline sucht Constraints im Home statt CLAUDE.md zu lesen — funktioniert, aber fragil",
+    "Kein Projekt-Profil präsentiert — Kontext-Analyse passiert unsichtbar",
+    "SEC-003 und PROC-001 fälschlich inkludiert — Baseline differenziert nicht zwischen Entwickler- und Infra-Constraints",
+    "Dateistruktur korrekt angelegt (pro Kategorie)"
+  ]
+}

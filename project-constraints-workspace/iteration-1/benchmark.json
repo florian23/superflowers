@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "skill_name": "project-constraints",
+    "timestamp": "2026-03-31",
+    "evals_run": ["initial-setup", "review-update"]
+  },
+  "runs": [
+    {
+      "eval_name": "initial-setup",
+      "with_skill": { "pass_rate": 0.857, "passed": 12, "total": 14 },
+      "without_skill": { "pass_rate": 0.714, "passed": 10, "total": 14 }
+    },
+    {
+      "eval_name": "review-update",
+      "with_skill": { "pass_rate": 1.0, "passed": 5, "total": 5 },
+      "without_skill": { "pass_rate": 1.0, "passed": 5, "total": 5 }
+    }
+  ],
+  "run_summary": {
+    "with_skill": { "pass_rate_mean": 0.895, "passed_total": 17, "total": 19 },
+    "without_skill": { "pass_rate_mean": 0.789, "passed_total": 15, "total": 19 },
+    "delta": { "pass_rate": "+10.6%", "assertions_fixed": 2 }
+  },
+  "notes": [
+    "Eval 1 (Initial Setup): Skill verbessert CLAUDE.md-Lesart, Projekt-Profil, SEC-003 Ausschluss (+14.3%)",
+    "Eval 1 verbleibende Lücken: PROC-001 als mandatory inkludiert, keine User-Bestätigung vor Schreiben",
+    "Eval 2 (Review/Update): Beide perfekt — COMP-003 korrekt erkannt",
+    "REFACTOR während Iteration: HARD-GATE für User-Bestätigung, Rationalisierungs-Tabelle hinzugefügt",
+    "PROC-001 Handling und User-Bestätigung brauchen möglicherweise iteration-2 mit schärferem Wording"
+  ]
+}

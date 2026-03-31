@@ -1,0 +1,16 @@
+{
+  "eval_id": 2,
+  "eval_name": "review-update",
+  "configuration": "with_skill",
+  "summary": "Alle 5 Assertions bestanden. COMP-003 erkannt, Relevanz bewertet, Diff präsentiert, User-Bestätigung eingeholt.",
+  "pass_rate": 1.0,
+  "passed": 5,
+  "total": 5,
+  "expectations": [
+    {"text": "Agent liest die bestehenden constraints/ Dateien", "passed": true, "evidence": "Korrekt"},
+    {"text": "Agent erkennt neuen Constraint im Repo (COMP-003)", "passed": true, "evidence": "COMP-003 PCI-DSS erkannt"},
+    {"text": "Agent bewertet Relevanz des neuen Constraints", "passed": true, "evidence": "Als relevant für Payment Service bewertet"},
+    {"text": "Agent präsentiert Änderungen als Diff", "passed": true, "evidence": "Diff präsentiert"},
+    {"text": "Agent fragt vor dem Update", "passed": true, "evidence": "User-Bestätigung eingeholt"}
+  ]
+}
