@@ -85,3 +85,30 @@ When a review involves running tests (BDD, fitness functions, unit tests):
 | All checks PASS or SKIP | **APPROVED** |
 | Any check is FAIL | **ISSUES_FOUND** |
 | Existing artifacts changed | **CHANGE_REQUIRES_APPROVAL** |
+
+## Review-Loop Pattern (for skills that dispatch reviewers)
+
+Every skill that dispatches a reviewer agent MUST follow this exact loop. Copy this pattern verbatim — do not paraphrase or simplify it.
+
+```
+REVIEW_LOOP:
+1. Dispatch fresh reviewer agent with all required inputs
+2. Read the reviewer's verdict:
+   - APPROVED → exit loop, proceed to next step
+   - CHANGE_REQUIRES_APPROVAL → present changes to user, get approval, then exit loop
+   - ISSUES_FOUND → continue to step 3
+3. For each FAIL item in the reviewer's output:
+   - Fix the specific issue cited by the reviewer
+   - Do NOT fix things the reviewer did not mention
+4. Go back to step 1 (dispatch the SAME reviewer type again, fresh context)
+
+DO NOT:
+- Skip step 4 (re-dispatch). Fixing without re-review is not verified.
+- Ask the user whether to fix. Fix automatically.
+- Proceed to the next pipeline step with ISSUES_FOUND status.
+- Combine the fix and the re-review in one step. Fix FIRST, then re-dispatch.
+```
+
+This loop replaces all individual HARD-GATE formulations in skills. Skills should reference this pattern:
+
+> "Follow the Review-Loop Pattern from `agents/reviewer-protocol.md`."

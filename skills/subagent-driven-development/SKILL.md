@@ -96,16 +96,25 @@ digraph process {
 
 After the final code review and BEFORE finishing-a-development-branch, run specification checks:
 
-1. **BDD scenarios** (if .feature files exist): Dispatch superflowers:bdd-testing agent to run ALL scenarios
-2. **Fitness functions** (if architecture.md exists): Dispatch superflowers:fitness-functions agent to run ALL fitness functions
+1. **BDD scenarios** (if .feature files exist):
+   - Verify step definitions are wired (not just .feature files written)
+   - Run `cucumber --dry-run` to check for undefined steps → if undefined: dispatch implementer to wire them
+   - Run ALL scenarios → all must pass
+2. **Fitness functions** (if architecture.md exists):
+   - Verify EVERY characteristic marked "Fitness Function: Yes" has an implementation
+   - Verify EVERY style fitness function has an implementation
+   - Run ALL fitness functions → all must pass
 3. ALL checks must pass — partial passage is failure
-4. If checks fail: re-dispatch implementer to fix, then re-run verification
+4. If ANY check fails: re-dispatch implementer to fix, then re-run ALL checks from step 1
 
 <HARD-GATE>
-Do NOT ask the user whether to fix verification failures. Do NOT present
-findings and wait for instructions. Automatically re-dispatch the implementer
-to fix, then re-run verification. Repeat until ALL checks pass.
-The user can always abort — but the default is: keep going until green.
+Follow the Review-Loop Pattern from agents/reviewer-protocol.md:
+- Dispatch verification checks (BDD + fitness functions)
+- If FAIL: re-dispatch implementer to fix, then re-run verification (fresh)
+- Repeat until ALL checks pass
+- Do NOT ask the user whether to fix. Fix automatically.
+- Do NOT skip BDD wiring. Unwired .feature files = FAIL.
+- Do NOT skip fitness function implementation. FFs in architecture.md without code = FAIL.
 </HARD-GATE>
 
 This gate is NOT optional when specification artifacts exist.

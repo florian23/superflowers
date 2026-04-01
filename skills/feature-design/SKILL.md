@@ -237,8 +237,12 @@ Dispatch feature-file-reviewer
 ```
 
 <HARD-GATE>
-Do NOT present feature files to the user until the reviewer returns APPROVED.
-If ISSUES_FOUND: fix and re-dispatch. Only after APPROVED proceed to user review.
+Follow the Review-Loop Pattern from agents/reviewer-protocol.md exactly:
+1. Dispatch feature-file-reviewer (fresh)
+2. If ISSUES_FOUND: fix the cited issues, then re-dispatch reviewer (fresh, step 1)
+3. Repeat until reviewer returns APPROVED
+4. Only then present feature files to the user
+Do NOT skip re-dispatch. Do NOT ask the user whether to fix. Fix and re-review.
 </HARD-GATE>
 
 ## Red Flags — STOP and Revisit

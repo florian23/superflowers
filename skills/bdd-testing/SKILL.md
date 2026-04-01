@@ -190,8 +190,12 @@ Dispatch bdd-step-reviewer
 ```
 
 <HARD-GATE>
-Do NOT proceed until the reviewer returns APPROVED.
-If ISSUES_FOUND: fix and re-dispatch. Only after APPROVED continue.
+Follow the Review-Loop Pattern from agents/reviewer-protocol.md exactly:
+1. Dispatch bdd-step-reviewer (fresh)
+2. If ISSUES_FOUND: fix the cited issues, then re-dispatch reviewer (fresh, step 1)
+3. Repeat until reviewer returns APPROVED
+4. Only then proceed
+Do NOT skip re-dispatch. Do NOT ask the user whether to fix. Fix and re-review.
 </HARD-GATE>
 
 ## Step Definition Best Practices

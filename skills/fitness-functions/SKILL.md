@@ -163,8 +163,12 @@ Dispatch fitness-function-reviewer
 ```
 
 <HARD-GATE>
-Do NOT claim fitness functions are complete until the reviewer returns APPROVED.
-If ISSUES_FOUND: fix and re-dispatch. Only after APPROVED proceed.
+Follow the Review-Loop Pattern from agents/reviewer-protocol.md exactly:
+1. Dispatch fitness-function-reviewer (fresh)
+2. If ISSUES_FOUND: fix the cited issues, then re-dispatch reviewer (fresh, step 1)
+3. Repeat until reviewer returns APPROVED
+4. Only then claim fitness functions are complete
+Do NOT skip re-dispatch. Do NOT ask the user whether to fix. Fix and re-review.
 </HARD-GATE>
 
 ## Red Flags — STOP

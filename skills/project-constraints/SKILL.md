@@ -190,8 +190,12 @@ Dispatch project-constraint-reviewer
 ```
 
 <HARD-GATE>
-Do NOT present results to the user or proceed to Step 5 until the reviewer
-returns APPROVED. If ISSUES_FOUND: fix and re-dispatch. Only after APPROVED proceed.
+Follow the Review-Loop Pattern from agents/reviewer-protocol.md exactly:
+1. Dispatch project-constraint-reviewer (fresh)
+2. If ISSUES_FOUND: fix the cited issues, then re-dispatch reviewer (fresh, step 1)
+3. Repeat until reviewer returns APPROVED
+4. Only then proceed to Step 5
+Do NOT skip re-dispatch. Do NOT ask the user whether to fix. Fix and re-review.
 </HARD-GATE>
 
 ## Step 5: Write constraints/ Files
