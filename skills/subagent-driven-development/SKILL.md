@@ -99,7 +99,14 @@ After the final code review and BEFORE finishing-a-development-branch, run speci
 1. **BDD scenarios** (if .feature files exist): Dispatch superflowers:bdd-testing agent to run ALL scenarios
 2. **Fitness functions** (if architecture.md exists): Dispatch superflowers:fitness-functions agent to run ALL fitness functions
 3. ALL checks must pass — partial passage is failure
-4. If checks fail: re-dispatch implementer to fix, then re-run
+4. If checks fail: re-dispatch implementer to fix, then re-run verification
+
+<HARD-GATE>
+Do NOT ask the user whether to fix verification failures. Do NOT present
+findings and wait for instructions. Automatically re-dispatch the implementer
+to fix, then re-run verification. Repeat until ALL checks pass.
+The user can always abort — but the default is: keep going until green.
+</HARD-GATE>
 
 This gate is NOT optional when specification artifacts exist.
 
