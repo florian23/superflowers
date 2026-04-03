@@ -1,7 +1,0 @@
-{"eval_id":3,"eval_name":"framework-detection","configuration":"with_skill","expectations":[
-{"text":"The bdd-testing skill was invoked","passed":true,"evidence":"Agent read SKILL.md and followed framework detection process"},
-{"text":"Agent detects the project language as Python","passed":true,"evidence":"Identified Python from pyproject.toml"},
-{"text":"Agent selects behave as the BDD framework","passed":true,"evidence":"Selected behave based on 3 signals: pyproject.toml, dev dependencies, step definition imports"},
-{"text":"Agent uses behave as the run command","passed":true,"evidence":"Used behave for dry-run and full run"},
-{"text":"Agent respects existing behave step definitions without overriding them","passed":true,"evidence":"Did not modify existing steps/api_steps.py"}
-]}

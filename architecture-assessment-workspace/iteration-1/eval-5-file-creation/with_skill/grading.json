@@ -1,8 +1,0 @@
-{"eval_id":5,"eval_name":"architecture-md-written","configuration":"with_skill","expectations":[
-{"text":"The architecture-assessment skill was invoked","passed":true,"evidence":"Full skill process with questionnaire"},
-{"text":"An architecture.md was created with content","passed":true,"evidence":"architecture.md written with Top 3, characteristics tables, drivers"},
-{"text":"Assessment is proportional to project complexity","passed":true,"evidence":"Focused on Testability, Reliability, Usability — appropriate for CLI tool"},
-{"text":"Irrelevant characteristics are marked as such","passed":true,"evidence":"Most operational and cross-cutting marked irrelevant for local CLI"},
-{"text":"Top 3 characteristics are identified","passed":true,"evidence":"Top 3: Testability, Reliability, Usability"},
-{"text":"Skill returns control to brainstorming","passed":true,"evidence":"Did not invoke writing-plans directly"}
-]}

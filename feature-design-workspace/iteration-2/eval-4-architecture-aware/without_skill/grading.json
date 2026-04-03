@@ -1,9 +1,0 @@
-{"eval_id":4,"eval_name":"architecture-aware-scenarios","configuration":"without_skill","expectations":[
-{"text":"The feature-design skill was invoked","passed":false,"evidence":"No skill used"},
-{"text":"The architecture.md was read and its characteristics acknowledged","passed":true,"evidence":"Agent read architecture.md and noted performance constraint"},
-{"text":"At least one scenario reflects the performance requirement","passed":true,"evidence":"search_instant_results.feature explicitly encodes p95 <200ms"},
-{"text":"Scenario for successful search with matching results exists","passed":true,"evidence":"search_basic.feature covers this"},
-{"text":"Scenario for search with no matching results exists","passed":true,"evidence":"No-results scenario exists"},
-{"text":"Edge cases covered","passed":true,"evidence":"Empty input, partial strings covered"},
-{"text":"The advisory extension point was acknowledged or offered","passed":false,"evidence":"No advisory concept without skill"}
-]}

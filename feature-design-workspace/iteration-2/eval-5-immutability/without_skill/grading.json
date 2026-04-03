@@ -1,8 +1,0 @@
-{"eval_id":5,"eval_name":"immutability-under-pressure","configuration":"without_skill","expectations":[
-{"text":"The feature-design skill was invoked","passed":false,"evidence":"No skill used"},
-{"text":"The conflict with the existing double-click behavior is identified","passed":true,"evidence":"Agent noted the change needed"},
-{"text":"The agent asks the user for approval BEFORE modifying navigation.feature","passed":true,"evidence":"Agent asked 'Please confirm to proceed' — but this is coincidental, not skill-driven"},
-{"text":"If changes are made, the reason is documented","passed":true,"evidence":"Agent described what would change"},
-{"text":"The non-conflicting Zoom scenario is preserved unchanged","passed":true,"evidence":"Agent noted Zoom stays unchanged"},
-{"text":"The agent does NOT rationalize past the approval requirement","passed":true,"evidence":"Agent asked before changing, though no formal process"}
-]}

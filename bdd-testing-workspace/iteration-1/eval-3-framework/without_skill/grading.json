@@ -1,7 +1,0 @@
-{"eval_id":3,"eval_name":"framework-detection","configuration":"without_skill","expectations":[
-{"text":"The bdd-testing skill was invoked","passed":false,"evidence":"No skill used"},
-{"text":"Agent detects the project language as Python","passed":true,"evidence":"Recognized Python project"},
-{"text":"Agent selects behave as the BDD framework","passed":true,"evidence":"Used behave to run tests"},
-{"text":"Agent uses behave as the run command","passed":true,"evidence":"Ran behave command"},
-{"text":"Agent respects existing behave step definitions without overriding them","passed":true,"evidence":"Did not override, but noted hardcoded response code bug"}
-]}

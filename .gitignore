@@ -6,3 +6,5 @@ node_modules/
 inspo
 triage/
 featurebench-eval/
+*-workspace/
+smoke-test-workspace/

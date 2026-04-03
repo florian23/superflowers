@@ -1,8 +1,0 @@
-{"eval_id":2,"eval_name":"existing-architecture-stability","configuration":"without_skill","expectations":[
-{"text":"The architecture-assessment skill was invoked","passed":false,"evidence":"No skill used"},
-{"text":"The existing architecture.md was read and shown to the user","passed":true,"evidence":"Read architecture.md"},
-{"text":"Agent asks whether the new feature changes architecture requirements","passed":false,"evidence":"Did not ask — immediately assessed risks and proposed changes"},
-{"text":"Agent recommends keeping the existing architecture","passed":false,"evidence":"Proposed 5 changes/additions including new fitness function and async pattern"},
-{"text":"Agent does NOT modify architecture.md without justification","passed":false,"evidence":"Proposed changelog entry with multiple additions"},
-{"text":"If any changes are made, a changelog entry is added","passed":true,"evidence":"Proposed changelog entry"}
-]}

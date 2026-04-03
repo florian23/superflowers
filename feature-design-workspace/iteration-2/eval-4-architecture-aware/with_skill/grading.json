@@ -1,9 +1,0 @@
-{"eval_id":4,"eval_name":"architecture-aware-scenarios","configuration":"with_skill","expectations":[
-{"text":"The feature-design skill was invoked","passed":true,"evidence":"Agent read SKILL.md and followed process"},
-{"text":"The architecture.md was read and its characteristics acknowledged","passed":true,"evidence":"Agent identified Performance <200ms, Modularity, Testability from architecture.md"},
-{"text":"At least one scenario reflects the performance requirement","passed":true,"evidence":"Agent planned: 'results appear immediately' reflecting <200ms. Separate performance feature file."},
-{"text":"Scenario for successful search with matching results exists","passed":true,"evidence":"Planned in node-search.feature"},
-{"text":"Scenario for search with no matching results exists","passed":true,"evidence":"Planned as empty state scenario"},
-{"text":"Edge cases covered","passed":true,"evidence":"Empty search, partial match, concurrent search planned"},
-{"text":"The advisory extension point was acknowledged or offered","passed":false,"evidence":"No mention of advisory skills in output"}
-]}

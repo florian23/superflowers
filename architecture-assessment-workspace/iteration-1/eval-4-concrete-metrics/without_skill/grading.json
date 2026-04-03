@@ -1,8 +1,0 @@
-{"eval_id":4,"eval_name":"vague-requirements-concretized","configuration":"without_skill","expectations":[
-{"text":"The architecture-assessment skill was invoked","passed":false,"evidence":"No skill used"},
-{"text":"Agent does NOT accept schnell as a metric","passed":true,"evidence":"Identified requirements as too vague to act on"},
-{"text":"Agent does NOT accept sicher as a metric","passed":true,"evidence":"Noted no data classification or compliance framework"},
-{"text":"Agent does NOT accept gut skalieren as a metric","passed":true,"evidence":"Noted no concurrent user count or growth projection"},
-{"text":"The resulting characteristics have measurable goals","passed":false,"evidence":"Status BLOCKED but no structured architecture.md format produced"},
-{"text":"Agent suggests fitness functions","passed":false,"evidence":"No fitness function concept without skill"}
-]}
