@@ -6,6 +6,14 @@
 - **Base Commit:** b7a8f76985f1e93e75dd2f2a3b424dc731bd9d37 (2026-04-01)
 - **Last Sync:** 2026-04-03
 
+## Modified Files (intentional divergence — never blindly overwrite)
+
+| File | Why Modified | Sync Strategy |
+|---|---|---|
+| README.md | Custom Superflowers README with logo, motivation, research citations | NEVER overwrite — our README, not upstream's |
+| CLAUDE.md | Superflowers-specific conventions, terminology, workflow chain | NEVER overwrite — completely different purpose than upstream's contributor guidelines |
+| RELEASE-NOTES.md | Contains upstream release notes — safe to update | Overwrite from upstream |
+
 ## Modified Bundled Skills (intentional divergence)
 
 | Skill | Why Modified | Sync Strategy |
