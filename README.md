@@ -114,6 +114,23 @@ Implementation (TDD) ──► BDD Testing ──► Fitness Functions ──►
 - **compliance-report** — Git-based tracking of workflow compliance over time
 - **systematic-debugging** — 4-phase root cause analysis when blocked
 
+## Architecture Decision Records (ADRs)
+
+Every significant architecture decision — hard to reverse, structural impact — is captured as an immutable [ADR](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions) (Nygard format) in `doc/adr/`.
+
+**Created** by the `architecture-decisions` skill, triggered when decisions are made during:
+
+| Event | Example ADR |
+|---|---|
+| Top-3 characteristics prioritized | "Prioritize Scalability, Security, Interoperability" |
+| Architecture style selected | "Use Modular Monolith architecture" |
+| Quality tradeoff resolved | "Accept eventual consistency for scalability" |
+| Unplanned structural change | "Introduce Redis for session caching" |
+
+**Verified** by the `architecture-decision-reviewer` after every ADR — checks format, consistency with active ADRs, superseding cascade correctness, and fitness function traceability.
+
+**Enforced** through fitness functions: every FF has an ADR reference column tracing back to the decision that justified it. When an ADR is superseded, a cascade replaces affected FFs, updates the index, and re-evaluates downstream artifacts. The old ADR's content stays immutable — only its status changes.
+
 ## Independent Reviewer Agents
 
 Every specification artifact is verified by a fresh agent that did not create it:
@@ -121,6 +138,7 @@ Every specification artifact is verified by a fresh agent that did not create it
 | Agent | Verifies | Dispatched by |
 |---|---|---|
 | architecture-reviewer | Characteristics completeness | architecture-assessment |
+| architecture-decision-reviewer | ADR consistency and cascade | architecture-decisions |
 | architecture-style-reviewer | Style scoring correctness | architecture-style-selection |
 | constraint-reviewer | Constraint matching | constraint-selection |
 | project-constraint-reviewer | Project baseline | project-constraints |

@@ -247,25 +247,27 @@ The calling skill doesn't need to create the ADR itself — it invokes this skil
 | "The code speaks for itself" | Code shows WHAT, not WHY. ADRs fill the gap. |
 | "Too many ADRs will be noisy" | A healthy project has 10-30 ADRs. If you have hundreds, your filter is too loose. |
 
-## Verification Checklist
+## Step 6: Independent Verification
 
-- [ ] ADR follows Nygard format (Status, Context, Decision, Consequences)
-- [ ] Title is in imperative form
-- [ ] Context mentions alternatives considered
-- [ ] Consequences include both positive and negative
-- [ ] ADR is numbered sequentially
-- [ ] If superseding: old ADR status updated, content untouched
-- [ ] Cross-reference added to architecture.md (if it exists)
-- [ ] FF table has ADR reference column (if fitness functions are affected)
-- [ ] Index in doc/adr/ updated
-- [ ] "Current Architecture at a Glance" reflects current state
-- [ ] If superseding: cascade triggered (style FFs, quality scenarios checked)
-- [ ] Committed to git
+After committing the ADR, dispatch the `superflowers:architecture-decision-reviewer` agent for independent verification.
+
+Follow the Review-Loop Pattern from `agents/reviewer-protocol.md`:
+1. Dispatch architecture-decision-reviewer (fresh context)
+2. If ISSUES_FOUND: fix the cited issues, then re-dispatch reviewer (fresh)
+3. Repeat until reviewer returns APPROVED
+4. Only then proceed
+
+<HARD-GATE>
+Do NOT present the ADR to the user or proceed to downstream skills
+until the architecture-decision-reviewer returns APPROVED.
+If ISSUES_FOUND: fix and re-dispatch. Do NOT ask the user whether to fix.
+</HARD-GATE>
 
 ## Integration
 
 - **Invoked by:** Any skill that makes an architecture decision (brainstorming, architecture-assessment, architecture-style-selection, quality-scenarios, implementation)
 - **Produces:** ADR files in `doc/adr/`
+- **Verified by:** `architecture-decision-reviewer` (consistency, cascade, traceability)
 - **Referenced by:** `superflowers:writing-plans` (implementation plan references relevant ADRs)
 - **Pairs with:** `superflowers:architecture-assessment` (ADRs document WHY characteristics were chosen)
 - **Pairs with:** `superflowers:architecture-style-selection` (ADR documents style selection rationale)
