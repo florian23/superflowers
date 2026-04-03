@@ -21,6 +21,7 @@ PROJECT_DIR=""
 FOREGROUND="false"
 FORCE_BACKGROUND="false"
 BIND_HOST="127.0.0.1"
+EXPLICIT_HOST=""
 URL_HOST=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -30,6 +31,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     --host)
       BIND_HOST="$2"
+      EXPLICIT_HOST="true"
       shift 2
       ;;
     --url-host)
@@ -56,6 +58,20 @@ if [[ -z "$URL_HOST" ]]; then
     URL_HOST="localhost"
   else
     URL_HOST="$BIND_HOST"
+  fi
+fi
+
+# Auto-detect Tailscale: if user didn't set --host explicitly and
+# tailscale is running, bind to all interfaces and use tailscale IP in URL.
+# This allows accessing the Visual Companion from other devices in the
+# tailnet (e.g., phone/tablet via Tailscale VPN to a remote VPS).
+if [[ -z "$EXPLICIT_HOST" && "$BIND_HOST" == "127.0.0.1" ]]; then
+  if command -v tailscale &>/dev/null; then
+    TS_IP=$(tailscale ip -4 2>/dev/null)
+    if [[ -n "$TS_IP" ]]; then
+      BIND_HOST="0.0.0.0"
+      URL_HOST="$TS_IP"
+    fi
   fi
 fi
 
