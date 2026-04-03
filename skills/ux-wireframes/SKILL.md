@@ -75,10 +75,19 @@ Render and ask: "Stimmt die Gewichtung der Informationen? Ist das Wichtigste pro
 
 Ask:
 
-> "Sollen wir den nächsten Screen designen, oder diesen Screen in High-fi ausarbeiten (Farben, Typography, visuelles Design)?"
+> "Wie sollen wir weitermachen?"
+>
+> **Option A: Nächster Screen** — weiter mit dem nächsten Screen im Flow (Low-fi → Mid-fi)
+> **Option B: High-fi Wireframe** — diesen Screen visuell verfeinern (Farben, Spacing, Typography) als Wireframe im Visual Companion
+> **Option C: Production Design** — diesen Screen als echten, production-grade UI-Code umsetzen mit `frontend-design` Skill (HTML/CSS/JS oder React). Empfohlen wenn der Screen-Entwurf stabil ist.
 
-If high-fi: apply visual design, render, get feedback.
-If next screen: repeat from Turn 1 with next screen.
+If Option A: repeat from Turn 2 with next screen.
+If Option B: apply visual design in Visual Companion, render, get feedback. Then return to this choice.
+If Option C: invoke `frontend-design:frontend-design` with the wireframe context:
+- Pass the confirmed layout direction, states, and content hierarchy from Turns 2-4
+- Pass the persona and task flow context from ux-design.md
+- Let frontend-design handle aesthetic direction, typography, color, animation
+- After frontend-design completes: return to Turn 5 for next screen choice
 
 ### Responsive (if relevant)
 

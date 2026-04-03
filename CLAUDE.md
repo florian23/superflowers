@@ -30,7 +30,7 @@ Custom fork of Superpowers v5.0.6 — composable skills for coding agent workflo
 ## Skill Workflow Chain (typical order)
 
 brainstorming → domain-understanding → market-analysis → bounded-context-design → constraint-selection → architecture-assessment → architecture-style-selection → risk-storming → quality-scenarios → feature-design → writing-plans → executing-plans/subagent-driven-development → finishing-a-development-branch
-UX branch (parallel): ux-design orchestrates ux-research → ux-flows → ux-wireframes
+UX branch (parallel): ux-design orchestrates ux-research → ux-flows → ux-wireframes [→ frontend-design (optional)]
 
 ## Terminology (canonical terms — use these, not alternatives)
 

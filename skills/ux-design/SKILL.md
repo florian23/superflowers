@@ -31,6 +31,7 @@ digraph ux_design {
   research [label="ux-research\n(Personas, JTBD,\nProblem Statements)"];
   flows [label="ux-flows\n(Task Flows, IA)"];
   wireframes [label="ux-wireframes\n(Low→Mid→High-fi,\nall States)"];
+  frontend [label="frontend-design\n(Production UI code)\n[optional]", style=dashed];
   validate [label="ux-reviewer\n(Agent, fresh context\nNielsen's 10)"];
   severity [shape=diamond, label="Severity\n3-4?"];
   done [shape=doublecircle, label="Return to\nbrainstorming"];
@@ -42,7 +43,9 @@ digraph ux_design {
   read -> done [label="all phases done"];
   research -> flows;
   flows -> wireframes;
-  wireframes -> validate;
+  wireframes -> frontend [label="user chooses\nProduction Design"];
+  wireframes -> validate [label="all screens done"];
+  frontend -> wireframes [label="next screen"];
   validate -> severity;
   severity -> wireframes [label="redesign"];
   severity -> done [label="proceed"];
@@ -56,6 +59,7 @@ digraph ux_design {
 | 1. Research & Define | `superflowers:ux-research` | Personas, JTBD, Problem Statements | feature-design |
 | 2. Ideate | `superflowers:ux-flows` | Task Flows, Information Architecture | feature-design, writing-plans |
 | 3. Design | `superflowers:ux-wireframes` | Wireframes, State Designs, Design Decisions | writing-plans, feature-design |
+| 3b. Implement (optional) | `frontend-design:frontend-design` | Production UI code (HTML/CSS/JS, React) | Implementation |
 | 4. Validate | `ux-reviewer` (Agent, fresh context) | Heuristic Evaluation (Nielsen's 10) | Redesign loop back to ux-wireframes |
 
 ## Orchestration Logic
