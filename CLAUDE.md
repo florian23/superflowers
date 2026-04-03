@@ -19,6 +19,8 @@ Custom fork of Superpowers v5.0.6 — composable skills for coding agent workflo
 - HARD-GATEs use concrete procedural steps, not abstract instructions
 - Review loops follow `agents/reviewer-protocol.md` (4-step pattern)
 - Uncertainty at user-facing decision points follows `references/uncertainty-handling.md`
+- Downstream-consumed artifact sections use `> Consumed by: skill-name (Step N)` markers
+- Bundled skills (from Superpowers) should not be modified directly
 
 ## Custom Skills (14)
 
@@ -34,6 +36,20 @@ finishing-a-development-branch, receiving-code-review, requesting-code-review,
 subagent-driven-development, systematic-debugging, test-driven-development,
 using-git-worktrees, using-superflowers, verification-before-completion,
 writing-plans, writing-skills
+
+## Skill Testing (RED/GREEN)
+
+- New skills are tested with parallel subagents: RED (without skill) vs GREEN (with skill)
+- Use `isolation: "worktree"` for test agents to avoid repo pollution
+- Technique skills: test with application scenarios (can the agent apply it correctly?)
+- Discipline skills: test with pressure scenarios (does the agent comply under stress?)
+- Key metric: downstream-nutzbarkeit — can the next skill in the chain consume the output directly?
+
+## Gotchas
+
+- Skill length is NOT the cause of agent non-compliance — abstract instructions are
+- Workflow descriptions in skill `description:` fields cause Claude to skip the skill body (CSO research)
+- Context is distributed across 6 artifacts (architecture.md, context-map.md, quality-scenarios.md, constraints/*.md, spec, .feature files) — no single consolidated view
 
 ## Testing
 
