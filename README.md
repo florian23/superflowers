@@ -1,157 +1,143 @@
 # Superflowers
 
-Custom fork of [Superpowers](https://github.com/obra/superpowers) - a complete software development workflow for coding agents, built on composable "skills".
+A composable skills library for coding agents that solves four problems spec-driven frameworks ignore.
 
-Based on Superpowers v5.0.6 by [Jesse Vincent](https://github.com/obra).
+Based on [Superpowers](https://github.com/obra/superpowers) v5.0.6 by [Jesse Vincent](https://github.com/obra).
+
+## Why This Fork Exists
+
+Spec-driven development frameworks (Cursor Rules, Claude CLAUDE.md, Copilot Instructions) help agents write better code. But they share four blind spots that compound as projects grow.
+
+### 1. Organizational Constraints Are Invisible
+
+Every organization has compliance policies, security guidelines, and technology standards. These live in wikis, Confluence pages, or separate repos — not in the codebase. Spec-driven frameworks don't know they exist. The agent builds a feature that violates your encryption-at-rest policy because nobody told it that policy exists.
+
+Anthropic's own research confirms this: "Real work requires procedural knowledge and organizational context" that agents simply don't have access to ([Equipping Agents with Agent Skills](https://claude.com/blog/equipping-agents-for-the-real-world-with-agent-skills), 2025). Their applied AI team frames context as "a finite strategic resource" — without deliberate context engineering, agents cannot access organizational knowledge outside the codebase ([Effective Context Engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), 2025). Research on autonomous agents shows they deprioritize ethical and compliance constraints under performance pressure, with 0% success on tasks requiring organizational context ([arXiv:2512.20798](https://arxiv.org/abs/2512.20798), 2024).
+
+**Superflowers solution:** `constraint-selection` and `project-constraints` read from an external constraint repository and filter relevant constraints per feature. Downstream skills (architecture, feature design, planning) reference these constraints automatically. The constraints flow through the entire pipeline — they're not an afterthought.
+
+### 2. Architecture Erodes Over Time
+
+The longer a project runs, the more the agent forgets why early design decisions were made. It refactors a module in a way that breaks the architectural style. It changes a data flow that violates a quality attribute. There's no guardrail — just hope that the agent remembers.
+
+This is measurable: a 40-person survey found signs of architectural erosion — lower cohesion — in AI-generated code as complexity increases ([arXiv:2506.17833](https://arxiv.org/abs/2506.17833), 2025). Empirical analysis of AI-generated microservices found an 80% architectural violation rate in open-weights models ([arXiv:2512.04273](https://arxiv.org/abs/2512.04273), 2025). Anthropic calls this "context rot" — as token count rises, n-squared attention relationships degrade recall of early decisions ([Effective Context Engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents), 2025). The concept of fitness functions as automated architecture compliance checks was introduced by Ford, Parsons, and Kua in [Building Evolutionary Architectures](https://www.oreilly.com/library/view/building-evolutionary-architectures/9781491986356/) (O'Reilly, 2017).
+
+**Superflowers solution:** `architecture-assessment` persists characteristics in `architecture.md`. `architecture-decisions` records every significant choice as an immutable ADR. `fitness-functions` creates automated checks that fail the build when architecture is violated. The architecture is a living, enforced artifact — not a forgotten document.
+
+### 3. Existing Features Break Silently
+
+When you add Feature B, Feature A might break. Spec-driven frameworks have no hard control gates for this — they rely on the agent noticing. It often doesn't.
+
+GitClear's analysis of 211M lines of code found that AI-assisted development led to 4x growth in code cloning and doubled code churn, while refactoring dropped from 25% to under 10% ([AI Copilot Code Quality](https://www.gitclear.com/ai_assistant_code_quality_2025_research), 2025). CodeRabbit found AI-generated code creates 1.7x more issues than human code across all quality categories ([State of AI vs Human Code Generation](https://www.coderabbit.ai/blog/state-of-ai-vs-human-code-generation-report), 2025). Google's DORA team concluded: without robust testing, increased AI-driven change volume leads to instability — TDD is more critical than ever ([DORA Report](https://cloud.google.com/discover/how-test-driven-development-amplifies-ai-success), 2025). Thoughtworks warns of "complacency with AI-generated code" — agents generate larger change sets that are harder to review ([Technology Radar](https://www.thoughtworks.com/en-us/radar/techniques/complacency-with-ai-generated-code), 2024).
+
+**Superflowers solution:** `feature-design` creates BDD scenarios as executable acceptance criteria. `bdd-testing` wires them to real step definitions. Every feature has a regression gate: if existing scenarios fail after your change, the pipeline stops. `verification-before-completion` requires evidence (actual test output), not claims ("tests pass").
+
+### 4. Agents Review Their Own Work
+
+Research warns against self-review: agents praise their own output and miss blind spots. Most frameworks have the same agent that wrote the code also verify it.
+
+A NeurIPS 2024 oral paper proved a causal link between self-recognition and self-preference: LLMs that recognize their own output rate it higher ([Panickssery et al., arXiv:2404.13076](https://arxiv.org/abs/2404.13076)). Further research confirmed LLMs exhibit significant self-preference bias driven by familiarity ([arXiv:2410.21819](https://arxiv.org/abs/2410.21819), 2024). The foundational MT-Bench paper identified position bias, verbosity bias, and self-enhancement bias as systematic limitations of LLM-as-judge ([Zheng et al., NeurIPS 2023](https://arxiv.org/abs/2306.05685)). Multi-agent approaches with separate judge models reduce shared blind spots — improving HumanEval pass@1 from 76.4 to 82.6 compared to self-review ([arXiv:2512.20845](https://arxiv.org/abs/2512.20845), 2024).
+
+**Superflowers solution:** 12 independent reviewer agents (`agents/`) each verify a specific artifact with fresh context. The review-loop pattern (`agents/reviewer-protocol.md`) dispatches a fresh agent, reads the verdict, fixes issues, and re-dispatches until APPROVED. The agent that wrote the code never reviews it.
 
 ## Installation
 
-### Claude Code (lokales Plugin)
-
-**1. Plugin registrieren** in `~/.claude/plugins/installed_plugins.json`:
-
-Folgenden Eintrag zum `"plugins"` Objekt hinzufuegen:
-
-```json
-"superflowers@local": [
-  {
-    "scope": "user",
-    "installPath": "/home/flo/superflowers",
-    "version": "0.1.0",
-    "installedAt": "2026-03-28T19:00:00.000Z",
-    "lastUpdated": "2026-03-28T19:00:00.000Z"
-  }
-]
-```
-
-**2. Plugin aktivieren** in `~/.claude/settings.json`:
-
-Im `"enabledPlugins"` Objekt:
-
-```json
-"superpowers@claude-plugins-official": false,
-"superflowers@local": true
-```
-
-**3. Verifizieren:**
-
-Neue Claude Code Session starten. Die Skills sollten mit dem `superflowers:` Praefix geladen werden.
-
-### Schnelltest (ohne dauerhafte Installation)
+### From GitHub (recommended)
 
 ```bash
-claude --plugin-dir /home/flo/superflowers
+# In Claude Code:
+/plugin marketplace add florian23/superflowers
+/plugin install superflowers@florian23-superflowers
 ```
 
-### Updates vom Upstream holen
+### Local Development
 
 ```bash
-cd /home/flo/superflowers
-git fetch upstream
-git merge upstream/main
+claude --plugin-dir /path/to/superflowers
 ```
+
+### Verify
+
+Start a new Claude Code session. Skills should load with the `superflowers:` prefix.
 
 ## The Complete Workflow
 
 ```
-ADR Review ──► Brainstorming ──► Bounded Context Design ──► Architecture Assessment
-                  [ADR]              [context-map.md]            [ADR]
-                                                                   │
-                                                                   ▼
-Feature Design ◄── Quality Scenarios ◄── Style Selection ◄─────────┘
-                        [ADR]                [ADR]
+Brainstorming ──► Domain Understanding ──► Market Analysis ──► Constraint Selection
+                                                                       │
+Architecture Assessment ◄── Bounded Context Design ◄──────────────────┘
       │
       ▼
-Writing Plans ──► Implementation ──► Fitness Functions ──► Verification ──► Finishing
-                   [BDD Testing]    [Style FFs + Char FFs]   [All checks]    [PR/Merge]
+Style Selection ──► Quality Scenarios ──► Feature Design ──► Writing Plans
+                                                                    │
+                                                                    ▼
+Implementation (TDD) ──► BDD Testing ──► Fitness Functions ──► Verification ──► Finishing
 ```
 
 ### Phase 1: Specification (what to build)
 
-1. **ADR Review** — Before starting a new feature, read existing Architecture Decision Records. Check if the feature is compatible with active decisions or if ADRs need to be superseded.
-
-2. **brainstorming** — Refine the idea through questions, explore 2-3 approaches, present design in sections for validation. Creates design document.
-
-3. **bounded-context-design** — Identify bounded contexts, classify subdomains (Core/Supporting/Generic), create context map with DDD relationship patterns, define ubiquitous language per context. Skips automatically for single-domain projects. Creates `context-map.md`.
-
-4. **architecture-assessment** — Identify and prioritize architecture characteristics (performance, scalability, security, ...) through structured dialogue, informed by context boundaries. Creates/updates `architecture.md` with Top-3 driving characteristics. Based on Ford/Richards Architecture Characteristics Worksheet.
-
-5. **architecture-style-selection** — Score all 8 architecture styles against driving characteristics using the Ford/Richards star-rating matrix. Context boundaries inform service/module cuts. Select best fit, generate style-specific fitness functions. Updates `architecture.md`.
-
-6. **quality-scenarios** — Create concrete, testable quality scenarios from architecture characteristics using ATAM. Each scenario gets the right test type: unit-test, integration-test, load-test, chaos-test, fitness-function, or manual-review. Creates `quality-scenarios.md`.
-
-7. **feature-design** — Write BDD acceptance criteria as Gherkin `.feature` files, using ubiquitous language from context-map.md. Informed by architecture and quality scenarios.
+1. **brainstorming** — Refine the idea through questions, explore approaches, present design for validation
+2. **domain-understanding** — Build a domain profile before design questions
+3. **market-analysis** — Competitive landscape, differentiation strategy, Core/Supporting/Generic subdomain classification
+4. **constraint-selection** — Select organizational constraints relevant to this feature
+5. **bounded-context-design** — DDD strategic design: subdomain classification, context maps, ubiquitous language
+6. **architecture-assessment** — Identify and prioritize architecture characteristics (Ford/Richards, ATAM)
+7. **architecture-style-selection** — Score styles against driving characteristics, generate style fitness functions
+8. **quality-scenarios** — Concrete, testable quality scenarios with test-type classification
+9. **feature-design** — BDD acceptance criteria as Gherkin `.feature` files
 
 ### Phase 2: Planning
 
-8. **writing-plans** — Break work into bite-sized tasks (2-5 minutes each). Module/service decomposition follows bounded context boundaries. References `context-map.md`, `architecture.md`, `quality-scenarios.md`, `.feature` files, and active ADRs.
+10. **writing-plans** — Break work into bite-sized TDD tasks referencing all specification artifacts
 
 ### Phase 3: Implementation
 
-8. **using-git-worktrees** — Create isolated workspace on a new branch.
-
-9. **subagent-driven-development** or **executing-plans** — Execute the plan task by task. Dispatch fresh subagent per task with two-stage review, or execute in batches with human checkpoints.
-
-10. **test-driven-development** — RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, commit.
-
-11. **bdd-testing** — Implement step definitions for `.feature` files. Auto-detects framework (Cucumber, Jest-Cucumber, Behave, pytest-bdd, etc.).
-
-12. **fitness-functions** — Implement and verify both characteristic fitness functions (quality attributes) and style fitness functions (structural invariants). All must pass before completion.
+11. **using-git-worktrees** — Create isolated workspace on a new branch
+12. **subagent-driven-development** or **executing-plans** — Execute plan with two-stage review per task
+13. **test-driven-development** — RED-GREEN-REFACTOR cycle
+14. **bdd-testing** — Wire `.feature` files to step definitions
+15. **fitness-functions** — Implement and verify architecture compliance checks
 
 ### Phase 4: Verification & Delivery
 
-13. **verification-before-completion** — Run every check: unit tests, integration tests, load tests, BDD scenarios, fitness functions, quality scenarios, ADR compliance. Evidence required, no self-reported claims.
+16. **verification-before-completion** — Evidence-based completion gate (actual output, not claims)
+17. **requesting-code-review** / **receiving-code-review** — Structured code review
+18. **finishing-a-development-branch** — Verify tests, merge/PR/keep/discard, clean up
 
-14. **requesting-code-review** / **receiving-code-review** — Pre-review checklist and feedback processing.
+### Cross-Cutting
 
-15. **finishing-a-development-branch** — Verify tests, present options (merge/PR/keep/discard), clean up worktree.
+- **architecture-decisions** — Immutable ADRs (Nygard format) throughout the entire workflow
+- **compliance-report** — Git-based tracking of workflow compliance over time
+- **systematic-debugging** — 4-phase root cause analysis when blocked
 
-### Cross-Cutting: Architecture Decision Records
+## Independent Reviewer Agents
 
-**architecture-decisions** — Captures significant decisions as immutable ADRs (Nygard format) throughout the entire workflow. Maintains a "Current Architecture at a Glance" index. Handles superseding with cascade: old fitness functions removed, new ones generated, quality scenarios re-evaluated. Every fitness function traces back to its justifying ADR.
+Every specification artifact is verified by a fresh agent that did not create it:
 
-## Skills Library
+| Agent | Verifies | Dispatched by |
+|---|---|---|
+| architecture-reviewer | Characteristics completeness | architecture-assessment |
+| architecture-style-reviewer | Style scoring correctness | architecture-style-selection |
+| constraint-reviewer | Constraint matching | constraint-selection |
+| project-constraint-reviewer | Project baseline | project-constraints |
+| quality-scenario-reviewer | Scenario coverage | quality-scenarios |
+| feature-file-reviewer | Gherkin quality | feature-design |
+| plan-reviewer | Plan completeness | writing-plans |
+| bdd-step-reviewer | Step definition quality | bdd-testing |
+| fitness-function-reviewer | FF correctness | fitness-functions |
+| spec-reviewer | Code matches spec | subagent-driven-development |
+| code-reviewer | Code quality | subagent-driven-development |
 
-### Architecture & Design
-- **bounded-context-design** — DDD strategic design: subdomain classification, context maps, ubiquitous language
-- **architecture-assessment** — Identify architecture characteristics (Ford/Richards worksheet, ATAM)
-- **architecture-style-selection** — Select architecture style from star-rating matrix, generate style fitness functions
-- **architecture-decisions** — ADR management (Nygard format), superseding cascade, ADR-FF traceability
-- **quality-scenarios** — ATAM quality scenarios with test-type classification
-- **fitness-functions** — Automated architecture compliance (structural + characteristic)
-
-### Specification & BDD
-- **brainstorming** — Socratic design refinement with ADR review
-- **feature-design** — BDD acceptance criteria as Gherkin scenarios
-- **bdd-testing** — Step definition implementation, framework auto-detection
-
-### Planning & Execution
-- **writing-plans** — Detailed implementation plans referencing all specification artifacts
-- **executing-plans** — Batch execution with checkpoints
-- **subagent-driven-development** — Fast iteration with two-stage review
-- **dispatching-parallel-agents** — Concurrent subagent workflows
-
-### Testing & Verification
-- **test-driven-development** — RED-GREEN-REFACTOR cycle
-- **verification-before-completion** — Evidence-based completion gate
-- **systematic-debugging** — 4-phase root cause process
-
-### Collaboration & Git
-- **requesting-code-review** — Pre-review checklist
-- **receiving-code-review** — Responding to feedback
-- **using-git-worktrees** — Parallel development branches
-- **finishing-a-development-branch** — Merge/PR decision workflow
-
-### Meta
-- **writing-skills** — Create new skills following best practices
-- **using-superflowers** — Introduction to the skills system
+All reviewers follow the 4-step loop from `agents/reviewer-protocol.md`: dispatch → verdict → fix → re-dispatch until APPROVED.
 
 ## Key Artifacts
 
-| Artifact | Created by | Used by |
+| Artifact | Created by | Consumed by |
 |---|---|---|
+| `domain-profile.md` | domain-understanding | brainstorming questions |
+| `market-analysis.md` | market-analysis | bounded-context-design, architecture-assessment, feature-design |
 | `context-map.md` | bounded-context-design | architecture-assessment, style-selection, feature-design, writing-plans |
-| `architecture.md` | architecture-assessment, architecture-style-selection | All downstream skills |
+| `architecture.md` | architecture-assessment, style-selection | All downstream skills |
 | `quality-scenarios.md` | quality-scenarios | writing-plans, verification |
 | `doc/adr/` | architecture-decisions | brainstorming (review), writing-plans, verification |
 | `.feature` files | feature-design | bdd-testing, writing-plans, verification |
@@ -159,13 +145,11 @@ Writing Plans ──► Implementation ──► Fitness Functions ──► Ver
 ## Philosophy
 
 - **Architecture-First** — Define characteristics, select style, document decisions before writing code
-- **Test-Driven Development** — Write tests first, always
+- **Constraints-Aware** — Organizational policies are first-class citizens, not afterthoughts
+- **Independent Review** — Fresh agents verify artifacts; the author never reviews their own work
 - **Evidence over Claims** — Verify before declaring success, no self-reported completions
+- **Test-Driven** — Write tests first, always. BDD scenarios are executable acceptance criteria.
 - **Immutable Decisions** — ADRs and fitness functions don't change; they get superseded with documented rationale
-- **Systematic over Ad-hoc** — Process over guessing
-- **Right Test for the Job** — Not everything is a fitness function; unit tests, integration tests, load tests, and manual reviews each have their place
-
-Read more: [Superpowers for Claude Code](https://blog.fsck.com/2025/10/09/superpowers/) (original project)
 
 ## License
 
