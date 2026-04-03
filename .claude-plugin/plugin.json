@@ -1,10 +1,9 @@
 {
   "name": "superflowers",
-  "description": "Custom fork of superflowers: skills library for Claude Code",
-  "version": "0.1.0",
+  "description": "Composable skills for DDD, architecture, and BDD workflows — fork of Superpowers by Jesse Vincent",
+  "version": "1.0.0",
   "author": {
-    "name": "Jesse Vincent",
-    "email": "jesse@fsck.com"
+    "name": "Florian"
   },
   "homepage": "https://github.com/florian23/superflowers",
   "repository": "https://github.com/florian23/superflowers",

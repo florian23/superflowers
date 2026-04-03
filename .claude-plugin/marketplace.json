@@ -1,0 +1,15 @@
+{
+  "name": "superflowers-marketplace",
+  "owner": {
+    "name": "Florian",
+    "email": ""
+  },
+  "plugins": [
+    {
+      "name": "superflowers",
+      "source": ".",
+      "description": "Composable skills for DDD, architecture, and BDD workflows",
+      "version": "1.0.0"
+    }
+  ]
+}
