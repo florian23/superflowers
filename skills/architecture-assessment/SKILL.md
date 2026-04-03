@@ -157,6 +157,8 @@ If no constraints file exists, proceed normally.
 
 ## The Questionnaire Dialog (New Projects)
 
+**If `market-analysis.md` exists:** Use the competitive landscape to inform quality attribute prioritization. If the market analysis identifies performance or scalability as differentiators, weight those characteristics higher in the questionnaire.
+
 Walk the user through each category. Ask one question at a time. Use the full questionnaire from `questionnaire-template.md`.
 
 ### Phase 1: Operational Characteristics

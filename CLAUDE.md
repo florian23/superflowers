@@ -20,12 +20,12 @@ Custom fork of Superpowers v5.0.6 — composable skills for coding agent workflo
 - Review loops follow `agents/reviewer-protocol.md` (4-step pattern)
 - Uncertainty at user-facing decision points follows `references/uncertainty-handling.md`
 
-## Custom Skills (13)
+## Custom Skills (14)
 
 architecture-assessment, architecture-decisions, architecture-style-selection,
 bdd-testing, bounded-context-design, coding-eval, compliance-report,
 constraint-selection, domain-understanding, feature-design, fitness-functions,
-project-constraints, quality-scenarios
+market-analysis, project-constraints, quality-scenarios
 
 ## Bundled Skills (14, from Superpowers)
 

@@ -89,6 +89,8 @@ Ask the user: "What are the main business areas in this system? For example, in 
 
 ## Step 2: Classify Subdomains
 
+**If `market-analysis.md` exists:** Use the Core/Supporting/Generic classification and differentiation strategy from there as primary input. The market analysis identifies where competitive advantage lies — that determines what's Core vs. Generic.
+
 For each subdomain, classify:
 
 | Type | Definition | Investment Level | Example |
