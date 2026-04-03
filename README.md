@@ -89,7 +89,8 @@ Implementation (TDD) ──► BDD Testing ──► Fitness Functions ──►
 7. **architecture-style-selection** — Score styles against driving characteristics, generate style fitness functions
 8. **risk-storming** — 5 parallel agents assess architecture risks from independent perspectives (Security, Performance, Ops, Data, Code Drift), reach consensus, produce mitigation plan
 9. **quality-scenarios** — Concrete, testable quality scenarios with test-type classification
-9. **feature-design** — BDD acceptance criteria as Gherkin `.feature` files
+10. **ux-design** — Orchestrates 4 UX phases: `ux-research` (personas, JTBD) → `ux-flows` (user flows, IA) → `ux-wireframes` (low→mid→high-fi, all states) → `ux-validate` (Nielsen's 10 heuristics)
+11. **feature-design** — BDD acceptance criteria as Gherkin `.feature` files
 
 ### Phase 2: Planning
 
