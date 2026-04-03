@@ -18,8 +18,8 @@ trap cleanup_test_env EXIT
 echo "Setting up priority test fixtures..."
 
 # 1. Create in superpowers location (lowest priority)
-mkdir -p "$HOME/.config/opencode/superflowers/skills/priority-test"
-cat > "$HOME/.config/opencode/superflowers/skills/priority-test/SKILL.md" <<'EOF'
+mkdir -p "$SUPERPOWERS_SKILLS_DIR/priority-test"
+cat > "$SUPERPOWERS_SKILLS_DIR/priority-test/SKILL.md" <<'EOF'
 ---
 name: priority-test
 description: Superpowers version of priority test skill
@@ -32,8 +32,8 @@ PRIORITY_MARKER_SUPERPOWERS_VERSION
 EOF
 
 # 2. Create in personal location (medium priority)
-mkdir -p "$HOME/.config/opencode/skills/priority-test"
-cat > "$HOME/.config/opencode/skills/priority-test/SKILL.md" <<'EOF'
+mkdir -p "$OPENCODE_CONFIG_DIR/skills/priority-test"
+cat > "$OPENCODE_CONFIG_DIR/skills/priority-test/SKILL.md" <<'EOF'
 ---
 name: priority-test
 description: Personal version of priority test skill
@@ -65,14 +65,14 @@ echo "  Created priority-test skill in all three locations"
 echo ""
 echo "Test 1: Verifying test fixtures..."
 
-if [ -f "$HOME/.config/opencode/superflowers/skills/priority-test/SKILL.md" ]; then
+if [ -f "$SUPERPOWERS_SKILLS_DIR/priority-test/SKILL.md" ]; then
     echo "  [PASS] Superpowers version exists"
 else
     echo "  [FAIL] Superpowers version missing"
     exit 1
 fi
 
-if [ -f "$HOME/.config/opencode/skills/priority-test/SKILL.md" ]; then
+if [ -f "$OPENCODE_CONFIG_DIR/skills/priority-test/SKILL.md" ]; then
     echo "  [PASS] Personal version exists"
 else
     echo "  [FAIL] Personal version missing"
@@ -151,12 +151,12 @@ else
     echo "$output" | grep -i "priority\|project\|personal" | head -10
 fi
 
-# Test 4: Test explicit superflowers: prefix bypasses priority
+# Test 4: Test explicit superpowers: prefix bypasses priority
 echo ""
-echo "Test 4: Testing superflowers: prefix forces superpowers version..."
+echo "Test 4: Testing superpowers: prefix forces superpowers version..."
 
 cd "$TEST_HOME/test-project"
-output=$(timeout 60s opencode run --print-logs "Use the use_skill tool to load superflowers:priority-test specifically. Show me the exact content including any PRIORITY_MARKER text." 2>&1) || {
+output=$(timeout 60s opencode run --print-logs "Use the use_skill tool to load superpowers:priority-test specifically. Show me the exact content including any PRIORITY_MARKER text." 2>&1) || {
     exit_code=$?
     if [ $exit_code -eq 124 ]; then
         echo "  [FAIL] OpenCode timed out after 60s"
@@ -165,9 +165,9 @@ output=$(timeout 60s opencode run --print-logs "Use the use_skill tool to load s
 }
 
 if echo "$output" | grep -qi "PRIORITY_MARKER_SUPERPOWERS_VERSION"; then
-    echo "  [PASS] superflowers: prefix correctly forces superpowers version"
+    echo "  [PASS] superpowers: prefix correctly forces superpowers version"
 elif echo "$output" | grep -qi "PRIORITY_MARKER_PROJECT_VERSION\|PRIORITY_MARKER_PERSONAL_VERSION"; then
-    echo "  [FAIL] superflowers: prefix did not force superpowers version"
+    echo "  [FAIL] superpowers: prefix did not force superpowers version"
     exit 1
 else
     echo "  [WARN] Could not verify priority marker in output"
