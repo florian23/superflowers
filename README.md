@@ -89,7 +89,7 @@ Implementation (TDD) ──► BDD Testing ──► Fitness Functions ──►
 7. **architecture-style-selection** — Score styles against driving characteristics, generate style fitness functions
 8. **risk-storming** — 5 parallel agents assess architecture risks from independent perspectives (Security, Performance, Ops, Data, Code Drift), reach consensus, produce mitigation plan
 9. **quality-scenarios** — Concrete, testable quality scenarios with test-type classification
-10. **ux-design** — Orchestrates 4 UX phases: `ux-research` (personas, JTBD) → `ux-flows` (user flows, IA) → `ux-wireframes` (low→mid→high-fi, all states) → `ux-validate` (Nielsen's 10 heuristics)
+10. **ux-design** — Orchestrates 3 UX skills + 1 reviewer agent: `ux-research` (personas, JTBD) → `ux-flows` (user flows, IA) → `ux-wireframes` (low→mid→high-fi, all states) → `ux-reviewer` agent (Nielsen's 10 heuristics, fresh context)
 11. **feature-design** — BDD acceptance criteria as Gherkin `.feature` files
 
 ### Phase 2: Planning
@@ -151,6 +151,7 @@ Every specification artifact is verified by a fresh agent that did not create it
 | fitness-function-reviewer | FF correctness | fitness-functions |
 | spec-reviewer | Code matches spec | subagent-driven-development |
 | code-reviewer | Code quality | subagent-driven-development |
+| ux-reviewer | Usability (Nielsen's 10 heuristics) | ux-wireframes |
 
 All reviewers follow the 4-step loop from `agents/reviewer-protocol.md`: dispatch → verdict → fix → re-dispatch until APPROVED.
 

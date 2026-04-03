@@ -29,7 +29,7 @@ digraph ux_design {
   research [label="ux-research\n(Personas, JTBD,\nProblem Statements)"];
   flows [label="ux-flows\n(User Flows, IA)"];
   wireframes [label="ux-wireframes\n(Low→Mid→High-fi,\nall States)"];
-  validate [label="ux-validate\n(Nielsen's 10\nHeuristics)"];
+  validate [label="ux-reviewer\n(Agent, fresh context\nNielsen's 10)"];
   severity [shape=diamond, label="Severity\n3-4?"];
   done [shape=doublecircle, label="Return to\nbrainstorming"];
 
@@ -49,12 +49,12 @@ digraph ux_design {
 
 ## Phase Skills
 
-| Phase | Skill | Produces (in ux-design.md) | Consumed by |
+| Phase | Skill / Agent | Produces (in ux-design.md) | Consumed by |
 |---|---|---|---|
 | 1. Research & Define | `superflowers:ux-research` | Personas, JTBD, Problem Statements | feature-design |
 | 2. Ideate | `superflowers:ux-flows` | User Flows, Information Architecture | feature-design, writing-plans |
 | 3. Design | `superflowers:ux-wireframes` | Wireframes, State Designs, Design Decisions | writing-plans, feature-design |
-| 4. Validate | `superflowers:ux-validate` | Heuristic Evaluation | Redesign loop, quality-scenarios |
+| 4. Validate | `ux-reviewer` (Agent, fresh context) | Heuristic Evaluation (Nielsen's 10) | Redesign loop back to ux-wireframes |
 
 ## Orchestration Logic
 
@@ -62,4 +62,4 @@ digraph ux_design {
 2. If yes: read it, determine which sections are filled → skip completed phases
 3. Invoke the next incomplete phase skill
 4. After each phase: check if user wants to continue or pause
-5. After ux-validate: if Severity 3-4 findings → invoke ux-wireframes again
+5. ux-wireframes dispatches ux-reviewer agent automatically — if Severity 3-4 findings, loop back to ux-wireframes
