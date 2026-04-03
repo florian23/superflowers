@@ -21,6 +21,8 @@ Custom fork of Superpowers v5.0.6 — composable skills for coding agent workflo
 - Uncertainty at user-facing decision points follows `references/uncertainty-handling.md`
 - Downstream-consumed artifact sections use `> Consumed by: skill-name (Step N)` markers
 - Bundled skills (from Superpowers) should not be modified directly
+- Skills that produce artifacts must be DIALOG, not batch — work step by step with the user, not generate everything at once
+- Validation/review of artifacts belongs in reviewer AGENTS (fresh context), never in skills (same context = self-review)
 
 ## Custom Skills (19)
 
@@ -45,6 +47,12 @@ writing-plans, writing-skills
 - Technique skills: test with application scenarios (can the agent apply it correctly?)
 - Discipline skills: test with pressure scenarios (does the agent comply under stress?)
 - Key metric: downstream-nutzbarkeit — can the next skill in the chain consume the output directly?
+
+## Environment
+
+- VPS hosted at Hostinger, accessible via Tailscale VPN
+- Visual Companion server auto-detects Tailscale and binds to tailnet IP
+- Workspace directories (*-workspace/, smoke-test-workspace/) are gitignored — test data only
 
 ## Gotchas
 
