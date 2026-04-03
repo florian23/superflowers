@@ -22,12 +22,12 @@ Custom fork of Superpowers v5.0.6 — composable skills for coding agent workflo
 - Downstream-consumed artifact sections use `> Consumed by: skill-name (Step N)` markers
 - Bundled skills (from Superpowers) should not be modified directly
 
-## Custom Skills (14)
+## Custom Skills (15)
 
 architecture-assessment, architecture-decisions, architecture-style-selection,
 bdd-testing, bounded-context-design, coding-eval, compliance-report,
 constraint-selection, domain-understanding, feature-design, fitness-functions,
-market-analysis, project-constraints, quality-scenarios
+market-analysis, project-constraints, quality-scenarios, risk-storming
 
 ## Bundled Skills (14, from Superpowers)
 

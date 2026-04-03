@@ -87,7 +87,8 @@ Implementation (TDD) ──► BDD Testing ──► Fitness Functions ──►
 5. **bounded-context-design** — DDD strategic design: subdomain classification, context maps, ubiquitous language
 6. **architecture-assessment** — Identify and prioritize architecture characteristics (Ford/Richards, ATAM)
 7. **architecture-style-selection** — Score styles against driving characteristics, generate style fitness functions
-8. **quality-scenarios** — Concrete, testable quality scenarios with test-type classification
+8. **risk-storming** — 5 parallel agents assess architecture risks from independent perspectives (Security, Performance, Ops, Data, Code Drift), reach consensus, produce mitigation plan
+9. **quality-scenarios** — Concrete, testable quality scenarios with test-type classification
 9. **feature-design** — BDD acceptance criteria as Gherkin `.feature` files
 
 ### Phase 2: Planning
