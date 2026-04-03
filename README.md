@@ -1,6 +1,10 @@
-# Superflowers
+<p align="center">
+  <img src="assets/logo.svg" alt="Superflowers" width="600">
+</p>
 
-A composable skills library for coding agents that solves four problems spec-driven frameworks ignore.
+<p align="center">
+  <strong>A composable skills library for coding agents that solves four problems spec-driven frameworks ignore.</strong>
+</p>
 
 Based on [Superpowers](https://github.com/obra/superpowers) v5.0.6 by [Jesse Vincent](https://github.com/obra).
 
