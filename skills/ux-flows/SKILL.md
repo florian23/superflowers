@@ -5,69 +5,94 @@ description: Use when user flows and information architecture need to be designe
 
 # UX Flows & Information Architecture
 
-Map how users move through the system. For each core scenario, create a user flow with happy path, branches, error states, and exit points. Second phase of the UX design process.
+Map how users move through the system. **Work through flows one at a time with the user — don't generate all flows at once.**
 
-**Semantic anchors:** User Flows (NNG Page Laubheimer), Task Flows, Wire Flows, Information Architecture, Navigation Design, Ryan Singer "Shorthand for Designing UI Flows".
+**Semantic anchors:** User Flows (NNG Page Laubheimer), Task Flows, Wire Flows, Information Architecture, Navigation Design.
 
-**Announce at start:** "I'm designing user flows — mapping how each persona moves through the system."
+**Announce at start:** "Let's map out how your users move through the system — one flow at a time."
 
 ## When to Use
 
 - After `superflowers:ux-research` has produced personas and scenarios
 - When navigation or interaction paths need to be designed
-- When the user asks "how should the user get from A to B?"
 
 **When NOT to use:**
 - If `ux-design.md` doesn't have Personas yet — run `ux-research` first
-- If user flows already exist and are current
 
-## Step 1: User Flows
+## The Dialog Process
 
-For each Core scenario from ux-research, create a flow:
+### Turn 1: Pick the First Flow
 
-1. **Define entry points** — How does the user arrive? (login, dashboard, notification, direct URL)
-2. **Map the happy path** — Simplest successful completion
-3. **Add decision branches** — Validation fails? Not logged in? No data?
-4. **Add error states** — Network failure, permission denied, timeout
-5. **Add exit points** — Where can the user abandon? What happens?
+Read the prioritized scenarios from `ux-design.md`. Ask:
 
-Use DOT notation:
+> "Der wichtigste Ablauf ist '[top scenario]'. Sollen wir damit anfangen, oder gibt es einen anderen Flow der dir wichtiger ist?"
+
+Wait for user's choice.
+
+### Turn 2: Entry Points
+
+Ask:
+
+> "Wie kommt [Persona] zu diesem Feature? Über das Hauptmenü, eine Suche, eine Benachrichtigung, oder einen Direktlink?"
+
+Wait. This determines the flow's starting point(s).
+
+### Turn 3: Happy Path
+
+Draft the simplest successful path based on the scenario. Render as DOT diagram in Visual Companion (if available) or describe as numbered steps.
+
 ```dot
-digraph flow_example {
+digraph flow {
   node [shape=box, style=rounded];
-  start [shape=ellipse, label="Dashboard"];
-  search [label="Search Patient"];
-  results [shape=diamond, label="Results\nfound?"];
-  select [label="Select Patient"];
-  detail [label="Patient Detail"];
-  empty [label="Empty State:\n'No patients found'"];
-  error [label="Error State:\n'Search failed'"];
-
-  start -> search [label="click search"];
-  search -> results;
-  results -> select [label="yes"];
-  results -> empty [label="no results"];
-  results -> error [label="network error"];
-  select -> detail;
+  start [shape=ellipse, label="[Entry Point]"];
+  step1 [label="[Screen 1]"];
+  step2 [label="[Screen 2]"];
+  done [shape=doublecircle, label="[Success]"];
+  start -> step1 [label="[action]"];
+  step1 -> step2 [label="[action]"];
+  step2 -> done;
 }
 ```
 
-Render flows in the Visual Companion for the user to review.
+Ask: "Stimmt dieser Ablauf? Fehlt ein Schritt, oder würde [Persona] es anders machen?"
 
-**Key rule:** Every flow path (happy, error, edge case) becomes at least one BDD scenario in `feature-design`. Design flows with this in mind.
+Wait. Incorporate feedback.
 
-## Step 2: Information Architecture
+### Turn 4: Error & Edge Cases
 
-Define the navigation structure:
-- **Primary navigation** — always visible (main menu items)
-- **Secondary navigation** — context-dependent (within a section)
-- **Content hierarchy** per screen — what's most important?
+Ask:
 
-**Uncertainty handling:** If a feature could live in two navigation locations, follow `references/uncertainty-handling.md`: present options with tradeoffs.
+> "Was kann schiefgehen? Z.B.: Was passiert wenn [Persona] nicht eingeloggt ist? Wenn keine Daten gefunden werden? Wenn das Netzwerk abbricht?"
+
+Wait. Add error branches to the flow based on user's answers. Present updated flow.
+
+### Turn 5: Exit Points
+
+Ask:
+
+> "Wo könnte [Persona] abbrechen — und was soll dann passieren? Daten verloren oder gespeichert?"
+
+Complete the flow. Present final version.
+
+> "Ist dieser Flow komplett? Dann zum nächsten — oder reicht es für jetzt?"
+
+### Repeat for Next Flows
+
+For each additional flow, repeat Turns 2-5. After each completed flow:
+
+> "Sollen wir den nächsten Flow ([next scenario]) angehen, oder reichen die bisherigen?"
+
+### Information Architecture
+
+After the important flows are mapped, ask:
+
+> "Welche Hauptbereiche soll die Navigation haben? Was soll immer sichtbar sein?"
+
+Draft IA based on the flows and user input. Present and refine.
 
 ## Write to ux-design.md
 
-Append the following sections:
+After user confirmation per flow, append:
 
 ```markdown
 ## User Flows

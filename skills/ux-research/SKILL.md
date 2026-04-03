@@ -5,11 +5,11 @@ description: Use when starting UX design for a new feature — identifies person
 
 # UX Research & Define
 
-Understand who the users are and frame clear problems to solve. First phase of the UX design process.
+Understand who the users are and frame clear problems to solve. First phase of the UX design process. **This is a dialog — work through each step with the user, not a batch process.**
 
 **Semantic anchors:** Design Thinking Empathize+Define (IDEO), Jobs to Be Done (Christensen), Personas (Cooper), "How Might We" Problem Framing, Double Diamond Problem Space.
 
-**Announce at start:** "I'm researching user needs — building personas and framing problems to solve."
+**Announce at start:** "Let's start by understanding your users. I'll ask questions step by step."
 
 ## When to Use
 
@@ -20,59 +20,84 @@ Understand who the users are and frame clear problems to solve. First phase of t
 **When NOT to use:**
 - If `ux-design.md` already has Personas and Problem Statements — skip to `ux-flows`
 
-## Step 1: Build Personas
+## The Dialog Process
 
-Derive 3-5 personas from available context:
-- `domain-profile.md` (if exists) — domain roles and stakeholders
-- `market-analysis.md` (if exists) — target audience from competitive analysis
-- User input — ask the user about their users
+Work through personas ONE AT A TIME. Do not generate all personas at once.
 
-Each persona:
+### Turn 1: Discover User Roles
 
-| Field | Description |
+Read `domain-profile.md` and `market-analysis.md` if they exist. Then ask:
+
+> "Wer sind die Hauptnutzer deines Systems? Welche Rollen gibt es — und wer nutzt es am häufigsten?"
+
+Wait for the user's answer.
+
+### Turn 2: First Persona
+
+Based on the user's answer, draft the MOST IMPORTANT persona:
+
+| Field | Value |
 |---|---|
-| Name | Memorable name (e.g., "Dr. Müller") |
-| Role | Role in the system |
-| Goal | Primary goal when using the system |
-| Frustration | Main pain point with current solutions |
-| Tech Affinity | Low / Medium / High |
-| Context of Use | Where/when/how they use the system |
+| Name | [Memorable name] |
+| Role | [From user's answer] |
+| Goal | [Derived from context] |
+| Frustration | [Ask if unclear] |
+| Tech Affinity | [Ask if unclear] |
+| Context of Use | [Ask if unclear] |
 
-## Step 2: Jobs to Be Done
+Present this ONE persona and ask:
 
-For each persona, identify 2-3 JTBD:
+> "Stimmt dieses Bild? Was würdest du ändern — und was frustriert [Name] am meisten an der aktuellen Lösung?"
 
+Wait. Incorporate feedback. Then ask:
+
+> "Was will [Name] hauptsächlich erreichen wenn er/sie das System nutzt?"
+
+Formulate 1-2 JTBD from the answer:
 > When [situation], I want [motivation], so I can [outcome].
 
-## Step 3: Competitive UX Review
+Confirm: "Trifft das [Name]s Hauptziel?"
 
-If `market-analysis.md` exists, extract UX-relevant findings:
-- How do competitors solve the same UX problems?
-- UX strengths/weaknesses from reviews?
-- UX differentiation opportunity?
+### Turn 3-N: Next Personas
 
-## Step 4: Problem Statements
+Repeat Turn 2 for each additional persona. After each:
 
-For each persona's top frustration:
+> "Gibt es noch eine wichtige Nutzergruppe die wir vergessen? Oder reichen diese [N] Personas?"
+
+Stop when the user says it's enough. Don't push for exactly 5 if 3 cover the use cases.
+
+### After All Personas: Problem Framing
+
+For each persona's top frustration, propose a Problem Statement:
 
 > How might we help [persona] [achieve goal] without [frustration]?
 
-## Step 5: User Scenarios
+Present ALL problem statements together and ask:
 
-For each Problem Statement, write a narrative scenario:
+> "Welches dieser Probleme ist am dringendsten? Womit sollen wir anfangen?"
+
+This prioritization determines which scenarios get full UX treatment (flows, wireframes, all states) vs. basic treatment.
+
+### Competitive UX Review (if market-analysis.md exists)
+
+Briefly summarize how competitors solve the prioritized problem:
+- What do they do well?
+- Where do they fail?
+- Where is the UX differentiation?
+
+Ask: "Gibt es etwas an der Konkurrenz-UX das dir besonders gefällt oder stört?"
+
+### Final: User Scenarios
+
+For the top-priority problem, write a narrative scenario:
 
 > [Persona] is [context]. They want to [goal]. They [action sequence]. They see [result].
 
-Prioritize by subdomain classification (if `market-analysis.md` exists):
-- **Core Domain** → full UX treatment
-- **Supporting** → basic flows
-- **Generic** → standard patterns
-
-**Uncertainty handling:** If persona goals conflict, follow `references/uncertainty-handling.md`: present the conflict with options and let the user prioritize.
+Present and ask: "Stimmt dieser Ablauf aus [Persona]s Sicht?"
 
 ## Write to ux-design.md
 
-Append or create the following sections in `ux-design.md`:
+After user confirmation, append to `ux-design.md`:
 
 ```markdown
 ## Personas
@@ -88,11 +113,12 @@ Append or create the following sections in `ux-design.md`:
 
 - When [situation], I want [motivation], so I can [outcome]
 
-## Problem Statements
+## Problem Statements (priorisiert)
 
-- How might we [Problem]?
+1. How might we [dringendstes Problem]?
+2. How might we [zweitdringendstes]?
 
 ## User Scenarios
 
-- [Narrative Scenarios, priorisiert nach Subdomain]
+- [Narrative Scenarios, priorisiert]
 ```
