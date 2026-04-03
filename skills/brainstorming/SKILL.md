@@ -28,6 +28,7 @@ You MUST create a task for each of these items and complete them in order:
 5. **Propose 2-3 approaches** — with trade-offs and your recommendation
 6. **Present design** — in sections scaled to their complexity, get user approval after each section
 6b. **Post-design review** — follow `references/post-skill-review.md`: dispatch adr-decision-agent to scan dialog for ADR-worthy decisions (steps 4-6). Agent writes ADRs autonomously. Then dispatch spec-reviewer with new ADR context. Standard review-loop if issues found.
+6c. **UX design check** — if the feature has user-facing UI, ask: "This feature has a user interface. Shall I run the UX design process (personas, task flows, wireframes) before we continue with architecture?" If yes: invoke `superflowers:ux-design`. UX results feed into feature-design (Step 12) and writing-plans (Step 17). If no or not applicable (backend-only, CLI, API): skip.
 7. **Constraint selection** — invoke superflowers:constraint-selection to select organizational constraints relevant to this feature. Constraints inform architecture and spec. Skips automatically if no constraint repo is configured.
 8. **Bounded context design** — invoke superflowers:bounded-context-design to identify domain boundaries, classify subdomains, create context map. Builds on the domain profile from step 2. Skips automatically for single-domain projects.
 9. **Architecture assessment** — invoke superflowers:architecture-assessment to identify/review architecture characteristics. Architecture informs the spec.
@@ -77,7 +78,12 @@ digraph brainstorming {
 
     "Post-design review\n(ADR + artifact review)" [shape=box];
     "User approves design?" -> "Post-design review\n(ADR + artifact review)" [label="yes"];
-    "Post-design review\n(ADR + artifact review)" -> "Invoke constraint-selection";
+    "Feature has UI?" [shape=diamond];
+    "Invoke ux-design" [shape=doublecircle, style=dashed];
+    "Post-design review\n(ADR + artifact review)" -> "Feature has UI?";
+    "Feature has UI?" -> "Invoke ux-design" [label="yes, user confirms"];
+    "Feature has UI?" -> "Invoke constraint-selection" [label="no / skip"];
+    "Invoke ux-design" -> "Invoke constraint-selection";
     "Invoke constraint-selection" [shape=doublecircle];
     "Invoke constraint-selection" -> "Invoke bounded-context-design";
     "Invoke bounded-context-design" [shape=doublecircle];
