@@ -71,43 +71,58 @@ Refine the chosen layout with:
 
 Render and ask: "Stimmt die Gewichtung der Informationen? Ist das Wichtigste prominent genug?"
 
-### Turn 5: Next Screen or High-fi
+### Turn 4b: Mid-fi Usability Check
 
-Ask:
+After mid-fi is confirmed by the user, dispatch `superflowers:ux-reviewer` agent for a usability check on THIS screen.
 
-> "Wie sollen wir weitermachen?"
+Follow the Review-Loop Pattern from `agents/reviewer-protocol.md`:
+1. Dispatch ux-reviewer (fresh context)
+2. If ISSUES_FOUND: fix the issues in the wireframe, re-dispatch reviewer
+3. Repeat until APPROVED for this screen
+
+After APPROVED: proceed to Turn 5. The user now decides whether to go deeper or move on.
+
+### Turn 5: Next Step
+
+After mid-fi review passes, ask:
+
+> "Der Screen hat den Usability-Check bestanden. Wie weiter?"
 >
-> **Option A: Nächster Screen** — weiter mit dem nächsten Screen im Flow (Low-fi → Mid-fi)
-> **Option B: High-fi Wireframe** — diesen Screen visuell verfeinern (Farben, Spacing, Typography) als Wireframe im Visual Companion
-> **Option C: Production Design** — diesen Screen als echten, production-grade UI-Code umsetzen mit `frontend-design` Skill (HTML/CSS/JS oder React). Empfohlen wenn der Screen-Entwurf stabil ist.
+> **Option A: Nächster Screen** — weiter mit dem nächsten Screen im Flow (Low-fi → Mid-fi → Review)
+> **Option B: High-fi Wireframe** — diesen Screen visuell verfeinern (Farben, Spacing, Typography) im Visual Companion
+> **Option C: Production Design** — diesen Screen als production-grade UI-Code umsetzen mit `frontend-design` Skill
+> **Option D: Alle Screens fertig** — weiter zum finalen Gesamt-Review
 
 If Option A: repeat from Turn 2 with next screen.
-If Option B: apply visual design in Visual Companion, render, get feedback. Then return to this choice.
+If Option B: apply visual design in Visual Companion, render, get feedback. Then return to Turn 5.
 If Option C: invoke `frontend-design:frontend-design` with the wireframe context:
 - Pass the confirmed layout direction, states, and content hierarchy from Turns 2-4
 - Pass the persona and task flow context from ux-design.md
 - Let frontend-design handle aesthetic direction, typography, color, animation
 - After frontend-design completes: return to Turn 5 for next screen choice
+If Option D: proceed to Final Usability Validation.
 
 ### Responsive (if relevant)
 
-After key screens are designed, ask:
+After key screens are designed (before choosing Option D), ask:
 
 > "Wird das System hauptsächlich auf Desktop, Tablet oder Handy genutzt? Sollen wir eine mobile Variante designen?"
 
-## After Wireframing: Usability Validation
+## Final Usability Validation
 
-After all screens are designed, dispatch the `superflowers:ux-reviewer` agent for independent usability evaluation.
+**Trigger:** User chose "Alle Screens fertig" in Turn 5 (Option D).
+
+Dispatch `superflowers:ux-reviewer` for a final review across ALL screens — checking consistency, navigation coherence, and cross-screen usability. This is a different scope than Turn 4b: Turn 4b reviews one screen, this reviews the complete set.
 
 Follow the Review-Loop Pattern from `agents/reviewer-protocol.md`:
-1. Dispatch ux-reviewer (fresh context — it did NOT create the wireframes)
-2. If ISSUES_FOUND: fix the cited issues in the wireframes, then re-dispatch reviewer (fresh)
+1. Dispatch ux-reviewer (fresh context — reviewing ALL screens as a set)
+2. If ISSUES_FOUND: fix the cited issues, then re-dispatch reviewer (fresh)
 3. Repeat until reviewer returns APPROVED
 4. Only then write final ux-design.md and proceed
 
 <HARD-GATE>
 Do NOT claim UX design is complete or proceed to feature-design
-until the ux-reviewer returns APPROVED.
+until the final ux-reviewer returns APPROVED.
 If ISSUES_FOUND: fix and re-dispatch. Do NOT ask the user whether to fix.
 Severity 3-4 findings MUST be resolved — no exceptions.
 </HARD-GATE>
