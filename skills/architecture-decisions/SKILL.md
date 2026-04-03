@@ -263,6 +263,10 @@ until the architecture-decision-reviewer returns APPROVED.
 If ISSUES_FOUND: fix and re-dispatch. Do NOT ask the user whether to fix.
 </HARD-GATE>
 
+## The Bottom Line
+
+Every significant architecture decision gets an ADR. Undocumented decisions are invisible decisions.
+
 ## Integration
 
 - **Invoked by:** Any skill that makes an architecture decision (brainstorming, architecture-assessment, architecture-style-selection, quality-scenarios, implementation)

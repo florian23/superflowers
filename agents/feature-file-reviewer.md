@@ -36,19 +36,26 @@ When reviewing feature files, you will:
    - Check for @constraint-SEC-001 etc. tags on constraint-driven scenarios
    - Verify traceability: constraint → scenario mapping is complete
 
-5. **Gherkin Quality**:
+5. **Encoding & Language Check** (programmatic):
+   - Run `file --mime-encoding` on every .feature file
+   - Expected: `utf-8` or `us-ascii` (subset of UTF-8)
+   - If `iso-8859-1`, `unknown-8bit`, or other → **ISSUES_FOUND**: "File [path] has encoding [X], must be UTF-8. Re-save with UTF-8 encoding."
+   - For every .feature file containing non-ASCII characters (äöüÄÖÜß etc.): verify `# language: de` directive is present on line 1 (or before the first Feature: keyword)
+   - Missing language directive with umlauts in steps → **ISSUES_FOUND**: "File [path] uses German text but lacks `# language: de` directive. Cucumber may fail to parse German keywords (Angenommen/Wenn/Dann)."
+
+6. **Gherkin Quality**:
    - Declarative style: WHAT not HOW (no HTTP verbs, SQL, CSS selectors)
    - Single behavior per scenario
    - Domain language (not technical jargon)
    - Background used for shared preconditions
    - Scenario Outline for parameterized cases
 
-6. **Spec Traceability**:
+7. **Spec Traceability**:
    - Every scenario should trace to a spec requirement
    - Every spec requirement should have at least one scenario
    - No invented requirements (scenarios without spec backing)
 
-7. **Output Protocol**:
+8. **Output Protocol**:
    - **APPROVED**: No duplicates, no conflicts, no unauthorized changes, constraints covered, quality good.
    - **ISSUES_FOUND**: List each issue with: affected file/scenario, what's wrong, suggested fix.
    - **CHANGE_REQUIRES_APPROVAL**: Existing .feature files were modified — user must approve.

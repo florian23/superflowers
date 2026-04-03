@@ -1,6 +1,6 @@
 ---
 name: architecture-assessment
-description: Use AFTER brainstorming completes and BEFORE writing specs or feature files — when architecture characteristics and quality attributes need to be identified
+description: Use AFTER brainstorming completes and BEFORE writing specs or feature files — when architecture characteristics need to be identified
 ---
 
 # Architecture Assessment
@@ -16,7 +16,7 @@ Identify, document, and maintain architecture characteristics through structured
 - After brainstorming completes and before writing specs, feature files, or plans
 - When a new project needs architecture characteristics identified
 - When an existing project's characteristics need updating for a new feature
-- When the user asks about quality attributes, architecture tradeoffs, or non-functional requirements
+- When the user asks about architecture characteristics, tradeoffs, or non-functional requirements
 
 **When NOT to use:**
 - If `architecture.md` already exists and is current — read it instead of re-running the full assessment
@@ -33,7 +33,7 @@ You cannot make design decisions without knowing which quality attributes matter
 <HARD-GATE>
 Do NOT proceed to writing specs, feature-design, or writing-plans until
 architecture characteristics are documented in architecture.md and the
-user has approved them. This applies to EVERY project regardless of
+user has confirmed them. This applies to EVERY project regardless of
 perceived simplicity.
 </HARD-GATE>
 
@@ -51,7 +51,7 @@ digraph architecture_assessment {
     "Update architecture.md\n(with changelog entry)" [shape=box];
     "Structured questionnaire\ndialog" [shape=box];
     "Top-3 prioritization" [shape=box];
-    "User approves\ncharacteristics?" [shape=diamond];
+    "User confirms\ncharacteristics?" [shape=diamond];
     "Write architecture.md" [shape=box];
     "Dispatch verification agent" [shape=box];
     "Return to brainstorming\n(feature-design next)" [shape=doublecircle];
@@ -68,9 +68,9 @@ digraph architecture_assessment {
     "User confirms change?" -> "Update architecture.md\n(with changelog entry)" [label="yes — justified"];
     "Update architecture.md\n(with changelog entry)" -> "Dispatch verification agent";
     "Structured questionnaire\ndialog" -> "Top-3 prioritization";
-    "Top-3 prioritization" -> "User approves\ncharacteristics?";
-    "User approves\ncharacteristics?" -> "Structured questionnaire\ndialog" [label="revise"];
-    "User approves\ncharacteristics?" -> "Write architecture.md" [label="approved"];
+    "Top-3 prioritization" -> "User confirms\ncharacteristics?";
+    "User confirms\ncharacteristics?" -> "Structured questionnaire\ndialog" [label="revise"];
+    "User confirms\ncharacteristics?" -> "Write architecture.md" [label="approved"];
     "Write architecture.md" -> "Dispatch verification agent";
     "Dispatch verification agent" -> "Return to brainstorming\n(feature-design next)";
 }
@@ -159,45 +159,77 @@ If no constraints file exists, proceed normally.
 
 **If `market-analysis.md` exists:** Use the competitive landscape to inform quality attribute prioritization. If the market analysis identifies performance or scalability as differentiators, weight those characteristics higher in the questionnaire.
 
-Walk the user through each category. Ask one question at a time. Use the full questionnaire from `questionnaire-template.md`.
+Before asking any questions, read ALL available context:
+- The brainstorming spec/design doc
+- `domain-profile.md` (from domain-understanding)
+- `market-analysis.md` (competitive landscape)
+- `context-map.md` (bounded contexts, if exists)
+- `docs/superflowers/constraints/` (active constraints)
 
-### Phase 1: Operational Characteristics
+Then follow `references/proactive-analysis.md`: draft a PROPOSED set of characteristics with priorities based on your analysis. Do NOT walk the user through each characteristic one by one asking "How important is X?".
 
-For each characteristic, ask:
-1. **Relevance:** "How important is [X] for this system?" (critical / important / nice-to-have / irrelevant)
-2. **Concreteness** (if critical/important): "What does [X] mean concretely? For example: response time <200ms, 99.9% uptime, 1000 concurrent users"
-3. **Fitness Function:** "Should we automate a check for this?" (yes/no)
+### Phase 1: Independent Analysis & Proposal
 
-Characteristics to assess:
-- **Availability** — How much downtime is acceptable?
-- **Performance** — What are the latency/throughput requirements?
-- **Scalability** — How many users/requests must the system handle? Growth expectations?
-- **Reliability** — What happens when things fail? Recovery requirements?
-- **Fault Tolerance** — Must the system continue operating during partial failures?
+Read all available context (see above). Then draft a proposed characteristics set:
 
-### Phase 2: Structural Characteristics
+1. For each of the 15 characteristics in `questionnaire-template.md`, assess relevance based on what you read — not by asking the user
+2. Assign a proposed priority (Critical / Important / Nice-to-have / Irrelevant)
+3. For Critical/Important ones, draft a concrete goal based on domain context
 
-- **Modularity** — How important is clean separation of concerns?
-- **Extensibility** — How often will new features be added? By whom?
-- **Testability** — What level of automated testing is required?
-- **Deployability** — How often will the system be deployed? Blue/green? Rolling?
-- **Coupling** — Are there integration points with external systems?
+Present to the user:
 
-### Phase 3: Cross-Cutting Characteristics
+> "Based on [spec/market-analysis/context-map], here are the architecture characteristics I think matter for this system:"
+>
+> **Critical:**
+> - [Characteristic] ([concrete goal]) — because [reason from context]
+> - [Characteristic] ([concrete goal]) — because [reason from context]
+>
+> **Important:**
+> - [Characteristic] ([concrete goal]) — because [reason from context]
+>
+> **Irrelevant for this system:**
+> - [Characteristic] — because [reason]
+>
+> "Does this match your understanding? What would you change — promote, demote, add, or remove?"
 
-- **Security** — What data is handled? Authentication/authorization requirements?
-- **Compliance** — Regulatory requirements (GDPR, HIPAA, SOC2)?
-- **Accessibility** — WCAG requirements?
-- **Usability** — Who are the users? Technical sophistication?
-- **Observability** — Logging, monitoring, tracing requirements?
+Wait for feedback. Incorporate changes.
+
+### Phase 2: Concrete Goals Dialog
+
+For each Critical/Important characteristic where your proposed concrete goal needs user input (e.g., you don't know the SLA targets), ask ONE focused question:
+
+> "[Characteristic] — I proposed [goal]. Is that the right target, or do you have a specific number in mind?"
+
+Do NOT ask about characteristics the user already confirmed as irrelevant. One question per message.
+
+### Phase 3: Fitness Function Confirmation
+
+For each Critical characteristic, propose whether a fitness function makes sense and what type (Atomic/Holistic). Present as a table, ask for confirmation once — not per row:
+
+> | Characteristic | Proposed FF | Cadence | Tool |
+> |---|---|---|---|
+> | Performance | API response < 200ms p95 | Holistic (PR) | k6/autocannon |
+> | Modularity | No circular dependencies | Atomic (commit) | dependency-cruiser |
+>
+> "Should all of these have automated fitness functions, or would you skip any?"
 
 ### Phase 4: Top-3 Prioritization
 
-After collecting all characteristics, present the critical/important ones and ask:
+Based on the confirmed characteristics, propose your top 3 with reasoning. Follow `references/proactive-analysis.md`:
 
-> "Every architecture characteristic adds complexity. Which are your TOP 3 — the ones that should drive architecture decisions above all others?"
+> "Based on [domain drivers], I recommend these as the top 3:"
+>
+> **Option A (recommended): [char1], [char2], [char3]**
+> Reasoning: [char1] because..., [char2] because..., [char3] because...
+>
+> **Option B: [char1], [char2], [char4]** — swapping [char3] for [char4]
+> Better if [condition]. Trade-off: [what you lose].
+>
+> "Which prioritization fits — or would you rearrange?"
 
-**Uncertainty handling:** If you are unsure about prioritization (e.g., two characteristics seem equally important, or a characteristic could go either way), follow the Uncertainty Handling Pattern in `references/uncertainty-handling.md`: name the uncertainty, present 2-3 options with tradeoffs, and use AskUserQuestion with structured choices. Do NOT present an uncertain recommendation as settled and ask "Passt das?".
+If the top 3 are clearly separated from the rest (e.g., three Critical characteristics and the rest is Important), present your recommendation directly and ask for confirmation. Only use the multi-option format when priorities are genuinely close — per `references/uncertainty-handling.md`.
+
+**Uncertainty handling:** If you are unsure about prioritization (e.g., two characteristics seem equally important), follow the Uncertainty Handling Pattern in `references/uncertainty-handling.md`: name the uncertainty, present 2-3 options with tradeoffs, and use AskUserQuestion with structured choices. Do NOT present an uncertain recommendation as settled and ask "Passt das?".
 
 The top 3 become the primary architecture drivers.
 
@@ -214,6 +246,22 @@ When `architecture.md` already exists, be SKEPTICAL about changes:
    - If not justified: Recommend keeping the existing architecture
 
 **Architecture should be stable.** Frequent changes to architecture characteristics are a red flag — either the initial assessment was incomplete or requirements are being confused with architecture.
+
+## Example: Good vs Bad Characteristic Goals
+
+❌ **BAD — Vague goals:**
+| Characteristic | Goal |
+|---|---|
+| Performance | Good performance |
+| Security | Secure system |
+| Scalability | Must scale |
+
+✅ **GOOD — Concrete, measurable goals:**
+| Characteristic | Goal |
+|---|---|
+| Performance | API response < 200ms p95 under normal load |
+| Security | Zero known CVEs in dependencies, all PII encrypted at rest |
+| Scalability | Handle 10,000 concurrent users with < 5% latency increase |
 
 ## Red Flags — STOP
 
@@ -246,6 +294,11 @@ After writing or updating architecture.md, dispatch a fresh agent using `superfl
 ## Reference Files
 
 - `../architecture-style-selection/references/architecture-characteristics-reference.md` — Canonical definitions for all architecture characteristics from the Ford/Richards Architecture Characteristics Worksheet. Use these definitions when walking the user through the questionnaire.
+- `references/proactive-analysis.md` — The "analyze first, propose options" meta-pattern
+
+## The Bottom Line
+
+Architecture characteristics defined before any design decision. No exceptions.
 
 ## Integration
 

@@ -1,6 +1,6 @@
 ---
 name: feature-design
-description: Use AFTER brainstorming design approval and BEFORE writing the design spec - creates Gherkin feature files as executable acceptance criteria that inform the spec
+description: Use AFTER brainstorming design approval and BEFORE writing the spec - creates Gherkin feature files as executable acceptance criteria that inform the spec
 ---
 
 # Feature Design
@@ -23,7 +23,7 @@ If you can't express it as Given-When-Then, you don't understand the requirement
 
 <HARD-GATE>
 Do NOT proceed to writing-plans until ALL behavioral requirements have corresponding
-Gherkin scenarios and the user has reviewed and approved the .feature files.
+Gherkin scenarios and the user has reviewed and confirmed the .feature files.
 This applies to EVERY feature regardless of perceived simplicity.
 </HARD-GATE>
 
@@ -42,7 +42,7 @@ This applies to EVERY feature regardless of perceived simplicity.
 
 ```dot
 digraph feature_design {
-    "Brainstorming complete\n(spec approved)" [shape=doublecircle];
+    "Brainstorming complete\n(design approved)" [shape=doublecircle];
     "Read spec, identify\nrequirements" [shape=box];
     "Draft .feature files\n(Gherkin scenarios)" [shape=box];
     "Advisory skill available?" [shape=diamond];
@@ -54,7 +54,7 @@ digraph feature_design {
     "User reviews\n.feature files" [shape=diamond];
     "Commit .feature files" [shape=box];
 
-    "Brainstorming complete\n(spec approved)" -> "Read spec, identify\nrequirements";
+    "Brainstorming complete\n(design approved)" -> "Read spec, identify\nrequirements";
     "Read spec, identify\nrequirements" -> "Draft .feature files\n(Gherkin scenarios)";
     "Check consistency with\nexisting .feature files" [shape=box];
     "Conflicts found?" [shape=diamond];
@@ -76,7 +76,7 @@ digraph feature_design {
     "Add missing scenarios" -> "Scenario self-review\n(coverage, clarity, boundaries)";
     "All requirements\ncovered?" -> "User reviews\n.feature files" [label="yes"];
     "User reviews\n.feature files" -> "Draft .feature files\n(Gherkin scenarios)" [label="changes requested"];
-    "User reviews\n.feature files" -> "Commit .feature files" [label="approved"];
+    "User reviews\n.feature files" -> "Commit .feature files" [label="confirmed"];
     "Commit .feature files" -> "Return to brainstorming\n(Write design doc)";
     "Return to brainstorming\n(Write design doc)" [shape=doublecircle];
 }
@@ -247,6 +247,41 @@ Follow the Review-Loop Pattern from agents/reviewer-protocol.md exactly:
 Do NOT skip re-dispatch. Do NOT ask the user whether to fix. Fix and re-review.
 </HARD-GATE>
 
+## Example: Good vs Bad Scenarios
+
+❌ **BAD — Implementation details in scenarios:**
+```gherkin
+Scenario: User logs in
+  Given the user sends POST /api/auth with {"email": "test@test.com", "password": "123"}
+  When the server returns 200 with a JWT token
+  Then the token is stored in localStorage
+```
+
+✅ **GOOD — Declarative, domain language:**
+```gherkin
+Scenario: Successful login
+  Given a registered user with valid credentials
+  When the user logs in
+  Then the user sees their dashboard
+```
+
+❌ **BAD — Multiple behaviors in one scenario:**
+```gherkin
+Scenario: User management
+  Given a new user registers
+  When they verify their email
+  And they update their profile
+  Then their profile is complete
+```
+
+✅ **GOOD — Single behavior per scenario:**
+```gherkin
+Scenario: Email verification
+  Given a newly registered user
+  When they click the verification link
+  Then their account is verified
+```
+
 ## Red Flags — STOP and Revisit
 
 - Scenarios that describe UI interactions step-by-step (too coupled to implementation)
@@ -289,12 +324,16 @@ Do NOT skip re-dispatch. Do NOT ask the user whether to fix. Fix and re-review.
 - [ ] If architecture.md exists: scenarios are consistent with architecture characteristics
 - [ ] Self-review performed (coverage, clarity, independence, boundaries, language)
 - [ ] Quality review by fresh agent performed
-- [ ] User has reviewed and approved feature files
+- [ ] User has reviewed and confirmed feature files
 - [ ] Feature files committed to git
+
+## The Bottom Line
+
+If you can't express it as Given-When-Then, you don't understand the requirement.
 
 ## Integration
 
 **Called after:** superflowers:brainstorming (step 7, after architecture-assessment)
-**Returns to:** superflowers:brainstorming (step 8, Write design doc — feature files inform the spec)
+**Returns to:** superflowers:brainstorming (step 8, Write spec — feature files inform the spec)
 **During implementation:** superflowers:bdd-testing verifies scenarios pass
 **Note:** This skill does NOT invoke writing-plans directly. Control returns to brainstorming which continues with spec writing, user review, then writing-plans.

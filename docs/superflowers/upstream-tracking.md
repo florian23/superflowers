@@ -28,6 +28,25 @@
 - receiving-code-review
 - writing-skills
 
+## Upstream Design Philosophy (from PR analysis, 2026-04-03)
+
+obra/superpowers has a 96% PR rejection rate. Understanding why informs how we design extensions and what to preserve during syncs.
+
+### What Upstream Values
+- **Skills are code, not prose** — skill changes require eval evidence (before/after), not just "looks better"
+- **Zero dependencies** — no third-party tools in core; extensions belong in standalone plugins
+- **Cross-platform compatibility** — every change must work across Claude Code, Cursor, Codex, OpenCode, Copilot CLI
+- **Carefully-tuned language** — "human partner" (not "user"), Red Flags tables, rationalization lists are deliberately worded and tested; don't rewrite without evidence
+- **Minimal fixes** — accepted PRs are 1-3 files fixing a real, reproducible bug
+- **Plugin architecture** — domain-specific features belong in plugins, not core
+
+### What This Means for Superflowers
+- Our 20 custom skills are correctly maintained as fork extensions (would never be accepted upstream)
+- During upstream-sync: **preserve our HARD-GATEs, Red Flags, rationalization tables** — upstream's equivalents are independently tuned
+- During upstream-sync: **adopt platform support** (new harnesses, cross-platform fixes) — that's where upstream excels
+- During upstream-sync: **skip skill rewrites** unless they fix a demonstrable bug — upstream tunes skills through extensive eval, not theory
+- If contributing upstream: target `dev` branch, one bug per PR, fill the PR template completely, provide test evidence
+
 ## Sync History
 
 - **2026-04-03:** Sync to v5.0.7 (12 upstream commits)

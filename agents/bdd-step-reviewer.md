@@ -34,12 +34,37 @@ When reviewing step definitions, you will:
    - The mapping should be obvious: Given "a payment exists" → paymentService.create()
    - If the delegation is unclear, the step needs refactoring
 
-5. **Immutability Check**:
+5. **Umlaut & Encoding Compatibility** (programmatic):
+   - **Regex vs Cucumber Expressions**: Search step definition files for `\w` or `\b` in regex patterns. Java/Kotlin `\w` does NOT match umlauts by default — a step like `@When("der (\\w+) wird erstellt")` will fail to match "Über" or "Ärzte". Fix: use Cucumber expressions (`{string}`, `{word}`) instead of regex, or add `(?U)` Unicode flag to regex.
+     ```bash
+     grep -rn '\\\\w\|\\\\b' src/test/ --include="*.kt" --include="*.java" --include="*.js" --include="*.ts"
+     ```
+   - **Import Mismatch**: If .feature files use `# language: de`, step definitions MUST import from the locale-specific package (e.g., `io.cucumber.java.de.Angenommen` not `io.cucumber.java.en.Given`). Mixed imports cause silent step-matching failures.
+     ```bash
+     grep -rn 'import io.cucumber.java.en' src/test/ --include="*.kt" --include="*.java"
+     ```
+     If found alongside German .feature files → **ISSUES_FOUND**: "Step definitions import English annotations but feature files use `# language: de`. Use `io.cucumber.java.de.*` imports."
+   - **Build Encoding**: Check that the build system declares UTF-8 source encoding:
+     - Maven: `pom.xml` should contain `<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>`
+     - Gradle: `build.gradle` should contain `compileTestJava.options.encoding = 'UTF-8'` or equivalent
+     - Node.js: not needed (UTF-8 is default)
+     If missing → **ISSUES_FOUND**: "No explicit UTF-8 source encoding configured. Umlaut handling is platform-dependent without this. Add [specific config] to [build file]."
+
+6. **Frontend Glue Code Completeness** (programmatic):
+   - Scan .feature files for UI interaction signals: "sieht", "klickt", "Seite", "Button", "Formular", "navigiert", "angezeigt", "sees", "clicks", "page", "button", "form", "navigates", "displayed"
+   - If UI scenarios exist, verify headless browser setup:
+     - Check for Playwright/Selenium/Puppeteer in dependencies (`package.json`, `pom.xml`, `requirements.txt`, `build.gradle`)
+     - Check for browser lifecycle in World/support files (Before/After hooks with `browser.launch` or `ChromeDriver`)
+     - If missing → **ISSUES_FOUND**: "Feature [file] has UI scenarios but no headless browser configured. Glue Code cannot bind to real browser interactions. See framework-detection.md Frontend / UI Testing section."
+   - Verify UI Glue Code delegates to real browser interactions (`page.click`, `page.fill`, `page.goto`, `driver.findElement`) — not DOM simulation (jsdom, cheerio, JSDOM)
+   - If UI steps use simulated DOM → **ISSUES_FOUND**: "Step [step] in [file] uses [jsdom/cheerio] instead of a real headless browser. UI Glue Code must exercise real browser rendering."
+
+7. **Immutability Check**:
    - Were existing step definitions modified?
    - Changes to existing steps → **CHANGE_REQUIRES_APPROVAL**
    - Preferred: add new step files, don't modify existing ones
 
-6. **Output Protocol**:
+8. **Output Protocol**:
    - **APPROVED**: Steps are thin glue, no hardcoded values, proper delegation, no unauthorized changes.
    - **ISSUES_FOUND**: List each issue with: affected step file/step, what's wrong (business logic? hardcoded? mock?), suggested fix.
    - **CHANGE_REQUIRES_APPROVAL**: Existing step definitions were modified — user must approve.

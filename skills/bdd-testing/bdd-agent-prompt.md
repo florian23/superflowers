@@ -20,6 +20,22 @@ Execute these steps in order:
 
 If the BDD framework is not yet installed, install it using the project's package manager. Add it as a dev dependency. Create minimal configuration if none exists.
 
+### 1.5. Detect Frontend Scenarios
+
+Scan .feature files for UI interaction signals (German + English):
+- DE: "sieht", "klickt", "Seite", "Button", "Formular", "navigiert", "angezeigt"
+- EN: "sees", "clicks", "page", "button", "form", "navigates", "displayed"
+
+If ANY feature file contains UI interactions:
+1. Install headless browser driver (Playwright recommended):
+   - JS/TS: `npm install --save-dev @playwright/test && npx playwright install chromium`
+   - Java/Kotlin: Add Selenium WebDriver dependency with `--headless=new` Chrome option
+   - Python: `pip install playwright && playwright install chromium`
+2. Create World/context with browser lifecycle (see `framework-detection.md` "Frontend / UI Testing" section)
+3. All UI Glue Code MUST delegate to the headless browser (`page.click`, `page.fill`, `page.goto`) — no simulated DOM, no jsdom
+
+If NO feature file contains UI interactions: skip, proceed as backend-only.
+
 ### 2. Generate Step Definition Stubs
 
 Read each .feature file. For every Given/When/Then step that doesn't have an existing step definition, generate a stub.
@@ -50,7 +66,15 @@ Before running tests, execute a dry-run to verify ALL steps have definitions:
 npx cucumber-js --dry-run   # or framework equivalent
 ```
 
-Parse the output. If ANY step is "undefined" or "pending", go back to step 3 and implement the missing step definitions. Do NOT proceed to the full test run with undefined steps.
+Parse the dry-run output LINE BY LINE. For each undefined/pending step:
+1. Log the exact step text and which .feature file it comes from
+2. Classify: does the step need UI Glue Code (browser driver) or Backend Glue Code (API/service calls)?
+3. Write the missing Glue Code with the correct driver
+
+Do NOT proceed with partial coverage. EVERY step must have a Glue Code binding before the full test run. Count defined vs total steps and report:
+"[X/Y] steps have Glue Code. [Z] still undefined: [list exact step texts]"
+
+Only proceed to step 5 when the count shows 0 undefined steps.
 
 ### 5. Run All Scenarios
 

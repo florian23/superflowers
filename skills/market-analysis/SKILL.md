@@ -5,7 +5,7 @@ description: Use when entering a new problem space and competitors are unknown, 
 
 # Market Analysis
 
-Understand the competitive landscape before making design decisions. Without market context, you cannot distinguish Core Domains (where you differentiate) from Generic Domains (where you buy/copy). This skill complements `superflowers:domain-understanding` — one looks inward (domain), the other outward (market).
+Understand the competitive landscape before making design decisions. Without market context, you cannot distinguish Core Subdomains (where you differentiate) from Generic Subdomains (where you buy/copy). This skill complements `superflowers:domain-understanding` — one looks inward (domain), the other outward (market).
 
 **Semantic anchors:** Competitive Analysis, Porter's Five Forces, Blue Ocean Strategy (Kim/Mauborgne), SWOT Analysis, TAM/SAM/SOM Market Sizing, Competitive Feature Matrix, Core/Supporting/Generic Subdomain Classification (DDD).
 
@@ -143,14 +143,14 @@ Format the classification as a table with Subdomain, Typ, and Begründung column
 
 ### 5b: Architecture Implications (→ architecture-assessment)
 
-For each differentiator and table-stakes feature, identify which Quality Attributes the market forces:
+For each differentiator and table-stakes feature, identify which quality requirements the market forces:
 
 - If we differentiate on **integration** → Interoperability is a driving characteristic
 - If we differentiate on **UX** → Usability is a driving characteristic
 - If the market demands **compliance** (e.g., GDPR, certifications) → Security/Compliance are table-stakes characteristics
 - If competitors are slow/unreliable → Performance/Availability become differentiators
 
-Format as a table with Quality Attribute, Markt-Treiber, and Relevanz columns — `architecture-assessment` reads this during the questionnaire phase.
+Format as a table with Qualitätsanforderung, Markt-Treiber, and Relevanz columns — `architecture-assessment` reads this during the questionnaire phase.
 
 ## Step 6: Present to User
 
@@ -212,9 +212,9 @@ Priorität: "Table Stakes" = alle Wettbewerber haben es, Pflicht. "Differenzieru
 
 > Consumed by: `superflowers:architecture-assessment` (Questionnaire)
 
-Welche Quality Attributes erzwingt der Markt?
+Welche quality requirements erzwingt der Markt?
 
-| Quality Attribute | Markt-Treiber | Relevanz |
+| Qualitätsanforderung | Markt-Treiber | Relevanz |
 |---|---|---|
 | [z.B. Interoperability] | [Wettbewerber X hat schlechte Integration → unsere Chance] | Hoch — Differenzierung |
 | [z.B. Security] | [Branchenstandard, alle haben es] | Hoch — Table Stakes |
@@ -234,8 +234,16 @@ Welche Quality Attributes erzwingt der Markt?
 
 - **Feature-Vergleich** hat eine Priorität-Spalte → `feature-design` weiß direkt was Table Stakes vs. Differenzierung ist
 - **Subdomain-Klassifikation** als eigene Tabelle → `bounded-context-design` kann sie 1:1 übernehmen
-- **Architektur-Implikationen** als eigene Tabelle → `architecture-assessment` weiß welche Quality Attributes der Markt erzwingt
+- **Architektur-Implikationen** als eigene Tabelle → `architecture-assessment` weiß welche quality requirements der Markt erzwingt
 - Jede Downstream-Sektion hat einen `> Consumed by:` Marker für Traceability
+
+## Red Flags — STOP
+
+- Analysis based on assumptions without researching actual competitors
+- All competitors listed as "direct" (no indirect or alternative solutions considered)
+- Differentiation strategy matches what every competitor already does
+- Subdomain classification without market evidence ("this feels like Core")
+- Skipping competitive UX review ("we know our competitors")
 
 ## Rationalization Prevention
 
@@ -246,3 +254,16 @@ Welche Quality Attributes erzwingt der Markt?
 | "This is a technical project, no market" | If someone will use it, there's a market. Even internal tools compete with alternatives |
 | "Market research takes too long" | 15-30 minutes of web search + user input. Not a multi-week engagement |
 | "We can do this later" | Subdomain classification without market context leads to wrong Core/Generic decisions |
+
+## Verification Checklist
+
+- [ ] At least 3 competitors analyzed (direct or indirect)
+- [ ] Feature comparison matrix with clear differentiation markers
+- [ ] Subdomain classification complete (Core/Supporting/Generic with rationale)
+- [ ] Quality requirements derived from market forces
+- [ ] User has confirmed the analysis and differentiation strategy
+- [ ] Output written to market-analysis.md
+
+## The Bottom Line
+
+Know your competition before you design your product. Core Subdomains are where you differentiate — everything else is table stakes.

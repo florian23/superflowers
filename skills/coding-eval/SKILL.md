@@ -2,6 +2,7 @@
 name: coding-eval
 description: Use when you want to measure whether superflowers skills improve implementation quality on FeatureBench tasks
 ---
+**Semantic anchors:** A/B Testing for skill evaluation, RED/GREEN comparison methodology, FeatureBench for standardized task evaluation.
 
 # Coding Eval
 
@@ -146,3 +147,32 @@ tasks/
 - `scripts/run_tests.py` — Docker test execution
 - `scripts/generate_report.py` — HTML report generation
 - `prompts/*.md` — Subagent prompt templates
+
+## Red Flags — STOP
+
+- Comparing RED vs GREEN with different prompts or different tasks
+- GREEN agent not loading the skill being evaluated
+- Declaring a skill "works" based on a single task
+- Ignoring RED agent results ("it failed without the skill, as expected")
+- Modifying the skill between eval runs without restarting
+
+## Rationalization Prevention
+
+| Excuse | Reality |
+|--------|---------|
+| "One task is enough to validate" | One data point is an anecdote, not evidence. Run multiple tasks. |
+| "The RED agent obviously fails" | If RED succeeds, your skill isn't adding value. That's a finding, not a bug. |
+| "The skill clearly helps, we don't need evals" | Clearly to whom? Measure it. Intuition is not evidence. |
+| "Eval setup takes too long" | A skill that doesn't improve outcomes wastes more time than the eval. |
+
+## Verification Checklist
+
+- [ ] RED agent (without skill) and GREEN agent (with skill) ran the same tasks
+- [ ] Both agents used identical prompts and constraints
+- [ ] Results compared quantitatively (pass/fail, quality metrics)
+- [ ] At least 3 tasks evaluated
+- [ ] Results documented with specific task names and outcomes
+
+## The Bottom Line
+
+Measure skill impact with data, not intuition. RED vs GREEN — let the numbers decide.

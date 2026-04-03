@@ -2,6 +2,7 @@
 name: compliance-report
 description: Use when you need a compliance and quality tracking report from git history, or when analyzing workflow compliance across feature cycles
 ---
+**Semantic anchors:** Git-based audit trail, Microkernel plugin architecture for metrics, compliance verification through commit history analysis.
 
 # Compliance Report
 
@@ -217,3 +218,32 @@ See existing metrics in `metrics/` for examples.
 - `architecture.md` (project root) — Architecture characteristics and fitness functions
 - `quality-scenarios.md` (project root) — Quality scenarios
 - `docs/superflowers/specs/2026-03-30-compliance-report-design.md` — Design specification
+
+## Red Flags — STOP
+
+- Report generated without reading git history ("based on project structure alone")
+- Compliance scores without evidence (no commit references)
+- Metrics plugin results not cross-referenced with actual files
+- Report claims 100% compliance without verification commands run
+- Report generated from file structure without running any verification commands
+
+## Rationalization Prevention
+
+| Excuse | Reality |
+|--------|---------|
+| "The report is just informational" | Compliance reports drive decisions. Wrong data drives wrong decisions. |
+| "Git history is too large to analyze" | Use date ranges and path filters. Partial analysis beats no analysis. |
+| "We trust the team followed the process" | Trust but verify. That's what compliance means. |
+| "The metrics plugins handle compliance automatically" | Automation doesn't replace interpretation. Plugin output needs context. |
+
+## Verification Checklist
+
+- [ ] Git history analyzed for the specified date range
+- [ ] Each compliance metric has commit-level evidence
+- [ ] Metrics plugin results cross-referenced with actual files
+- [ ] Report includes both passing and failing compliance items
+- [ ] Interactive HTML report generated (if configured)
+
+## The Bottom Line
+
+Git history is the audit trail. If it's not in a commit, it didn't happen.

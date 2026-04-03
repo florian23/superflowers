@@ -216,6 +216,14 @@ Trigger: [Nach Style-Selection / Manuell / Nach Feature X]
 - [weitere gelesene Artefakte]
 ```
 
+## Red Flags — STOP
+
+- Risk assessment without reading architecture.md or context-map.md
+- All components rated Green ("no risks found")
+- Risk ratings assigned without team consensus (single-person assessment)
+- Mitigation strategies missing for Red risks
+- Skipping risk-storming because "the architecture is simple"
+
 ## Rationalization Prevention
 
 | Excuse | Reality |
@@ -225,3 +233,16 @@ Trigger: [Nach Style-Selection / Manuell / Nach Feature X]
 | "This takes too long" | 5 parallel agents finish in minutes. The mitigation discussion is the valuable part. |
 | "We'll do this later when we have more code" | Risk Storming works on architecture diagrams, not just code. Earlier = cheaper to mitigate. |
 | "Only red risks matter" | Yellow risks compound. Track them — they may turn red. |
+
+## Verification Checklist
+
+- [ ] All bounded contexts / major components assessed for risk
+- [ ] Risk ratings assigned (Red/Yellow/Green) with consensus
+- [ ] Mitigation strategies proposed for Red risks
+- [ ] Risk map rendered as table or DOT diagram
+- [ ] User has confirmed risk assessment
+- [ ] Mitigation strategies for Red risks documented with owner and timeline
+
+## The Bottom Line
+
+Consensus on risk areas prevents surprise failures. If the team hasn't agreed on what's Red, nobody owns the mitigation.

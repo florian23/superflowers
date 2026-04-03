@@ -7,6 +7,8 @@ description: Use when setting up a new project's constraint baseline, or when th
 
 Select and maintain which organizational constraints apply to this project. Reads the project context (code, tech stack, architecture, data handling) and matches it against the constraint repository to recommend relevant constraints.
 
+**Semantic anchors:** Organizational constraint repository, constraint catalog management, constraint lifecycle management.
+
 **Announce at start:** "I'm reviewing project constraints against the organizational constraint repository."
 
 ## When to Use
@@ -236,6 +238,10 @@ Commit the files.
 - Classifying all mandatory constraints as Relevant regardless of project match
 - Skipping the Uncertain category — if you have 0 uncertain constraints, you're over-confident
 - Not presenting a project profile — constraint matching is only as good as the context analysis
+
+## The Bottom Line
+
+Constraints are organizational reality. Ignoring them doesn't make them go away.
 
 ## Integration
 

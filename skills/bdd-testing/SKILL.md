@@ -5,7 +5,7 @@ description: Use when .feature files (Gherkin) exist in the project - during imp
 
 # BDD Testing
 
-Convert .feature files into executable step definitions and test code. Every Gherkin scenario must have a passing automated test before work is complete.
+Convert .feature files into executable step definitions and supporting code. Every Gherkin scenario must have a passing automated test before work is complete.
 
 **Semantic anchors:** This skill applies BDD (Behavior-Driven Development) Given-When-Then execution, Gherkin scenario parsing and step matching, Clean Architecture outside-in testing approach, Definition of Done with scenario-based quality gates, and Five Whys root cause analysis for failing scenarios.
 
@@ -260,6 +260,27 @@ Step definitions for changed scenarios MUST be updated in the same commit as the
 This protocol applies to ALL phases: step definition creation, implementation, verification.
 Feature files are NEVER silently modified — every change requires explicit user approval with documented reasoning.
 
+## Example: Good vs Bad Step Definitions
+
+❌ **BAD — Business logic in Step Definition:**
+```javascript
+When('the order total is calculated', function() {
+  let total = 0;
+  for (const item of this.cart.items) {
+    total += item.price * item.quantity;
+    if (item.discount) total -= item.discount;
+  }
+  this.orderTotal = total;
+});
+```
+
+✅ **GOOD — Thin glue, delegates to application code:**
+```javascript
+When('the order total is calculated', function() {
+  this.orderTotal = this.orderService.calculateTotal(this.cart);
+});
+```
+
 ## Red Flags — STOP
 
 - Step definitions containing business logic (too coupled)
@@ -306,6 +327,10 @@ Every item below MUST be verified by running a command and checking its output.
 - [ ] Regression check: all previously passing scenarios still pass
 - [ ] Step definition quality: no hardcoded values, no mock-like behavior, steps delegate to real code
 - [ ] Full test run output pasted as evidence in the verification report
+
+## The Bottom Line
+
+Every Gherkin step has a Step Definition. Every scenario passes. Partial is failure.
 
 ## Integration
 

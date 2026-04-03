@@ -86,7 +86,7 @@ After key screens are designed, ask:
 
 > "Wird das System hauptsächlich auf Desktop, Tablet oder Handy genutzt? Sollen wir eine mobile Variante designen?"
 
-## After Wireframing: Independent Review
+## After Wireframing: Usability Validation
 
 After all screens are designed, dispatch the `superflowers:ux-reviewer` agent for independent usability evaluation.
 
@@ -121,3 +121,34 @@ After ux-reviewer returns APPROVED, append:
 | Screen | Default | Loading | Error | Empty | Success |
 |---|---|---|---|---|---|
 ```
+
+## Red Flags — STOP
+
+- Wireframes without referencing task flows (designing screens without knowing the flow)
+- Only one layout option presented ("here's the design" instead of "here are 2-3 options")
+- Missing states: no loading, no error, no empty state (only success state designed)
+- Pixel-perfect details in low-fi phase (colors, fonts, shadows before structure is confirmed)
+- Skipping usability validation ("the wireframes look good to me")
+
+## Rationalization Prevention
+
+| Excuse | Reality |
+|--------|---------|
+| "One layout is clearly the right choice" | Present options anyway. The user sees tradeoffs you don't. |
+| "Empty states don't matter" | Empty state is the first thing new users see. It IS the onboarding. |
+| "We'll handle errors in development" | Error states need design. A raw error message is not a design decision. |
+| "Low-fi doesn't need all states" | Low-fi is where you discover missing states. That's the point. |
+| "The review agent will catch issues" | The review agent validates against heuristics. It can't fix a missing layout alternative. |
+
+## Verification Checklist
+
+- [ ] Each screen has 2-3 layout options with described tradeoffs
+- [ ] User has chosen layout direction before state design
+- [ ] All states designed: loading, error, empty, success (minimum)
+- [ ] Wireframes reference task flows (not designed in isolation)
+- [ ] ux-reviewer agent dispatched and returned APPROVED
+- [ ] Output written to ux-design.md in correct format
+
+## The Bottom Line
+
+Show options, not one answer. 2-3 layout alternatives with tradeoffs — then the user decides.

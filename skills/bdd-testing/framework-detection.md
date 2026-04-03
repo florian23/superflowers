@@ -308,6 +308,122 @@ tests/
 
 ---
 
+## Frontend / UI Testing
+
+When .feature files describe UI interactions (clicks, forms, navigation, visibility assertions), the Glue Code must delegate to a real headless browser — not simulated DOM or jsdom.
+
+### Detecting UI Scenarios
+
+Scan .feature files for these signals (German and English):
+
+| Signal | Language | Meaning |
+|---|---|---|
+| sieht, klickt, Seite, Button, Formular, navigiert, angezeigt | DE | UI interaction |
+| sees, clicks, page, button, form, navigates, displayed | EN | UI interaction |
+| API, Request, Response, Endpoint, Service | Both | Backend (no browser needed) |
+
+If ANY feature file contains UI signals → headless browser setup is required.
+
+### Headless Browser Setup by Framework
+
+**JavaScript / TypeScript + @cucumber/cucumber (Playwright):**
+
+Install:
+```bash
+npm install --save-dev @playwright/test
+npx playwright install chromium
+```
+
+World with browser lifecycle (`features/support/world.js`):
+```javascript
+const { chromium } = require('playwright');
+const { setWorldConstructor, Before, After } = require('@cucumber/cucumber');
+
+class BrowserWorld {
+  async init() {
+    this.browser = await chromium.launch({ headless: true });
+    this.context = await this.browser.newContext();
+    this.page = await this.context.newPage();
+  }
+  async cleanup() {
+    await this.context?.close();
+    await this.browser?.close();
+  }
+}
+
+setWorldConstructor(BrowserWorld);
+Before(async function () { await this.init(); });
+After(async function () { await this.cleanup(); });
+```
+
+UI Glue Code pattern:
+```javascript
+const { When, Then } = require('@cucumber/cucumber');
+
+When('der Benutzer auf {string} klickt', async function (buttonText) {
+  await this.page.click(`text=${buttonText}`);
+});
+
+Then('sieht der Benutzer {string}', async function (expectedText) {
+  await expect(this.page.locator(`text=${expectedText}`)).toBeVisible();
+});
+```
+
+**Java / Kotlin + cucumber-jvm (Selenium headless Chrome):**
+
+Maven dependency:
+```xml
+<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>4.x.x</version>
+    <scope>test</scope>
+</dependency>
+```
+
+Hooks with headless browser:
+```kotlin
+@Before
+fun setUp() {
+    val options = ChromeOptions().addArguments("--headless=new", "--no-sandbox")
+    driver = ChromeDriver(options)
+}
+
+@After
+fun tearDown() { driver.quit() }
+```
+
+**Python + behave (Playwright):**
+
+Install:
+```bash
+pip install playwright
+playwright install chromium
+```
+
+Environment setup (`features/environment.py`):
+```python
+from playwright.sync_api import sync_playwright
+
+def before_scenario(context, scenario):
+    context.playwright = sync_playwright().start()
+    context.browser = context.playwright.chromium.launch(headless=True)
+    context.page = context.browser.new_page()
+
+def after_scenario(context, scenario):
+    context.browser.close()
+    context.playwright.stop()
+```
+
+### Mixed Scenarios (UI + Backend)
+
+If a project has BOTH UI and backend .feature files:
+- Tag UI features with `@ui` or `@browser`
+- Only initialize browser for tagged scenarios (conditional hooks)
+- Backend Glue Code does NOT need a browser — use HTTP clients or direct service calls
+
+---
+
 ## Fallback
 
 If the primary language cannot be determined from project files:

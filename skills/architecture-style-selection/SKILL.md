@@ -259,6 +259,10 @@ Before finalizing the architecture style selection:
 - [ ] Architecture style fitness functions copied from reference into architecture.md
 - [ ] Cost is justified relative to the benefit
 
+## The Bottom Line
+
+The style serves the driving characteristics — not the other way around.
+
 ## Integration
 
 - **Called after:** `superflowers:architecture-assessment` (characteristics must exist)

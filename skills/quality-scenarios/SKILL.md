@@ -8,13 +8,13 @@ description: Use when architecture characteristics need concrete test scenarios,
 > "If you can't measure it, you can't manage it." — ATAM principle
 
 Transform abstract architecture characteristics into concrete, testable quality scenarios.
-Each scenario gets the right test type — not everything needs to be a fitness function.
+Each scenario gets the right verification type — not everything needs to be a fitness function.
 
 **Semantic anchors:** ATAM (Architecture Tradeoff Analysis Method) for quality attribute scenarios,
 arc42 Section 10 (Quality Requirements) for quality tree structure,
 ISO 25010 for quality model categories.
 
-**Announce at start:** "I'll create quality scenarios from the architecture characteristics — concrete test specifications with the right test type for each one."
+**Announce at start:** "I'll create quality scenarios from the architecture characteristics — concrete test specifications with the right verification type for each one."
 
 ## When to Use
 
@@ -47,7 +47,7 @@ digraph quality_scenarios {
   run_assessment [label="Run\narchitecture-assessment"];
   read_goals [label="1. Read quality goals\nfrom architecture.md"];
   generate [label="2. Generate scenarios\nper goal"];
-  classify [label="3. Classify test type\nper scenario"];
+  classify [label="3. Classify verification type\nper scenario"];
   tradeoffs [label="4. Identify tradeoffs\nand sensitivity points"];
   present [label="5. Present to user\nfor review"];
   user_ok [shape=diamond, label="User\napproves?"];
@@ -82,7 +82,7 @@ For each characteristic, note:
 - The concrete goal (this becomes the response measure)
 - Whether it already has a fitness function
 
-Also read the most recent feature constraints file from `docs/superflowers/constraints/` if it exists. Constraint verification criteria that are testable become additional quality scenarios — categorized by the appropriate test type. For example, "All databases use TDE" → fitness-function, "No sensitive data in logs" → integration-test.
+Also read the most recent feature constraints file from `docs/superflowers/constraints/` if it exists. Constraint verification criteria that are testable become additional quality scenarios — categorized by the appropriate verification type. For example, "All databases use TDE" → fitness-function, "No sensitive data in logs" → integration-test.
 
 ## Step 2: Generate Scenarios
 
@@ -99,7 +99,7 @@ For each quality goal, create one or more ATAM scenarios. A scenario makes the a
 - **Artifact:** [What part of the system — API endpoint, database, message queue, UI component]
 - **Response:** [What the system should do]
 - **Response Measure:** [Concrete metric from the quality goal]
-- **Test Type:** [See classification guide below]
+- **Verification Type:** [See classification guide below]
 ```
 
 ### How many scenarios per goal?
@@ -110,11 +110,11 @@ For each quality goal, create one or more ATAM scenarios. A scenario makes the a
 
 Don't generate scenarios for characteristics that are already fully covered by architecture style fitness functions. Those structural invariants are enforced separately.
 
-## Step 3: Classify Test Type
+## Step 3: Classify Verification Type
 
-Each scenario gets exactly one test type. The type is determined by what's being tested, not by what sounds impressive. Here's the decision guide:
+Each scenario gets exactly one verification type. The type is determined by what's being tested, not by what sounds impressive. Here's the decision guide:
 
-| Test Type | When to use | Examples |
+| Verification Type | When to use | Examples |
 |---|---|---|
 | **unit-test** | Tests a single component's quality behavior in isolation. No external dependencies. Fast, runs on every commit. | Input validation, error handling, algorithm correctness, data transformation |
 | **integration-test** | Tests quality across component boundaries. Needs real dependencies (DB, queue, API). | Cross-service data consistency, API contract compliance, auth flow, transaction integrity |
@@ -144,17 +144,17 @@ When a tradeoff is resolved (the user decides which side to favor), invoke `supe
 ## Step 5: Present to User
 
 Show the user:
-1. The scenario table (all scenarios with test types)
+1. The scenario table (all scenarios with verification types)
 2. Any tradeoffs identified
-3. Ask for review: "Do these scenarios cover your quality goals? Any missing? Any test types you'd change?"
+3. Ask for review: "Do these scenarios cover your quality goals? Any missing? Any verification types you'd change?"
 
-**Uncertainty handling:** If a test type classification is ambiguous (e.g., could be integration test or fitness function), follow `references/uncertainty-handling.md`: present the options with rationale and let the user choose. Do NOT default to one and ask "Passt das?".
+**Uncertainty handling:** If a verification type classification is ambiguous (e.g., could be integration test or fitness function), follow `references/uncertainty-handling.md`: present the options with rationale and let the user choose. Do NOT default to one and ask "Passt das?".
 
 Wait for user confirmation before writing the file.
 
 ## Step 5b: Independent Verification
 
-After user confirmation, dispatch the `superflowers:quality-scenario-reviewer` agent. The reviewer independently verifies coverage, test types, duplicates, conflicts, and immutability.
+After user confirmation, dispatch the `superflowers:quality-scenario-reviewer` agent. The reviewer independently verifies coverage, verification types, duplicates, conflicts, and immutability.
 
 ```
 Dispatch quality-scenario-reviewer
@@ -187,15 +187,15 @@ Generated from architecture.md quality goals using ATAM.
 
 ## Scenario Summary
 
-| ID | Characteristic | Scenario | Test Type | Priority |
+| ID | Characteristic | Scenario | Verification Type | Priority |
 |----|---------------|----------|-----------|----------|
 | QS-001 | Performance | API response under peak load | load-test | Critical |
 | QS-002 | Security | Unauthorized access attempt | integration-test | Critical |
 | ... | ... | ... | ... | ... |
 
-## Test Type Distribution
+## Verification Type Distribution
 
-| Test Type | Count | Scenarios |
+| Verification Type | Count | Scenarios |
 |-----------|-------|-----------|
 | unit-test | N | QS-xxx, QS-xxx |
 | integration-test | N | QS-xxx, QS-xxx |
@@ -221,10 +221,26 @@ Generated from architecture.md quality goals using ATAM.
 - **Current setting:** [value]
 ```
 
+## Example: Good vs Bad Verification Type Assignment
+
+❌ **BAD — Everything is a unit-test:**
+| Scenario | Verification Type |
+|---|---|
+| API responds within 200ms | unit-test |
+| System recovers from database failure | unit-test |
+| No circular dependencies between modules | unit-test |
+
+✅ **GOOD — Matched to actual verification method:**
+| Scenario | Verification Type |
+|---|---|
+| API responds within 200ms | load-test |
+| System recovers from database failure | chaos-test |
+| No circular dependencies between modules | fitness-function |
+
 ## Red Flags — STOP
 
 - **Vague response measures:** "Good performance" is not a scenario. "p95 < 200ms under 1000 concurrent users" is.
-- **All scenarios are fitness functions:** If every scenario is a fitness function, you're missing integration tests, load tests, and manual reviews. Real systems need diverse test types.
+- **All scenarios are fitness functions:** If every scenario is a fitness function, you're missing integration tests, load tests, and manual reviews. Real systems need diverse verification types.
 - **All scenarios are load tests:** Not every quality attribute is about performance. Security, maintainability, and testability need scenarios too.
 - **Duplicating style fitness functions:** architecture-style-selection already generated structural checks. Don't create scenarios for "no circular dependencies" or "no shared database" — those are covered.
 - **Ignoring tradeoffs:** If you have 10+ scenarios and zero tradeoffs, you haven't looked hard enough. Quality attributes almost always conflict.
@@ -234,7 +250,7 @@ Generated from architecture.md quality goals using ATAM.
 
 | Excuse | Reality |
 |--------|---------|
-| "We'll figure out the test type later" | The test type determines implementation effort. A load test is 10x more work than a unit test. Classify now. |
+| "We'll figure out the verification type later" | The verification type determines implementation effort. A load test is 10x more work than a unit test. Classify now. |
 | "Everything should be a fitness function" | Fitness functions verify structure and thresholds. They can't test how the system behaves under load or across service boundaries. Use the right tool. |
 | "We don't need scenarios for nice-to-have characteristics" | Nice-to-have still means "we want this." One scenario keeps it visible. Zero scenarios means it's forgotten. |
 | "The BDD scenarios cover quality" | BDD scenarios test functional behavior. Quality scenarios test non-functional attributes. Both are needed. |
@@ -251,6 +267,10 @@ Generated from architecture.md quality goals using ATAM.
 - [ ] User has reviewed and approved the scenarios
 - [ ] quality-scenarios.md written to project root
 
+## The Bottom Line
+
+Every architecture characteristic needs a concrete, measurable quality scenario. Abstract goals produce abstract architecture.
+
 ## Integration
 
 - **Called after:** `superflowers:architecture-style-selection` (needs style context and style FFs)
@@ -261,4 +281,4 @@ Generated from architecture.md quality goals using ATAM.
 
 ## Reference Files
 
-- `references/test-type-guide.md` — Detailed decision tree for classifying scenarios into test types, with examples per characteristic and language-specific tooling recommendations
+- `references/test-type-guide.md` — Detailed decision tree for classifying scenarios into verification types, with examples per characteristic and language-specific tooling recommendations

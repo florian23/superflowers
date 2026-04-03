@@ -55,7 +55,7 @@ Based on Eric Evans "Domain-Driven Design" and Vaughn Vernon "Implementing Domai
 
 **Relationship:** Downstream protects itself from upstream's model.
 
-**When to use:** The upstream model is different enough from your domain that using it directly would corrupt your domain model. Common when integrating with legacy systems, external APIs, or poorly-designed upstream services.
+**When to use:** The upstream model is different enough from your domain that using it directly would corrupt your domain model. Common when integrating with legacy systems, external APIs, or poorly-designed upstream contexts.
 
 **Example:** Legacy ERP system uses "Material Number" where your domain uses "Product SKU". The ACL translates between the two models at the boundary.
 
@@ -69,7 +69,7 @@ Based on Eric Evans "Domain-Driven Design" and Vaughn Vernon "Implementing Domai
 
 **When to use:** Multiple downstream contexts need to consume from the same upstream. The upstream defines a stable, versioned API.
 
-**Example:** User Profile service exposes a REST API consumed by Checkout, Fulfillment, and Analytics.
+**Example:** User Profile bounded context exposes a REST API consumed by Checkout, Fulfillment, and Analytics.
 
 **Implementation:** Versioned API (REST, gRPC, GraphQL). API documentation. Backward compatibility guarantees. Often combined with Published Language.
 

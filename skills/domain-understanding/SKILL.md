@@ -191,3 +191,33 @@ Save the confirmed profile to `domain-profile.md` in the project root. Commit it
 **Output:** `domain-profile.md` in project root
 **Feeds into:** Brainstorming questions use domain language and concepts. Bounded-context-design (later) builds on this understanding.
 **Read by:** bounded-context-design uses the domain profile as input for subdomain classification. All downstream skills can reference domain-profile.md for ubiquitous language.
+
+## Red Flags — STOP
+
+- Domain profile written without reading any project files or documentation
+- All terms in the glossary are technical (no business terms)
+- Business rules section is empty ("no special rules")
+- Domain profile contradicts existing code or documentation
+- Skipping domain expert interview questions ("we understand the domain")
+
+## Rationalization Prevention
+
+| Excuse | Reality |
+|--------|---------|
+| "The spec already explains the domain" | The spec explains features. The domain profile explains the business — rules, constraints, language. |
+| "This domain is well-known (e-commerce, CRM, etc.)" | Every business has domain-specific rules. "Well-known" domains have the most hidden assumptions. |
+| "We can learn the domain during implementation" | Implementation decisions without domain understanding produce technical solutions to business problems. |
+| "The domain profile is just documentation" | The domain profile feeds bounded-context-design and feature-design. Wrong domain model → wrong boundaries → wrong architecture. |
+
+## Verification Checklist
+
+- [ ] Domain profile contains: business context, key entities, business rules, domain events, glossary
+- [ ] Glossary uses business terms (not technical jargon)
+- [ ] Business rules are concrete and testable (not vague "handle errors")
+- [ ] Domain profile references project files or documentation as evidence
+- [ ] User has confirmed the domain profile
+- [ ] Output written to domain-profile.md
+
+## The Bottom Line
+
+Understand the domain before designing the solution. If the glossary is empty, the model is invented.

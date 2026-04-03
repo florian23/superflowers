@@ -46,8 +46,8 @@ If specification skills were used before this plan, the plan MUST reference thei
 - Do NOT create test tasks for scenarios that overlap with style fitness functions (already covered)
 
 **feature-design** (.feature files exist):
-- The plan MUST include explicit **Step Definition Tasks** that wire .feature scenarios to the implementation. These are NOT optional — without them, BDD tests cannot run.
-- Step definition tasks come AFTER the implementation task they test (the implementation must exist for steps to call it)
+- The plan MUST include explicit **Step Definition Tasks** that bind .feature scenarios to the implementation via Step Definitions (Glue Code). These are NOT optional — without them, BDD tests cannot run.
+- Step definition tasks come BEFORE the implementation task — BDD follows outside-in TDD. Write Step Definitions first (the Glue Code that binds Gherkin to application code) (step definitions that call not-yet-existing code), verify they FAIL, then implement until they pass.
 - Each step definition task references the specific .feature file and scenarios it covers
 - After each step definition task: run `npx cucumber-js --dry-run` (or equivalent) to verify zero undefined steps
 - After ALL step definition tasks: run the full BDD suite to verify all scenarios pass
@@ -158,33 +158,93 @@ git commit -m "feat: add specific feature"
 ```
 ````
 
-### BDD Step Definition Task (when .feature files exist)
+### Fitness Function Tasks (when architecture.md exists)
 
-For EACH .feature file, the plan MUST include a step definition task. Place it AFTER the implementation task it tests.
+**Task ordering:** Atomic fitness functions (structure, dependencies, complexity, module boundaries) are the FIRST tasks in the plan — before any implementation. They define architectural constraints as executable tests (TDD-first).
+
+**Holistic fitness functions** (performance, load, chaos — requiring running services) come AFTER implementation tasks. They cannot run without a working system.
 
 ````markdown
-### Task N: Wire BDD step definitions for [feature-name].feature
+### Task 1: Atomic Fitness Functions
+
+> These run FIRST — they define structural constraints before implementation begins.
+
+**Files:**
+- Create: `tests/fitness/[characteristic]-ff.test.ts` (or language equivalent)
+
+- [ ] **Step 1: Implement fitness function for [characteristic]**
+
+```[language]
+// Fitness function: [characteristic] — [concrete goal from architecture.md]
+[concrete test code]
+```
+
+- [ ] **Step 2: Run fitness function — verify it FAILS**
+
+Run: `[test command]`
+Expected: FAIL (structure doesn't exist yet — this is TDD)
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add tests/fitness/
+git commit -m "test: add fitness function for [characteristic] (red)"
+```
+````
+
+### Holistic Fitness Function Tasks (after implementation)
+
+Place these AFTER the implementation tasks that create the running system:
+
+````markdown
+### Task N: Holistic Fitness Functions (Performance/Load)
+
+**Files:**
+- Create: `tests/fitness/[characteristic]-holistic-ff.test.ts`
+
+- [ ] **Step 1: Implement holistic fitness function**
+
+```[language]
+// Fitness function: [characteristic] — [concrete goal from architecture.md]
+[concrete test code requiring running services]
+```
+
+- [ ] **Step 2: Run — verify it PASSES**
+
+Run: `[test command]`
+Expected: PASS (system is implemented)
+
+- [ ] **Step 3: Commit**
+````
+
+### BDD-First Task (when .feature files exist)
+
+BDD follows outside-in TDD: write Step Definitions FIRST (they fail), then implement until they pass. For EACH .feature file relevant to the current implementation area, the plan MUST include a BDD-first task BEFORE the corresponding implementation task.
+
+````markdown
+### Task N: BDD-First for [feature-name].feature
 
 **Feature file:** `features/[feature-name].feature`
-**Scenarios covered:** [list scenario names]
+**Scenarios for this task:** [list relevant scenario names]
 
 **Files:**
 - Create: `features/step_definitions/[feature-name]-steps.js`
 
-- [ ] **Step 1: Generate step definition stubs**
+- [ ] **Step 1: Write Step Definition stubs**
 
-Read `features/[feature-name].feature` and create stub step definitions for every Given/When/Then step that doesn't already have a definition.
+Read `features/[feature-name].feature` and create step definitions that call the application code interface (which doesn't exist yet). Steps are THIN glue — they define the API contract the implementation must satisfy.
 
-- [ ] **Step 2: Implement step definitions**
+- [ ] **Step 2: Run scenarios — verify they FAIL**
 
-Wire each stub to the actual application code. Steps are THIN glue — they call application code, they do NOT contain business logic.
+Run: `npx cucumber-js features/[feature-name].feature`
+Expected: FAIL (application code not implemented yet)
+This confirms the steps are bound to real code and calling it, not faking it.
 
-- [ ] **Step 3: Dry-run validation**
+- [ ] **Step 3: Implement with unit TDD**
 
-Run: `npx cucumber-js --dry-run features/[feature-name].feature`
-Expected: ZERO undefined or pending steps
+Use superflowers:test-driven-development to implement the application code that the step definitions call. Red-green-refactor per unit.
 
-- [ ] **Step 4: Run scenarios**
+- [ ] **Step 4: Run scenarios — verify they PASS**
 
 Run: `npx cucumber-js features/[feature-name].feature`
 Expected: ALL scenarios PASS (exit code 0)
@@ -197,10 +257,17 @@ Expected: NO changes to any .feature file
 - [ ] **Step 6: Commit**
 
 ```bash
-git add features/step_definitions/[feature-name]-steps.js
-git commit -m "test: add BDD step definitions for [feature-name]"
+git add features/step_definitions/[feature-name]-steps.js src/
+git commit -m "feat: implement [feature-name] with BDD step definitions"
 ```
 ````
+
+**Frontend vs Backend:** If the .feature file contains UI scenarios (clicks,
+navigation, forms, visibility assertions), the Step Definitions require a
+headless browser setup. Include a setup task BEFORE the BDD-first task:
+- Install Playwright/Selenium as dev dependency
+- Create World/support with browser lifecycle (headless: true)
+- Verify browser binding works with a single navigation step before writing all Step Definitions
 
 ### Final BDD Verification Task
 
@@ -224,6 +291,17 @@ Expected: ZERO undefined or pending steps across ALL feature files
 Run: `git diff -- '*.feature'`
 Expected: NO modifications to any .feature file during implementation
 ````
+
+## Task Ordering
+
+Plans follow a TDD-first ordering principle:
+
+1. **Atomic Fitness Functions** — structural constraints first (they FAIL initially)
+2. **Per feature area:** BDD Step Definitions written (FAIL) → unit TDD implementation (until BDD PASS)
+3. **Holistic Fitness Functions** — performance/load tests after implementation
+4. **Final Verification** — full BDD suite + ALL fitness functions
+
+This ensures architecture constraints and behavior expectations are defined BEFORE implementation, not verified after the fact.
 
 ## No Placeholders
 

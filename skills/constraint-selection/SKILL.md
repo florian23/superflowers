@@ -2,6 +2,7 @@
 name: constraint-selection
 description: Use AFTER brainstorming design approval and BEFORE architecture-assessment — when you need to select which organizational constraints are relevant for the current feature
 ---
+**Semantic anchors:** Organizational constraints as architecture drivers, constraint verification criteria, feature-specific constraint scoping.
 
 # Constraint Selection
 
@@ -218,3 +219,16 @@ The feature constraints file is referenced by downstream skills when it exists:
 **Produces:** `docs/superflowers/constraints/YYYY-MM-DD-<feature>-constraints.md`
 **Read by:** architecture-assessment, quality-scenarios, feature-design, writing-plans, verification-before-completion
 **Skips if:** No `constraints_repo` in CLAUDE.md or no `constraints/` directory
+
+## Verification Checklist
+
+- [ ] All constraints from repository evaluated (none skipped)
+- [ ] Each constraint classified as Relevant/Irrelevant/Uncertain with rationale
+- [ ] Uncertain constraints escalated to user for decision
+- [ ] Active constraints have concrete verification criteria
+- [ ] User has confirmed the constraint selection
+- [ ] Output written to docs/superflowers/constraints/
+
+## The Bottom Line
+
+Active constraints are guardrails, not obstacles. Every constraint has verification criteria.

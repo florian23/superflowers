@@ -53,7 +53,7 @@ digraph bounded_context {
   define_language [label="4. Define ubiquitous\nlanguage per context"];
   map_relationships [label="5. Map context\nrelationships"];
   present [label="6. Present to user"];
-  user_ok [shape=diamond, label="User\napproves?"];
+  user_ok [shape=diamond, label="User\nconfirms?"];
   write [label="7. Write\ncontext-map.md"];
   adr [label="8. Create ADR\nfor boundary decisions"];
   done [shape=doublecircle, label="Done"];
@@ -77,9 +77,19 @@ digraph bounded_context {
 
 ## Step 1: Identify Subdomains
 
-Read the brainstorming output (design doc) and identify the distinct business areas. A subdomain is a coherent area of business capability — not a technical layer.
+Read the brainstorming output (design doc), `domain-profile.md`, and `market-analysis.md` (if they exist). Then follow `references/proactive-analysis.md`:
 
-Ask the user: "What are the main business areas in this system? For example, in e-commerce that might be: product catalog, ordering, payment, shipping, customer management."
+Draft the subdomain list yourself based on what you read. A subdomain is a coherent area of business capability — not a technical layer. Present to the user:
+
+> "Based on the spec and domain profile, I see these business areas:"
+>
+> | Subdomain | Why I think it's distinct |
+> |---|---|
+> | [Name] | [Evidence from context: different rules, different stakeholders, different rate of change] |
+>
+> "Does this match your view? Any areas I'm missing or splitting wrong?"
+
+Wait for feedback. Do NOT ask the user to list subdomains from scratch.
 
 **Heuristics for finding subdomains:**
 - Different business rules → different subdomain
@@ -95,9 +105,9 @@ For each subdomain, classify:
 
 | Type | Definition | Investment Level | Example |
 |---|---|---|---|
-| **Core Domain** | Where competitive advantage lives. This is what makes the business unique. | Highest — build in-house, best developers, most attention | E-commerce: recommendation engine, pricing algorithm |
-| **Supporting Domain** | Necessary for the business but not differentiating. Custom-built because no off-the-shelf solution fits. | Moderate — build in-house but with less investment | E-commerce: inventory management, order fulfillment |
-| **Generic Domain** | Solved problems. Every business needs this, nothing unique about your version. | Lowest — buy/outsource/use SaaS | Auth, payment processing, email sending, file storage |
+| **Core Subdomain** | Where competitive advantage lives. This is what makes the business unique. | Highest — build in-house, best developers, most attention | E-commerce: recommendation engine, pricing algorithm |
+| **Supporting Subdomain** | Necessary for the business but not differentiating. Custom-built because no off-the-shelf solution fits. | Moderate — build in-house but with less investment | E-commerce: inventory management, order fulfillment |
+| **Generic Subdomain** | Solved problems. Every business needs this, nothing unique about your version. | Lowest — buy/outsource/use SaaS | Auth, payment processing, email sending, file storage |
 
 Present the classification to the user:
 
@@ -111,7 +121,7 @@ Present the classification to the user:
 | Payment | Generic | Use Stripe/Adyen, no custom payment processing |
 ```
 
-This classification matters because it drives architecture investment: Core domains get the best architecture, Generic domains get the simplest.
+This classification matters because it drives architecture investment: Core subdomains get the best architecture, Generic subdomains get the simplest.
 
 ## Step 3: Find Bounded Context Boundaries
 
@@ -126,10 +136,27 @@ A bounded context is NOT the same as a subdomain — though they often align. A 
 
 **The change test:** If two areas change for different reasons and at different rates, they're likely different contexts.
 
-Walk the user through each subdomain and ask:
-- "Does [concept X] mean the same thing everywhere in this subdomain, or does it have different facets in different areas?"
-- "Would one team own all of this, or would it naturally split across teams?"
-- "When [area A] changes, does [area B] need to change too?"
+Apply the three tests (linguistic, team, change) to each subdomain yourself. Then follow `references/proactive-analysis.md` and present 2-3 candidate decompositions:
+
+> "I've analyzed the subdomains using the linguistic, team, and change tests. Here are the candidate decompositions:"
+>
+> **Decomposition A (recommended): [N] contexts** — [one-line summary]
+> Contexts: [list]. Merges [X] and [Y] because [reason from tests].
+> Best when: [condition, e.g., small team, simple integration needed].
+> Trade-off: [what you give up, e.g., less isolation between domains].
+>
+> **Decomposition B: [M] contexts** — [one-line summary]
+> Contexts: [list]. Splits [X] from [Y] because [reason from tests].
+> Best when: [condition, e.g., separate teams, different scaling needs].
+> Trade-off: [what you give up, e.g., more integration complexity].
+>
+> **Decomposition C (if applicable): Hybrid** — [one-line summary]
+> [Description with shared kernel or other pattern].
+> Best when: [condition].
+>
+> "Which decomposition fits your situation — or should I adjust?"
+
+Wait for the user's choice. Then proceed with defining ubiquitous language (Step 4) for the chosen decomposition only.
 
 ## Step 4: Define Ubiquitous Language
 
@@ -167,13 +194,15 @@ For each pair of contexts that interact, define the relationship pattern. Read `
 
 ## Step 6: Present to User
 
-Show the complete context map:
+Present the complete context map based on the decomposition chosen in Step 3, now enriched with ubiquitous language (Step 4) and relationships (Step 5):
+
 1. List of bounded contexts with their subdomain classification
 2. Ubiquitous language per context
 3. Relationship map between contexts
-4. Recommended boundary decisions (where to split, where to keep together)
 
-**Uncertainty handling:** If a boundary placement is ambiguous (e.g., a concept could belong to either context), follow `references/uncertainty-handling.md`: present the options with tradeoffs and let the user decide. Do NOT default to one boundary and ask "Passt das?".
+If Steps 4-5 revealed that the chosen decomposition has problems (e.g., a relationship pattern doesn't work cleanly, or the linguistic test shows a term conflict within one context), flag this and offer to revisit Step 3 with adjusted options.
+
+**Uncertainty handling:** If boundary placement remains ambiguous after Steps 3-5, follow `references/uncertainty-handling.md`: present the options with tradeoffs and let the user decide. Do NOT default to one boundary and ask "Passt das?".
 
 Wait for user confirmation before writing.
 
@@ -222,6 +251,22 @@ Persist to `context-map.md` in the project root.
 
 If boundary decisions were non-obvious (e.g., "we decided to keep Billing and Checkout in one context" or "we split User into Auth and Profile"), invoke `superflowers:architecture-decisions` to document the decision. Not every boundary needs an ADR — only the ones where alternatives were considered and a conscious choice was made.
 
+## Example: Good vs Bad Context Boundaries
+
+❌ **BAD — Technical boundaries:**
+| Context | Responsibility |
+|---|---|
+| Frontend Context | All UI code |
+| Backend Context | All API code |
+| Database Context | All persistence |
+
+✅ **GOOD — Domain boundaries:**
+| Context | Responsibility |
+|---|---|
+| Checkout | Order placement, payment intent, shipping selection |
+| Fulfillment | Pick lists, shipping labels, tracking |
+| Catalog | Product data, search, recommendations |
+
 ## Red Flags — STOP
 
 - **Technical boundaries instead of domain boundaries:** "Frontend Context" and "Backend Context" are NOT bounded contexts. Contexts are about business domains, not technical layers.
@@ -249,9 +294,13 @@ If boundary decisions were non-obvious (e.g., "we decided to keep Billing and Ch
 - [ ] Context relationships mapped with explicit patterns
 - [ ] Anti-Corruption Layer specified for legacy/external integrations
 - [ ] Context count is proportional to system complexity (not inflated)
-- [ ] User reviewed and approved the context map
+- [ ] User reviewed and confirmed the context map
 - [ ] context-map.md written to project root
 - [ ] Significant boundary decisions documented as ADRs
+
+## The Bottom Line
+
+Domain boundaries before architecture boundaries. If you can't name the ubiquitous language, you don't understand the boundary.
 
 ## Integration
 
@@ -265,3 +314,4 @@ If boundary decisions were non-obvious (e.g., "we decided to keep Billing and Ch
 ## Reference Files
 
 - `references/context-map-patterns.md` — Detailed description of each context map relationship pattern with examples and when to use each one
+- `references/proactive-analysis.md` — The "analyze first, propose options" meta-pattern

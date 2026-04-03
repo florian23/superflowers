@@ -94,11 +94,13 @@ digraph process {
 
 ## Specification Verification Gate
 
+**Task ordering follows the plan.** If the plan places fitness functions as early tasks and BDD Step Definitions before implementation tasks, execute in that order. The test-first principle means structural fitness functions and BDD Step Definitions are written BEFORE the code they test — they define the constraints and expected behavior upfront (TDD-first). The Specification Verification Gate below re-runs everything as a final safety net — it does NOT replace test-first execution during implementation.
+
 After the final code review and BEFORE finishing-a-development-branch, run specification checks:
 
 1. **BDD scenarios** (if .feature files exist):
-   - Verify step definitions are wired (not just .feature files written)
-   - Run `cucumber --dry-run` to check for undefined steps → if undefined: dispatch implementer to wire them
+   - Verify Step Definitions exist for all steps (not just .feature files written)
+   - Run `cucumber --dry-run` to check for undefined steps → if undefined: dispatch implementer to write the missing Step Definitions
    - Run ALL scenarios → all must pass
 2. **Fitness functions** (if architecture.md exists):
    - Verify EVERY characteristic marked "Fitness Function: Yes" has an implementation
@@ -113,7 +115,7 @@ Follow the Review-Loop Pattern from agents/reviewer-protocol.md:
 - If FAIL: re-dispatch implementer to fix, then re-run verification (fresh)
 - Repeat until ALL checks pass
 - Do NOT ask the user whether to fix. Fix automatically.
-- Do NOT skip BDD wiring. Unwired .feature files = FAIL.
+- Do NOT skip Step Definitions. Feature files without Step Definitions (Glue Code) = FAIL.
 - Do NOT skip fitness function implementation. FFs in architecture.md without code = FAIL.
 </HARD-GATE>
 
