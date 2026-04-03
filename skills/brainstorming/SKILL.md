@@ -27,6 +27,7 @@ You MUST create a task for each of these items and complete them in order:
 4. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria. Questions are informed by the domain profile from step 2.
 5. **Propose 2-3 approaches** — with trade-offs and your recommendation
 6. **Present design** — in sections scaled to their complexity, get user approval after each section
+6b. **Post-design review** — follow `references/post-skill-review.md`: dispatch adr-decision-agent to scan dialog for ADR-worthy decisions (steps 4-6). Agent writes ADRs autonomously. Then dispatch spec-reviewer with new ADR context. Standard review-loop if issues found.
 7. **Constraint selection** — invoke superflowers:constraint-selection to select organizational constraints relevant to this feature. Constraints inform architecture and spec. Skips automatically if no constraint repo is configured.
 8. **Bounded context design** — invoke superflowers:bounded-context-design to identify domain boundaries, classify subdomains, create context map. Builds on the domain profile from step 2. Skips automatically for single-domain projects.
 9. **Architecture assessment** — invoke superflowers:architecture-assessment to identify/review architecture characteristics. Architecture informs the spec.
@@ -74,7 +75,9 @@ digraph brainstorming {
     "Invoke architecture-assessment" [shape=doublecircle];
     "Invoke feature-design" [shape=doublecircle];
 
-    "User approves design?" -> "Invoke constraint-selection" [label="yes"];
+    "Post-design review\n(ADR + artifact review)" [shape=box];
+    "User approves design?" -> "Post-design review\n(ADR + artifact review)" [label="yes"];
+    "Post-design review\n(ADR + artifact review)" -> "Invoke constraint-selection";
     "Invoke constraint-selection" [shape=doublecircle];
     "Invoke constraint-selection" -> "Invoke bounded-context-design";
     "Invoke bounded-context-design" [shape=doublecircle];

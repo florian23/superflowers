@@ -21,6 +21,7 @@ Custom fork of Superpowers v5.0.6 — composable skills for coding agent workflo
 - Uncertainty at user-facing decision points follows `references/uncertainty-handling.md`
 - Agent-driven analysis before user questions follows `references/proactive-analysis.md`
 - Fitness functions and BDD steps are written BEFORE implementation (TDD-first), not as final verification
+- Post-skill ADR capture + artifact review follows `references/post-skill-review.md` (adr-decision-agent → reviewer)
 - Downstream-consumed artifact sections use `> Consumed by: skill-name (Step N)` markers
 - Bundled skills (from Superpowers) are modified with intentional divergence — `upstream-sync` skill manages merging updates (see `docs/superflowers/upstream-tracking.md`)
 - Skills that produce artifacts must be DIALOG, not batch — work step by step with the user, not generate everything at once
