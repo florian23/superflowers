@@ -115,6 +115,12 @@ If Option B: invoke `frontend-design:frontend-design` with the wireframe context
 - Pass the confirmed layout directions, states, and content hierarchy from all screens
 - Pass the persona and task flow context from ux-design.md
 - Let frontend-design handle aesthetic direction, typography, color, animation
+- Write HTML files to a `designs/` directory in the project root
+- Start the design preview server for remote viewing:
+  ```bash
+  skills/ux-wireframes/scripts/serve-designs.sh --dir designs/
+  ```
+  The server auto-detects Tailscale and serves on the tailnet IP. Open the index page to browse all generated screens.
 - After frontend-design completes: return to this choice for remaining screens
 If Option C: write final ux-design.md and proceed.
 
