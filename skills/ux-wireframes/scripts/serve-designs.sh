@@ -9,7 +9,7 @@
 set -euo pipefail
 
 SERVE_DIR="."
-PORT=8090
+PORT=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -20,6 +20,15 @@ while [[ $# -gt 0 ]]; do
 done
 
 SERVE_DIR="$(cd "$SERVE_DIR" && pwd)"
+
+# Find a free port if none specified
+find_free_port() {
+  python3 -c "import socket; s=socket.socket(); s.bind(('',0)); print(s.getsockname()[1]); s.close()"
+}
+
+if [[ -z "$PORT" ]]; then
+  PORT=$(find_free_port)
+fi
 
 # Auto-detect Tailscale
 BIND_HOST="0.0.0.0"
