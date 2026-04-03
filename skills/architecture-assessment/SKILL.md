@@ -1,6 +1,6 @@
 ---
 name: architecture-assessment
-description: Use AFTER brainstorming completes and BEFORE writing specs or feature files - identifies and documents architecture characteristics, drivers, and quality attributes through structured stakeholder dialogue. Maintains a persistent architecture.md file.
+description: Use AFTER brainstorming completes and BEFORE writing specs or feature files — when architecture characteristics and quality attributes need to be identified
 ---
 
 # Architecture Assessment
@@ -10,6 +10,17 @@ Identify, document, and maintain architecture characteristics through structured
 **Semantic anchors:** This skill applies ATAM (Architecture Tradeoff Analysis Method) for quality attribute analysis and tradeoff identification, arc42 for structured architecture documentation, Clean Architecture for testability and layer independence, Domain-Driven Design for bounded contexts and strategic design, and Definition of Done with architecture compliance gates.
 
 **Announce at start:** "I'm using the architecture-assessment skill to identify architecture characteristics for this project."
+
+## When to Use
+
+- After brainstorming completes and before writing specs, feature files, or plans
+- When a new project needs architecture characteristics identified
+- When an existing project's characteristics need updating for a new feature
+- When the user asks about quality attributes, architecture tradeoffs, or non-functional requirements
+
+**When NOT to use:**
+- If `architecture.md` already exists and is current — read it instead of re-running the full assessment
+- For individual architecture decisions — use `superflowers:architecture-decisions` instead
 
 ## The Iron Law
 
@@ -183,6 +194,8 @@ Characteristics to assess:
 After collecting all characteristics, present the critical/important ones and ask:
 
 > "Every architecture characteristic adds complexity. Which are your TOP 3 — the ones that should drive architecture decisions above all others?"
+
+**Uncertainty handling:** If you are unsure about prioritization (e.g., two characteristics seem equally important, or a characteristic could go either way), follow the Uncertainty Handling Pattern in `references/uncertainty-handling.md`: name the uncertainty, present 2-3 options with tradeoffs, and use AskUserQuestion with structured choices. Do NOT present an uncertain recommendation as settled and ask "Passt das?".
 
 The top 3 become the primary architecture drivers.
 

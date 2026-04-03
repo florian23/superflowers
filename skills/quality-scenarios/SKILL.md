@@ -1,14 +1,6 @@
 ---
 name: quality-scenarios
-description: >
-  Create concrete, measurable quality attribute scenarios from architecture.md quality goals using
-  the ATAM (Architecture Tradeoff Analysis Method) approach. Each scenario defines a stimulus,
-  response, and measurable outcome — then gets categorized into the right test type: unit test,
-  integration test, load test, fitness function, or manual review. Invoke this skill after
-  architecture-style-selection and before feature-design or writing-plans. Also invoke when the
-  user asks about quality requirements, test strategies, quality attributes, how to test
-  non-functional requirements, or when architecture.md has characteristics without concrete
-  test scenarios.
+description: Use when architecture characteristics need concrete test scenarios, or when the user asks about quality requirements, test strategies, or non-functional testing
 ---
 
 # Quality Scenarios
@@ -23,6 +15,16 @@ arc42 Section 10 (Quality Requirements) for quality tree structure,
 ISO 25010 for quality model categories.
 
 **Announce at start:** "I'll create quality scenarios from the architecture characteristics — concrete test specifications with the right test type for each one."
+
+## When to Use
+
+- After architecture-style-selection and before feature-design or writing-plans
+- When `architecture.md` has characteristics without concrete test scenarios
+- When the user asks about quality requirements, test strategies, or how to test non-functional requirements
+
+**When NOT to use:**
+- If `architecture.md` doesn't exist — run `superflowers:architecture-assessment` first
+- For implementation-level test writing — use `superflowers:test-driven-development`
 
 ## The Iron Law
 
@@ -145,6 +147,8 @@ Show the user:
 1. The scenario table (all scenarios with test types)
 2. Any tradeoffs identified
 3. Ask for review: "Do these scenarios cover your quality goals? Any missing? Any test types you'd change?"
+
+**Uncertainty handling:** If a test type classification is ambiguous (e.g., could be integration test or fitness function), follow `references/uncertainty-handling.md`: present the options with rationale and let the user choose. Do NOT default to one and ask "Passt das?".
 
 Wait for user confirmation before writing the file.
 

@@ -1,6 +1,6 @@
 ---
 name: project-constraints
-description: Use when setting up a new project's constraint baseline, or when the user explicitly asks to review/update project constraints against the organizational constraint repository. Reads project context (code, tech stack, artefacts) to intelligently pre-select relevant constraints.
+description: Use when setting up a new project's constraint baseline, or when the user explicitly asks to review or update project constraints against the organizational constraint repository
 ---
 
 # Project Constraints
@@ -9,18 +9,17 @@ Select and maintain which organizational constraints apply to this project. Read
 
 **Announce at start:** "I'm reviewing project constraints against the organizational constraint repository."
 
-## Two Modes
+## When to Use
 
-### Mode 1: Initial Setup (constraints/ doesn't exist)
+- When setting up a new project and `constraints/` directory doesn't exist yet (initial setup)
+- When the user explicitly asks to review or update project constraints
+- When `constraint-selection` detects that `constraints_repo` is configured but `constraints/` is missing
 
-Triggered when `constraint-selection` detects that `constraints_repo` is configured but `constraints/` is missing. Or when the user explicitly runs this skill on a new project.
+**When NOT to use:**
+- For per-feature constraint selection — use `superflowers:constraint-selection` instead
+- If no `constraints_repo` is configured in CLAUDE.md — inform the user and stop
 
-### Mode 2: Review/Update (constraints/ exists)
-
-Triggered only when the user explicitly asks to review or update project constraints. Checks:
-- Are there new constraints in the repo that might apply?
-- Has the project context changed (new tech, new data types, new APIs)?
-- Are any current project constraints no longer relevant?
+**Two modes:** Initial setup (no `constraints/`) creates the project baseline. Review mode (existing `constraints/`) checks for new, changed, or obsolete constraints.
 
 ## Prerequisites
 
@@ -140,6 +139,8 @@ This applies in BOTH Initial Setup and Review/Update mode.
 </HARD-GATE>
 
 ## Step 4: Present to User
+
+**Uncertainty handling:** If a constraint's relevance to this project is unclear, do NOT silently include or exclude it. Follow `references/uncertainty-handling.md`: categorize it as "Uncertain" in the table, explain why, and present options via AskUserQuestion. The user decides — you don't guess.
 
 ### Initial Setup Mode
 

@@ -87,6 +87,8 @@ digraph feature_design {
 After drafting scenarios and before self-review, check if advisory context is available:
 
 1. **If `architecture.md` exists:** Tell the user: "I found architecture characteristics in architecture.md. The scenarios I drafted are consistent with [list relevant characteristics]. Would you like an architecture review of these scenarios before we proceed?"
+
+**Uncertainty handling:** If you are unsure about scenario coverage, boundary conditions, or whether a requirement is in or out of scope, follow `references/uncertainty-handling.md`: present the ambiguity with concrete options and let the user decide via AskUserQuestion.
 2. **If other advisory skills are available** (security, performance): Mention them to the user.
 
 This is a generic extension point — new advisory skills plug in here without changing feature-design.

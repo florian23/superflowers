@@ -1,13 +1,6 @@
 ---
 name: architecture-decisions
-description: >
-  Document architecture decisions as immutable ADRs (Architecture Decision Records) following
-  Michael Nygard's lightweight format. Invoke this skill whenever an architecture decision is made —
-  during brainstorming (approach chosen), architecture-assessment (characteristics prioritized),
-  architecture-style-selection (style selected), or implementation (unplanned technical decisions).
-  Also invoke when the user asks why a decision was made, wants to document a decision, mentions
-  ADRs, or asks about architecture history. Every significant architecture choice deserves an ADR —
-  if you're choosing between alternatives, that's a decision worth recording.
+description: Use when an architecture decision is made during brainstorming, assessment, style selection, or implementation — or when the user asks about past decisions or ADRs
 ---
 
 # Architecture Decisions
@@ -19,6 +12,19 @@ Document architecture decisions as lightweight, immutable records. ADRs capture 
 **Semantic anchors:** ADR (Architecture Decision Records) following Nygard's format, arc42 Section 9 (Architecture Decisions), ATAM tradeoff documentation.
 
 **Announce at start:** "I'll document this architecture decision as an ADR."
+
+## When to Use
+
+- During brainstorming when an approach is chosen
+- During architecture-assessment when characteristics are prioritized
+- During architecture-style-selection when a style is selected
+- During implementation when an unplanned structural change is made
+- When the user asks "why did we decide X?" or wants to document a decision
+
+**When NOT to use:**
+- For easily reversible choices (library version, variable naming)
+- When there's only one viable option (no real decision was made)
+- For coding conventions — use a style guide instead
 
 ## The Iron Law
 

@@ -1,21 +1,21 @@
 ---
 name: domain-understanding
-description: Use AFTER exploring project context and BEFORE asking design questions in brainstorming — builds a domain profile by analyzing code, asking domain questions, researching online, and incorporating external knowledge sources (Confluence, SharePoint, ontologies). Ensures the agent understands the business domain before making design decisions.
+description: Use AFTER exploring project context and BEFORE asking design questions in brainstorming — when the agent needs to understand the business domain before making design decisions
 ---
 
 # Domain Understanding
 
 Build a domain profile before design decisions are made. The agent must understand the business domain — its concepts, relationships, rules, and language — before asking design questions or proposing approaches.
 
-## Activation
+## When to Use
 
-This skill only runs when no domain profile exists yet. If a domain profile has already been created (in a previous session or earlier in this project), skip this skill and proceed to clarifying questions.
+- After exploring project context and before asking design questions in brainstorming
+- When no domain profile (`domain-profile.md`) exists yet
+- When the user says "die Domäne hat sich geändert" or "domain profile updaten"
 
-**Check:** Does a domain profile exist? Look for `domain-profile.md` in the project root or `docs/superflowers/`.
-- **Not found:** Run the full domain understanding process.
-- **Found:** Inform the user: "Ein bestehendes Domänen-Profil wurde gefunden. Soll ich damit weiterarbeiten, oder möchtest du es aktualisieren?" Only re-run if the user explicitly opts in.
-
-The user can always opt in to update the domain profile by saying things like "das Domänenverständnis aktualisieren", "die Domäne hat sich geändert", or "domain profile updaten".
+**When NOT to use:**
+- If a domain profile already exists and is current — skip and proceed to clarifying questions
+- If found, ask: "Ein bestehendes Domänen-Profil wurde gefunden. Soll ich damit weiterarbeiten, oder möchtest du es aktualisieren?" Only re-run if the user explicitly opts in.
 
 **Semantic anchors:** Domain-Driven Design (Eric Evans) for ubiquitous language and domain modeling, Event Storming (Alberto Brandolini) for domain event discovery, Domain Storytelling (Stefan Hofer/Henning Schwentner) for understanding domain workflows, Knowledge Crunching (Eric Evans) for extracting domain knowledge from experts and code.
 
@@ -170,6 +170,8 @@ Compile everything into a **Domain Profile** — a concise document that capture
 
 Present the domain profile and ask:
 > "Hier ist mein Verständnis der Domäne. Stimmt das? Fehlt etwas Wichtiges?"
+
+**Uncertainty handling:** If you are unsure about domain concepts (e.g., unclear relationships, ambiguous terminology), follow `references/uncertainty-handling.md`: highlight the uncertain areas explicitly with options for interpretation. Do NOT present guesses as facts.
 
 Wait for confirmation. If the user corrects or adds:
 - Update the profile

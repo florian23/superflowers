@@ -1,6 +1,6 @@
 ---
 name: coding-eval
-description: Evaluate whether superflowers skills improve feature implementation quality. Uses real FeatureBench tasks with Docker-based test execution. Dispatches two subagents (with/without skills) and generates a comparison report.
+description: Use when you want to measure whether superflowers skills improve implementation quality on FeatureBench tasks
 ---
 
 # Coding Eval
@@ -8,6 +8,16 @@ description: Evaluate whether superflowers skills improve feature implementation
 Evaluate superflowers skills against real-world feature implementation tasks from FeatureBench (ICLR 2026). Dispatches two subagents per task — one with superflowers skills, one without — and measures both test pass rate (hard metric) and artifact quality (soft metric).
 
 **Announce at start:** "I'm running a coding eval to measure superflowers skill impact."
+
+## When to Use
+
+- When measuring whether superflowers skills improve implementation quality
+- When comparing with-skill vs without-skill agent performance on real tasks
+- After modifying a skill and wanting to verify it still helps
+
+**When NOT to use:**
+- For testing individual skill compliance — use pressure scenarios instead
+- For running project tests — this is a meta-evaluation tool for skills themselves
 
 ## Prerequisites
 

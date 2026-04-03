@@ -1,12 +1,6 @@
 ---
 name: architecture-style-selection
-description: >
-  Select the best-fitting architecture style based on driving characteristics from architecture.md.
-  Uses the Architecture Styles Worksheet (Ford/Richards) to score Layered, Modular Monolith, Microkernel,
-  Microservices, Service-Based, Service-Oriented, Event-Driven, and Space-Based against the project's
-  top-3 characteristics. Invoke this skill after architecture-assessment has identified characteristics,
-  and before feature-design. Also invoke when the user asks about architecture style tradeoffs,
-  which architecture to choose, monolith vs microservices, or any architecture selection decision.
+description: Use when you need to select an architecture style based on driving characteristics, or when the user asks about style tradeoffs or monolith vs microservices
 ---
 
 # Architecture Style Selection
@@ -17,6 +11,16 @@ Based on the Architecture Styles Worksheet V2.0 by Mark Richards (DeveloperToArc
 "Fundamentals of Software Architecture" by Neal Ford & Mark Richards.
 
 **Announce when invoked:** "I'll now help select the best architecture style for your project based on the driving characteristics we identified."
+
+## When to Use
+
+- After architecture-assessment has identified top-3 driving characteristics
+- When the user asks about architecture style tradeoffs or "monolith vs microservices"
+- When evaluating whether the current style still fits after characteristic changes
+
+**When NOT to use:**
+- If `architecture.md` doesn't exist or has no prioritized characteristics — run `superflowers:architecture-assessment` first
+- For projects where the style is already fixed by organizational constraints
 
 ## The Iron Law
 
@@ -115,6 +119,8 @@ For each candidate:
 
 If one style clearly dominates (fit score 3+ points ahead AND lower cost), recommend it directly.
 If scores are close (within 2 points), proceed to Step 4.
+
+**Uncertainty handling:** When scores are close or you're unsure about a scoring decision, follow `references/uncertainty-handling.md`: present the competing styles as structured options with tradeoffs, and let the user choose via AskUserQuestion. Do NOT pick one and ask "Passt das?".
 
 ## Step 4: Qualify with Context Questions
 

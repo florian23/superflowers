@@ -1,6 +1,6 @@
 ---
 name: constraint-selection
-description: Use AFTER brainstorming design approval and BEFORE architecture-assessment — selects which organizational constraints (compliance, security, technology guidelines) are relevant for the current feature. Reads from an external constraint repository, filters by project-level constraints, and produces a dated feature-constraint file that downstream skills reference.
+description: Use AFTER brainstorming design approval and BEFORE architecture-assessment — when you need to select which organizational constraints are relevant for the current feature
 ---
 
 # Constraint Selection
@@ -8,6 +8,16 @@ description: Use AFTER brainstorming design approval and BEFORE architecture-ass
 Select organizational constraints relevant to the current feature. Constraints are rules, guidelines, and standards from outside the project (compliance, security, technology recommendations) that must be considered during specification and implementation.
 
 **Announce at start:** "I'm selecting organizational constraints relevant to this feature."
+
+## When to Use
+
+- After brainstorming design approval and before architecture-assessment
+- When a new feature needs to know which organizational constraints apply
+- When the user asks about compliance, security, or technology guidelines for a feature
+
+**When NOT to use:**
+- If no `constraints_repo` is configured in CLAUDE.md — skip silently
+- For setting up project-level constraints — use `superflowers:project-constraints` first
 
 ## The Three Levels
 
@@ -126,6 +136,8 @@ Show the user:
 > - PCI-DSS (Compliance) — keine Zahlungsdaten
 >
 > Einverstanden, oder sollen Constraints hinzugefügt/entfernt werden?
+
+**Uncertainty handling:** If a constraint's relevance is unclear, do NOT silently include or exclude it. Follow `references/uncertainty-handling.md`: mark it as "Uncertain", explain why, and present options (include with reason / exclude with reason / defer to reviewer). Use AskUserQuestion with structured choices.
 
 Wait for user confirmation.
 

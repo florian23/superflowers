@@ -1,13 +1,6 @@
 ---
 name: bounded-context-design
-description: >
-  Identify bounded contexts, classify subdomains, create context maps, and define ubiquitous language
-  using DDD (Domain-Driven Design) strategic patterns. Invoke this skill after brainstorming and before
-  architecture-assessment — you need to know your domain boundaries before making architecture decisions.
-  Also invoke when the user asks about domain boundaries, service decomposition, module structure,
-  "how should we split this system", microservice boundaries, or when the project involves multiple
-  business domains. Even if the user doesn't mention DDD, if the system has multiple domains or
-  teams, this skill applies.
+description: Use when the system has multiple business domains or teams, or when the user asks about domain boundaries, service decomposition, or microservice boundaries
 ---
 
 # Bounded Context Design
@@ -177,6 +170,8 @@ Show the complete context map:
 2. Ubiquitous language per context
 3. Relationship map between contexts
 4. Recommended boundary decisions (where to split, where to keep together)
+
+**Uncertainty handling:** If a boundary placement is ambiguous (e.g., a concept could belong to either context), follow `references/uncertainty-handling.md`: present the options with tradeoffs and let the user decide. Do NOT default to one boundary and ask "Passt das?".
 
 Wait for user confirmation before writing.
 

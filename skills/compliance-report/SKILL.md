@@ -1,6 +1,6 @@
 ---
 name: compliance-report
-description: Generate a compliance and quality tracking report from git history. Analyzes workflow compliance, code impact, and architecture erosion across feature cycles. Produces an interactive single-file HTML report with timeline navigation.
+description: Use when you need a compliance and quality tracking report from git history, or when analyzing workflow compliance across feature cycles
 ---
 
 # Compliance Report
@@ -8,6 +8,16 @@ description: Generate a compliance and quality tracking report from git history.
 Generate a Git-based compliance and quality tracking report that shows whether development guardrails (fitness functions, BDD scenarios, ADRs, architecture characteristics) are being followed over time.
 
 **Announce at start:** "I'm generating a compliance report from git history."
+
+## When to Use
+
+- When you need to see whether development guardrails are being followed over time
+- After completing a feature cycle to check compliance
+- When the user asks about workflow adherence, architecture erosion, or quality trends
+
+**When NOT to use:**
+- For individual code reviews — use `superflowers:requesting-code-review`
+- For checking a single feature's tests — run the tests directly
 
 ## Architecture
 
