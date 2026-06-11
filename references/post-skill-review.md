@@ -32,10 +32,16 @@ Skill completes → artifacts produced
 | Skill | Dispatch After | Reviewer Agent |
 |---|---|---|
 | brainstorming | Step 6 (design confirmed by user) | spec-reviewer |
+| domain-understanding | Domain profile confirmed | domain-understanding-reviewer |
+| market-analysis | Market analysis confirmed | market-analysis-reviewer |
+| constraint-selection | Constraints selected and confirmed | constraint-reviewer |
+| bounded-context-design | Context map confirmed | bounded-context-reviewer |
 | architecture-assessment | Characteristics confirmed | architecture-reviewer |
 | architecture-style-selection | Style selected | architecture-style-reviewer |
+| risk-storming | Risk assessment confirmed | risk-storming-reviewer |
 | quality-scenarios | Scenarios confirmed | quality-scenario-reviewer |
-| bounded-context-design | Context map confirmed | (no dedicated reviewer yet) |
+| feature-design | Feature files confirmed | feature-file-reviewer |
+| architecture-decisions | ADR written/updated | architecture-decision-reviewer |
 
 Skills that already have explicit ADR triggers (architecture-style-selection Step 7, bounded-context-design Step 8) keep them. The adr-decision-agent catches **additional** decisions the explicit triggers miss.
 
