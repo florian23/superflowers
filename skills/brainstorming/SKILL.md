@@ -29,17 +29,20 @@ You MUST create a task for each of these items and complete them in order:
 6. **Present design** — in sections scaled to their complexity, get user approval after each section
 6b. **Post-design review** — follow `references/post-skill-review.md`: dispatch adr-decision-agent to scan dialog for ADR-worthy decisions (steps 4-6). Agent writes ADRs autonomously. Then dispatch spec-reviewer with new ADR context. Standard review-loop if issues found.
 6c. **UX design check** — if the feature has user-facing UI, ask: "This feature has a user interface. Shall I run the UX design process (personas, task flows, wireframes) before we continue with architecture?" If yes: invoke `superflowers:ux-design`. UX results feed into feature-design (Step 12) and writing-plans (Step 17). If no or not applicable (backend-only, CLI, API): skip.
+6d. **Market analysis** — if the feature enters a new problem space or affects competitive positioning, ask: "This feature could benefit from a market analysis to identify competitors and differentiation opportunities. Shall I run the market analysis?" If yes: invoke `superflowers:market-analysis`. Market results inform subdomain classification in bounded-context-design (Step 8). If no or not applicable (internal tooling, infrastructure, purely technical): skip.
 7. **Constraint selection** — invoke superflowers:constraint-selection to select organizational constraints relevant to this feature. Constraints inform architecture and spec. Skips automatically if no constraint repo is configured.
-8. **Bounded context design** — invoke superflowers:bounded-context-design to identify domain boundaries, classify subdomains, create context map. Builds on the domain profile from step 2. Skips automatically for single-domain projects.
+8. **Bounded context design** — invoke superflowers:bounded-context-design to identify domain boundaries, classify subdomains, create context map. Builds on the domain profile from step 2 and market analysis from step 6d (if available). Skips automatically for single-domain projects.
 9. **Architecture assessment** — invoke superflowers:architecture-assessment to identify/review architecture characteristics. Architecture informs the spec.
 10. **Architecture style selection** — invoke superflowers:architecture-style-selection to select best-fitting architecture style based on driving characteristics and generate style fitness functions. Updates architecture.md.
-11. **Quality scenarios** — invoke superflowers:quality-scenarios to create testable quality scenarios from architecture characteristics, categorized by test type.
+10b. **Risk storming** — invoke superflowers:risk-storming to identify architecture risks using parallel agent perspectives. Risk assessment informs quality scenarios (Step 11) — Red risks should have corresponding quality scenarios. Requires architecture.md from Step 10.
+11. **Quality scenarios** — invoke superflowers:quality-scenarios to create testable quality scenarios from architecture characteristics, categorized by test type. Informed by risk assessment from Step 10b — Red risks should be covered by scenarios.
 12. **Write feature files** — invoke superflowers:feature-design to create BDD acceptance criteria as Gherkin scenarios. Scenarios inform the spec.
 13. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit. Spec references architecture.md, quality-scenarios.md, .feature files, and active constraints.
 14. **Spec self-review** — check for placeholders, contradictions, ambiguity, scope, architecture alignment, scenario coverage, constraint coverage (see below)
-15. **User reviews written spec** — ask user to review the spec file before proceeding
-16. **Create worktree** — invoke superflowers:using-git-worktrees to create an isolated workspace for implementation
-17. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+15. **Spec review-agent loop** — dispatch spec-reviewer agent (fresh context) to independently verify the written spec. Follow the Review-Loop Pattern from `agents/reviewer-protocol.md`. Fix issues and re-dispatch until APPROVED. Do NOT ask the user anything or proceed to the next step until the reviewer returns APPROVED.
+16. **User reviews written spec** — only after spec-reviewer has returned APPROVED: ask user to review the spec file before proceeding
+17. **Create worktree** — invoke superflowers:using-git-worktrees to create an isolated workspace for implementation
+18. **Transition to implementation** — invoke writing-plans skill to create implementation plan
 
 ## Process Flow
 
@@ -82,34 +85,48 @@ digraph brainstorming {
     "Invoke ux-design" [shape=doublecircle, style=dashed];
     "Post-design review\n(ADR + artifact review)" -> "Feature has UI?";
     "Feature has UI?" -> "Invoke ux-design" [label="yes, user confirms"];
-    "Feature has UI?" -> "Invoke constraint-selection" [label="no / skip"];
-    "Invoke ux-design" -> "Invoke constraint-selection";
+    "Feature has UI?" -> "Market context needed?" [label="no / skip"];
+    "Invoke ux-design" -> "Market context needed?";
+    "Market context needed?" [shape=diamond];
+    "Invoke market-analysis" [shape=doublecircle, style=dashed];
+    "Market context needed?" -> "Invoke market-analysis" [label="yes, user confirms"];
+    "Market context needed?" -> "Invoke constraint-selection" [label="no / skip"];
+    "Invoke market-analysis" -> "Invoke constraint-selection";
     "Invoke constraint-selection" [shape=doublecircle];
     "Invoke constraint-selection" -> "Invoke bounded-context-design";
     "Invoke bounded-context-design" [shape=doublecircle];
     "Invoke bounded-context-design" -> "Invoke architecture-assessment";
     "Invoke architecture-style-selection" [shape=doublecircle];
     "Invoke architecture-assessment" -> "Invoke architecture-style-selection";
+    "Invoke risk-storming" [shape=doublecircle];
+    "Invoke architecture-style-selection" -> "Invoke risk-storming";
     "Invoke quality-scenarios" [shape=doublecircle];
-    "Invoke architecture-style-selection" -> "Invoke quality-scenarios";
+    "Invoke risk-storming" -> "Invoke quality-scenarios";
     "Invoke quality-scenarios" -> "Invoke feature-design";
     "Invoke feature-design" -> "Write design doc";
     "Write design doc" -> "Spec self-review\n(fix inline)";
-    "Spec self-review\n(fix inline)" -> "User reviews spec?";
+    "Dispatch spec-reviewer\n(review-agent loop)" [shape=box];
+    "Spec self-review\n(fix inline)" -> "Dispatch spec-reviewer\n(review-agent loop)";
+    "spec-reviewer APPROVED?" [shape=diamond];
+    "Dispatch spec-reviewer\n(review-agent loop)" -> "spec-reviewer APPROVED?";
+    "spec-reviewer APPROVED?" -> "Dispatch spec-reviewer\n(review-agent loop)" [label="ISSUES_FOUND\nfix & re-dispatch"];
+    "spec-reviewer APPROVED?" -> "User reviews spec?" [label="APPROVED"];
     "User reviews spec?" -> "Write design doc" [label="changes requested"];
     "User reviews spec?" -> "Invoke writing-plans skill" [label="approved"];
 }
 ```
 
 **After design approval, invoke specification skills BEFORE writing the spec:**
-1. superflowers:constraint-selection — select organizational constraints relevant to this feature (skips if no constraint repo configured)
-2. superflowers:bounded-context-design — identify domain boundaries, classify subdomains, create context map (skips automatically if single-domain project)
-3. superflowers:architecture-assessment — identify/review architecture characteristics (informed by context-map.md and active constraints if they exist)
-4. superflowers:architecture-style-selection — select best-fitting architecture style based on characteristics (context boundaries inform service/module cuts)
-5. superflowers:quality-scenarios — create testable quality scenarios from quality goals, categorized by test type
-6. superflowers:feature-design — create BDD acceptance criteria as Gherkin scenarios (uses ubiquitous language from context-map.md, considers active constraints)
-7. Then write the design doc (spec references context-map.md, architecture.md, quality-scenarios.md, .feature files, and active constraints)
-8. Then invoke writing-plans
+1. superflowers:market-analysis — understand competitive landscape and differentiation (conditional: skip for internal/technical projects)
+2. superflowers:constraint-selection — select organizational constraints relevant to this feature (skips if no constraint repo configured)
+3. superflowers:bounded-context-design — identify domain boundaries, classify subdomains, create context map (skips automatically if single-domain project; informed by market analysis if available)
+4. superflowers:architecture-assessment — identify/review architecture characteristics (informed by context-map.md and active constraints if they exist)
+5. superflowers:architecture-style-selection — select best-fitting architecture style based on characteristics (context boundaries inform service/module cuts)
+6. superflowers:risk-storming — identify architecture risks from multiple perspectives (Red risks inform quality scenarios)
+7. superflowers:quality-scenarios — create testable quality scenarios from quality goals, categorized by test type (covers Red risks from risk-storming)
+8. superflowers:feature-design — create BDD acceptance criteria as Gherkin scenarios (uses ubiquitous language from context-map.md, considers active constraints)
+9. Then write the design doc (spec references context-map.md, architecture.md, risk-assessment.md, quality-scenarios.md, .feature files, and active constraints)
+10. Then invoke writing-plans
 
 Do NOT invoke frontend-design, mcp-builder, or any other implementation skill directly.
 
@@ -170,6 +187,15 @@ If no `doc/adr/` exists: skip this step and proceed normally.
 
 - Write the validated design (spec) to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md`
   - (User preferences for spec location override this default)
+  > Consumed by: writing-plans (Step 17), executing-plans (implementation reference)
+- Spec references:
+  - `architecture.md` > Consumed by: quality-scenarios (Step 11), feature-design (Step 12), writing-plans (Step 17)
+  - `risk-assessment.md` > Consumed by: quality-scenarios (Step 11)
+  - `quality-scenarios.md` > Consumed by: writing-plans (Step 17), fitness-functions (implementation)
+  - `.feature` files > Consumed by: writing-plans (Step 17), bdd-testing (implementation)
+  - `context-map.md` > Consumed by: architecture-assessment (Step 9), feature-design (Step 12)
+  - `market-analysis.md` > Consumed by: bounded-context-design (Step 8)
+  - Active constraints > Consumed by: architecture-assessment (Step 9), quality-scenarios (Step 11)
 - Use elements-of-style:writing-clearly-and-concisely skill if available
 - Commit the design document to git
 
@@ -186,12 +212,24 @@ After writing the spec document, look at it with fresh eyes:
 
 Fix any issues inline. No need to re-review — just fix and move on.
 
+**Spec Review-Agent Loop (mandatory before user gate):**
+
+<HARD-GATE>
+Do NOT ask the user to review the spec, do NOT offer to proceed to writing-plans, and do NOT ask any question until the spec-reviewer agent has returned APPROVED. The review-agent loop runs automatically — no user interaction until it passes.
+</HARD-GATE>
+
+1. Dispatch `spec-reviewer` agent with the written spec file path
+2. Follow the Review-Loop Pattern from `agents/reviewer-protocol.md`:
+   - APPROVED → proceed to User Review Gate
+   - ISSUES_FOUND → fix each FAIL item, re-dispatch spec-reviewer (fresh context), repeat
+3. Only after APPROVED: proceed to the User Review Gate below
+
 **User Review Gate:**
-After the spec review loop passes, ask the user to review the written spec before proceeding:
+After the spec-reviewer has returned APPROVED, ask the user to review the written spec:
 
-> "Spec written and committed to `<path>`. Please review it and let me know if you want to make any changes before we start writing out the implementation plan."
+> "Spec written, reviewed by spec-reviewer (APPROVED), and committed to `<path>`. Please review it and let me know if you want to make any changes before we start writing out the implementation plan."
 
-Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
+Wait for the user's response. If they request changes, make them and re-run the spec review-agent loop. Only proceed once the user confirms.
 
 **Implementation:**
 

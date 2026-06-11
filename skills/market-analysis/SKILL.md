@@ -264,6 +264,14 @@ Welche quality requirements erzwingt der Markt?
 - [ ] User has confirmed the analysis and differentiation strategy
 - [ ] Output written to market-analysis.md
 
+## Post-Skill Review
+
+After the market analysis is confirmed by the user, follow `references/post-skill-review.md`:
+1. Dispatch `adr-decision-agent` to capture architecture decisions from this dialog
+2. Dispatch `market-analysis-reviewer` with new ADR context for market analysis quality review
+
+Follow the Review-Loop Pattern from `agents/reviewer-protocol.md`.
+
 ## The Bottom Line
 
 Know your competition before you design your product. Core Subdomains are where you differentiate — everything else is table stakes.

@@ -218,6 +218,14 @@ Save the confirmed profile to `domain-profile.md` in the project root. Commit it
 - [ ] User has confirmed the domain profile
 - [ ] Output written to domain-profile.md
 
+## Post-Skill Review
+
+After the domain profile is confirmed by the user, follow `references/post-skill-review.md`:
+1. Dispatch `adr-decision-agent` to capture architecture decisions from this dialog
+2. Dispatch `domain-understanding-reviewer` with new ADR context for domain profile quality review
+
+Follow the Review-Loop Pattern from `agents/reviewer-protocol.md`.
+
 ## The Bottom Line
 
 Understand the domain before designing the solution. If the glossary is empty, the model is invented.

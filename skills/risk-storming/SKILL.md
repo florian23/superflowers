@@ -243,6 +243,14 @@ Trigger: [Nach Style-Selection / Manuell / Nach Feature X]
 - [ ] User has confirmed risk assessment
 - [ ] Mitigation strategies for Red risks documented with owner and timeline
 
+## Post-Skill Review
+
+After the risk assessment is confirmed by the user, follow `references/post-skill-review.md`:
+1. Dispatch `adr-decision-agent` to capture architecture decisions from this dialog
+2. Dispatch `risk-storming-reviewer` with new ADR context for risk assessment quality review
+
+Follow the Review-Loop Pattern from `agents/reviewer-protocol.md`.
+
 ## The Bottom Line
 
 Consensus on risk areas prevents surprise failures. If the team hasn't agreed on what's Red, nobody owns the mitigation.

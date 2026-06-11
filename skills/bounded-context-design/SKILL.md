@@ -298,6 +298,14 @@ If boundary decisions were non-obvious (e.g., "we decided to keep Billing and Ch
 - [ ] context-map.md written to project root
 - [ ] Significant boundary decisions documented as ADRs
 
+## Post-Skill Review
+
+After the context map is confirmed by the user, follow `references/post-skill-review.md`:
+1. Dispatch `adr-decision-agent` to capture architecture decisions from this dialog
+2. Dispatch `bounded-context-reviewer` with new ADR context for context map quality review
+
+Follow the Review-Loop Pattern from `agents/reviewer-protocol.md`.
+
 ## The Bottom Line
 
 Domain boundaries before architecture boundaries. If you can't name the ubiquitous language, you don't understand the boundary.
