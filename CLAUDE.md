@@ -66,6 +66,12 @@ UX branch (parallel): ux-design orchestrates ux-research → ux-flows → ux-wir
 - Visual Companion server auto-detects Tailscale and binds to tailnet IP
 - Workspace directories (*-workspace/, smoke-test-workspace/) are gitignored — test data only
 
+## Git & PR Workflow
+
+- This repo is a GitHub fork of `obra/superpowers`. **Always work against our own fork (`florian23/superflowers`) — never push to or open PRs against upstream.**
+- The `upstream` remote (`obra/superpowers`) is read-only, used only for sync (see `upstream-sync` skill). `origin` (`florian23/superflowers`) is the only push target.
+- Because GitHub marks this repo as a fork, `gh pr create` defaults the base to the upstream parent. **Always pass `--repo florian23/superflowers`** so PRs stay internal (base + head both on our fork).
+
 ## Gotchas
 
 - Skill length is NOT the cause of agent non-compliance — abstract instructions are
