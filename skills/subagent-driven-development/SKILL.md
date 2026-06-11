@@ -302,7 +302,7 @@ Done!
 ## Integration
 
 **Required workflow skills:**
-- **superflowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
+- **superflowers:using-git-worktrees** - REQUIRED: Ensures an isolated workspace (creates one or verifies existing) before starting
 - **superflowers:writing-plans** - Creates the plan this skill executes
 - **superflowers:requesting-code-review** - Code review template for reviewer subagents
 - **superflowers:finishing-a-development-branch** - Complete development after all tasks
