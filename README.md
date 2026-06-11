@@ -51,8 +51,12 @@ A NeurIPS 2024 oral paper proved a causal link between self-recognition and self
 ```bash
 # In Claude Code:
 /plugin marketplace add florian23/superflowers
-/plugin install superflowers@florian23-superflowers
+/plugin install superflowers@superflowers-marketplace
 ```
+
+The marketplace is registered under the `name` field of `.claude-plugin/marketplace.json`
+(`superflowers-marketplace`), not under the GitHub slug — that's why the install target is
+`superflowers@superflowers-marketplace`.
 
 ### Local Development
 
@@ -63,6 +67,32 @@ claude --plugin-dir /path/to/superflowers
 ### Verify
 
 Start a new Claude Code session. Skills should load with the `superflowers:` prefix.
+
+### Updating
+
+```bash
+# Refresh the marketplace catalog, then update the plugin:
+/plugin marketplace update superflowers-marketplace
+/plugin update superflowers@superflowers-marketplace
+```
+
+You can also enable automatic updates per marketplace via `/plugin` → **Marketplaces** →
+**Enable auto-update**.
+
+> Note: Claude Code only surfaces an update when the plugin's version identifier changes.
+> Superflowers uses explicit SemVer (see [Releasing](#releasing) below), so a new version is
+> only offered after the `version` field has been bumped.
+
+### Releasing
+
+Superflowers follows explicit SemVer, mirroring upstream `obra/superpowers`. To publish an update:
+
+1. Bump `version` in **both** `.claude-plugin/plugin.json` and the plugin entry in
+   `.claude-plugin/marketplace.json` — keep them in sync.
+2. Commit, tag (`git tag vX.Y.Z`), and push (`git push --tags`).
+
+**Pitfall:** Commits pushed *without* a version bump produce no visible update for installed
+users — Claude Code compares the `version` identifier, not the latest commit.
 
 ## The Complete Workflow
 

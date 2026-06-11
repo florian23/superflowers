@@ -55,6 +55,33 @@ obra/superpowers has a 96% PR rejection rate. Understanding why informs how we d
 - During upstream-sync: **skip skill rewrites** unless they fix a demonstrable bug — upstream tunes skills through extensive eval, not theory
 - If contributing upstream: target `dev` branch, one bug per PR, fill the PR template completely, provide test evidence
 
+## Plugin Versioning & Releasing
+
+Superflowers is installed and updated via the Claude Code plugin/marketplace mechanism:
+
+- **Install:** `/plugin marketplace add florian23/superflowers` → `/plugin install superflowers@superflowers-marketplace`
+- **Marketplace name** comes from the `name` field in `.claude-plugin/marketplace.json`
+  (`superflowers-marketplace`), *not* the GitHub slug.
+
+**Versioning strategy:** explicit SemVer, mirroring upstream `obra/superpowers` (currently `5.1.0`).
+The `version` field lives in **two** places and must stay in sync:
+
+- `.claude-plugin/plugin.json` → `version`
+- `.claude-plugin/marketplace.json` → `plugins[].version` (entry for `superflowers`)
+
+**Release procedure:**
+
+1. Bump `version` in both files (keep identical).
+2. Commit, then `git tag vX.Y.Z` and `git push --tags`.
+
+**Pitfall (why we don't use commit-SHA versioning):** Claude Code compares the `version`
+identifier to detect updates. Commits pushed *without* a version bump produce **no visible update**
+for installed users. The trade-off vs. the "drop `version` → every commit is an update" approach is
+deliberate: explicit SemVer gives release control and stays aligned with upstream's scheme.
+
+> Note: upstream version bumps (e.g. v5.0.7) are skipped during sync — they version
+> obra/superpowers, not this fork. Our `version` is independent.
+
 ## Sync History
 
 - **2026-04-03:** Sync to v5.0.7 (12 upstream commits)
