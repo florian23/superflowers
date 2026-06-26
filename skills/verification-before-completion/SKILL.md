@@ -109,10 +109,10 @@ Skip any step = lying, not verifying
 
 **Quality Scenarios (when quality-scenarios.md exists):**
 ```
-✅ [Check each scenario by test type] [See: unit tests pass, integration tests pass, load test meets threshold] "All quality scenarios verified"
+✅ [Check each scenario by verification type] [See: unit tests pass, integration tests pass, load test meets threshold] "All quality scenarios verified"
 ❌ "Tests pass" (which tests? which scenarios?) / "Quality looks good"
 ```
-Quality scenarios define different test types. Verify each type ran:
+Quality scenarios define different verification types. Verify each type ran:
 - unit-test scenarios: covered by unit test suite
 - integration-test scenarios: covered by integration test suite
 - load-test scenarios: load test results meet response measures
