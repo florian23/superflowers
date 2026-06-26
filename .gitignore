@@ -8,3 +8,13 @@ triage/
 featurebench-eval/
 *-workspace/
 smoke-test-workspace/
+
+# SDD short-lived scratch (task briefs, reports, diff packages, ledger).
+# The sdd-workspace script also writes a self-ignoring .gitignore inside it;
+# this is belt-and-suspenders.
+.superflowers/
+
+# Eval harness lives in its own repository, cloned into evals/ for local
+# development. It is not part of the published plugin, so the directory is
+# ignored here.
+evals/
