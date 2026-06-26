@@ -261,7 +261,7 @@ Generated from architecture.md quality goals using ATAM.
 - [ ] Every characteristic with a concrete goal in architecture.md has at least one scenario
 - [ ] Top 3 characteristics have 2-3 scenarios each (different environments)
 - [ ] Every scenario has a concrete response measure (number, threshold, or observable outcome)
-- [ ] Test types are diverse (not all fitness functions, not all load tests)
+- [ ] Verification types are diverse (not all fitness functions, not all load tests)
 - [ ] Style fitness functions from architecture.md are NOT duplicated
 - [ ] Tradeoffs between conflicting characteristics are documented
 - [ ] User has reviewed and approved the scenarios
@@ -281,4 +281,4 @@ Every architecture characteristic needs a concrete, measurable quality scenario.
 
 ## Reference Files
 
-- `references/test-type-guide.md` — Detailed decision tree for classifying scenarios into verification types, with examples per characteristic and language-specific tooling recommendations
+- `references/verification-type-guide.md` — Detailed decision tree for classifying scenarios into verification types, with examples per characteristic and language-specific tooling recommendations

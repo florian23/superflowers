@@ -35,7 +35,7 @@ You MUST create a task for each of these items and complete them in order:
 9. **Architecture assessment** — invoke superflowers:architecture-assessment to identify/review architecture characteristics. Architecture informs the spec.
 10. **Architecture style selection** — invoke superflowers:architecture-style-selection to select best-fitting architecture style based on driving characteristics and generate style fitness functions. Updates architecture.md.
 10b. **Risk storming** — invoke superflowers:risk-storming to identify architecture risks using parallel agent perspectives. Risk assessment informs quality scenarios (Step 11) — Red risks should have corresponding quality scenarios. Requires architecture.md from Step 10.
-11. **Quality scenarios** — invoke superflowers:quality-scenarios to create testable quality scenarios from architecture characteristics, categorized by test type. Informed by risk assessment from Step 10b — Red risks should be covered by scenarios.
+11. **Quality scenarios** — invoke superflowers:quality-scenarios to create testable quality scenarios from architecture characteristics, categorized by verification type. Informed by risk assessment from Step 10b — Red risks should be covered by scenarios.
 12. **Write feature files** — invoke superflowers:feature-design to create BDD acceptance criteria as Gherkin scenarios. Scenarios inform the spec.
 13. **Write design doc** — save to `docs/superflowers/specs/YYYY-MM-DD-<topic>-design.md` and commit. Spec references architecture.md, quality-scenarios.md, .feature files, and active constraints.
 14. **Spec self-review** — check for placeholders, contradictions, ambiguity, scope, architecture alignment, scenario coverage, constraint coverage (see below)
@@ -123,7 +123,7 @@ digraph brainstorming {
 4. superflowers:architecture-assessment — identify/review architecture characteristics (informed by context-map.md and active constraints if they exist)
 5. superflowers:architecture-style-selection — select best-fitting architecture style based on characteristics (context boundaries inform service/module cuts)
 6. superflowers:risk-storming — identify architecture risks from multiple perspectives (Red risks inform quality scenarios)
-7. superflowers:quality-scenarios — create testable quality scenarios from quality goals, categorized by test type (covers Red risks from risk-storming)
+7. superflowers:quality-scenarios — create testable quality scenarios from quality goals, categorized by verification type (covers Red risks from risk-storming)
 8. superflowers:feature-design — create BDD acceptance criteria as Gherkin scenarios (uses ubiquitous language from context-map.md, considers active constraints)
 9. Then write the design doc (spec references context-map.md, architecture.md, risk-assessment.md, quality-scenarios.md, .feature files, and active constraints)
 10. Then invoke writing-plans

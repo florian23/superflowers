@@ -40,7 +40,7 @@ If specification skills were used before this plan, the plan MUST reference thei
 
 **quality-scenarios** (quality-scenarios.md exists):
 - Plan tasks should include test implementations for each quality scenario
-- Categorize test tasks by the **test type** defined in quality-scenarios.md (unit-test, integration-test, load-test, chaos-test, fitness-function, manual-review)
+- Categorize test tasks by the **verification type** defined in quality-scenarios.md (unit-test, integration-test, load-test, chaos-test, fitness-function, manual-review)
 - Group test implementation tasks by type: unit tests first (fastest feedback), then integration, then load/chaos tests
 - Reference tradeoffs from quality-scenarios.md when they affect implementation choices
 - Do NOT create test tasks for scenarios that overlap with style fitness functions (already covered)
@@ -106,7 +106,7 @@ This structure informs the task decomposition. Each task should produce self-con
 
 **Style Fitness Functions:** [List style-specific structural checks from architecture.md, or "N/A"]
 
-**Quality Scenarios:** [List quality scenarios by test type from quality-scenarios.md, or "N/A"]
+**Quality Scenarios:** [List quality scenarios by verification type from quality-scenarios.md, or "N/A"]
 
 **Active ADRs:** [List active architecture decisions from doc/adr/ that affect this implementation, or "N/A"]
 

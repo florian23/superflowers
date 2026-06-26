@@ -13,7 +13,11 @@
       "node_modules",
       ".git",
       ".version-bump.json",
-      "scripts/bump-version.sh"
+      "scripts/bump-version.sh",
+      "-workspace",
+      "featurebench-eval",
+      ".venv",
+      "package-lock.json"
     ]
   }
 }
