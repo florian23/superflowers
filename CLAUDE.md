@@ -7,8 +7,8 @@ Custom fork of Superpowers v5.0.6 — composable skills for coding agent workflo
 - `skills/` — Each skill in its own directory with `SKILL.md` as entry point
 - `agents/` — Reviewer agent definitions + shared `reviewer-protocol.md`
 - `references/` — Shared patterns referenced by multiple skills (e.g., `uncertainty-handling.md`)
-- `commands/` — CLI command definitions
 - `hooks/` — Event hooks
+- `scripts/` — Maintenance tooling (e.g., `bump-version.sh` for synced version bumps)
 - `tests/` — Skill tests
 - `*-workspace/` — Test fixtures and smoke test projects (not part of the plugin)
 

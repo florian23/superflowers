@@ -2,9 +2,9 @@
 
 ## Current Base
 - **Upstream:** obra/superpowers
-- **Base Version:** v5.0.7
-- **Base Commit:** b7a8f76985f1e93e75dd2f2a3b424dc731bd9d37 (2026-04-01)
-- **Last Sync:** 2026-04-03
+- **Base Version:** v5.1.0
+- **Base Commit:** ecbd610fce16d5faabcea997f17031129589b572 (v5.1.0 tag)
+- **Last Sync:** 2026-06-11
 
 ## Modified Files (intentional divergence — never blindly overwrite)
 
@@ -22,10 +22,10 @@
 | writing-plans | Added FF-first + BDD-first task ordering, Step Definition templates, Task Ordering section | Merge upstream task templates, keep our TDD-first ordering |
 | subagent-driven-development | Added Specification Verification Gate, test-first task ordering note | Merge, preserve gate and ordering |
 | executing-plans | Removed batch-and-stop, added worktree requirement | Merge cautiously — structural changes |
-| finishing-a-development-branch | Modified completion flow | Merge individual improvements |
-| requesting-code-review | Modified review flow | Merge individual improvements |
+| finishing-a-development-branch | v5.1.0 environment-detection base + our Step 1 BDD/fitness verification gate + Integration section | Keep our Step 1 gate + Integration; adopt upstream env/cleanup improvements |
+| requesting-code-review | Uses our named `superflowers:code-reviewer` agent (upstream switched to general-purpose) | Keep named reviewer — do NOT adopt general-purpose switch |
 | systematic-debugging | Modified debugging flow | Merge individual improvements |
-| using-git-worktrees | Modified worktree setup | Merge individual improvements |
+| using-git-worktrees | v5.1.0 native-tool rewrite base + our superflowers global path + Integration section | Keep our path + Integration; adopt upstream rewrite improvements |
 | verification-before-completion | Modified verification checks | Merge, preserve our checks |
 | using-superflowers | Added context isolation, architecture guidance | Merge, preserve our additions |
 
@@ -84,6 +84,30 @@ deliberate: explicit SemVer gives release control and stays aligned with upstrea
 
 ## Sync History
 
+- **2026-06-11:** Sync to v5.1.0 (single release, v5.0.7 → v5.1.0)
+  - **Adapted:** `using-git-worktrees` (worktree rewrite: Step 0 isolation detection, prefer
+    native worktree tools like `EnterWorktree`, submodule guard, consent prompt, sandbox fallback —
+    preserved our `~/.config/superflowers/worktrees` path + Integration section)
+  - **Adapted:** `finishing-a-development-branch` (environment detection: normal/worktree/detached-HEAD,
+    reduced 3-option menu, merge-before-delete cleanup, PR-iteration worktree preservation —
+    preserved our Step 1 BDD + fitness-function verification gate + Integration section)
+  - **Adopted:** version-bump tooling (`scripts/bump-version.sh` + `.version-bump.json`, tailored to
+    our manifests, no `.codex-plugin`) — supports our SemVer release discipline
+  - **Adopted:** delete deprecated legacy command stubs (`commands/{brainstorm,execute-plan,write-plan}.md`);
+    dropped now-empty `commands/` from CLAUDE.md Structure
+  - **Adopted (small):** worktree dependency wording in SDD + executing-plans Integration sections;
+    `systematic-debugging` example-path de-personalization (`/Users/jesse/...` → `~/...`)
+  - **Skipped:** `requesting-code-review` switch to `general-purpose` reviewer — conflicts with our
+    named reviewer-agent architecture (`agents/code-reviewer.md` + `reviewer-protocol.md`), kept ours
+  - **Skipped:** "Integration sections removed from skills" — our workflow chain depends on them
+  - **Skipped:** SDD "Continuous execution" paragraph — our flow already removed batch-and-stop and
+    has the Specification Verification Gate; not ported to avoid disrupting our customized body
+  - **Skipped:** Codex-plugin mirroring tooling (`.codex-plugin/`, `scripts/sync-to-codex-plugin.sh`),
+    Contributor Guidelines (AGENTS.md + upstream CLAUDE.md), README/Community/Discord, assets/branding
+  - **No-op (already had):** Copilot CLI support, OpenCode fixes, `using-superflowers` Copilot note
+    (adapted in the 2026-04-03 v5.0.7 sync)
+  - **Pre-existing, out of scope (noted):** `executing-plans` line 37 uses "test type" (canon says
+    "verification type"); to fix separately
 - **2026-04-03:** Sync to v5.0.7 (12 upstream commits)
   - **Adopted:** Community/docs (README, RELEASE-NOTES), OpenCode fixes (bootstrap injection, path alignment)
   - **Adapted:** Copilot CLI support (session-start merged with our Tailscale detection, using-superflowers + copilot-tools.md)
