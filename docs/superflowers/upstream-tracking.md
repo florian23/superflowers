@@ -4,7 +4,7 @@
 - **Upstream:** obra/superpowers
 - **Base Version:** v6.0.3
 - **Base Commit:** v6.0.3 tag (obra/superpowers)
-- **Last Sync:** 2026-06-26 (partial — brainstorming/Visual Companion deferred to a follow-up pass)
+- **Last Sync:** 2026-06-26 (v6.0.3 core) + 2026-07-04 (Visual Companion follow-up; still deferred: hooks/session-start, .opencode/*)
 
 ## Modified Files (intentional divergence — never blindly overwrite)
 
@@ -84,6 +84,20 @@ deliberate: explicit SemVer gives release control and stays aligned with upstrea
 
 ## Sync History
 
+- **2026-07-04:** v6.0.3 Visual Companion follow-up (the piece deferred on 2026-06-26)
+  - **Adopted:** Visual Companion auth-hardening — `server.cjs` (bearer keys, WS auth,
+    cross-origin protection, `/files/*` path-escape guard, key out of URL), `helper.js`,
+    `frame-template.html`, `stop-server.sh`, `spec-document-reviewer-prompt.md` (verbatim +
+    `.superpowers`→`.superflowers` rebrand)
+  - **Adapted:** `start-server.sh` — 3-way merge: upstream base + our Tailscale auto-detect
+    block (bind `0.0.0.0` + tailnet IP when no explicit `--host`). Upstream doesn't touch
+    host/bind logic; the hardening's threat model explicitly covers the non-loopback/tailnet
+    case, so auth + tailnet binding are complementary
+  - **Adapted:** `brainstorming/SKILL.md` — just-in-time companion offer + `--open` flag;
+    our DDD/architecture/BDD workflow integration left untouched
+  - **Fork branding:** `brandMarkup()` drops the remote Prime Radiant logo fetch (phone-home,
+    undesirable on a tailnet-bound server) + telemetry consts; links to florian23/superflowers
+  - **Still deferred:** `hooks/session-start`, `.opencode/*` (VC-independent bootstrap/platform)
 - **2026-06-26:** Sync to v6.0.3 (major upgrade, v5.1.0 → v6.0.0/6.0.2/6.0.3)
   - **Adopted:** new harness support — Kimi, Pi, Antigravity (tool-mapping refs,
     `.kimi-plugin/`, `.pi/extensions/superflowers.ts`, claude-code-tools.md),
