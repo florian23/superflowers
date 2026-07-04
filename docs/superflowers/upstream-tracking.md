@@ -4,7 +4,7 @@
 - **Upstream:** obra/superpowers
 - **Base Version:** v6.0.3
 - **Base Commit:** v6.0.3 tag (obra/superpowers)
-- **Last Sync:** 2026-06-26 (v6.0.3 core) + 2026-07-04 (Visual Companion follow-up; still deferred: hooks/session-start, .opencode/*)
+- **Last Sync:** 2026-06-26 (v6.0.3 core) + 2026-07-04 (Visual Companion + bootstrap follow-ups). Consciously skipped: Codex-plugin mirroring tooling.
 
 ## Modified Files (intentional divergence — never blindly overwrite)
 
@@ -83,6 +83,16 @@ deliberate: explicit SemVer gives release control and stays aligned with upstrea
 > obra/superpowers, not this fork. Our `version` is independent.
 
 ## Sync History
+
+- **2026-07-04:** v6.0.3 bootstrap follow-up (completes the deferred bootstrap piece)
+  - **session-start:** dropped the obsolete legacy-skills warning; added `| cat` to the
+    printf outputs (SIGPIPE/buffer fix). Kept our Copilot CLI platform detection.
+  - **OpenCode consolidation:** merged our two divergent plugin files into a single
+    up-to-date `.opencode/plugins/superflowers.js` (upstream v6.0.3 `messages.transform`,
+    fixes token bloat #750 + multi-system-message #894; vendor-neutral tools). Removed the
+    stale `superpowers.js`; realigned `tests/opencode/*`, `.opencode/INSTALL.md`,
+    `docs/README.opencode.md` (install URL → florian23/superflowers).
+  - **Nothing left deferred** from v6.0.3 (Codex-plugin mirroring remains a conscious skip).
 
 - **2026-07-04:** v6.0.3 Visual Companion follow-up (the piece deferred on 2026-06-26)
   - **Adopted:** Visual Companion auth-hardening — `server.cjs` (bearer keys, WS auth,
