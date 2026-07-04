@@ -160,6 +160,29 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 - `./spec-reviewer-prompt.md` - Dispatch spec compliance reviewer subagent
 - `./code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent
 
+## Workspace & Diff Packaging
+
+Short-lived SDD artifacts — task briefs, implementer reports, review packages,
+and the progress ledger — live in `.superflowers/sdd/` in the working tree,
+**never under `.git/`** (Claude Code treats `.git/` as a protected path and
+denies agent writes there, which would block an implementer from writing its
+report). Helper scripts (single source of truth for the location):
+
+- `scripts/sdd-workspace` — print the workspace dir, creating it with a
+  self-ignoring `.gitignore` (stays out of `git status` and commits without
+  touching tracked files).
+- `scripts/task-brief PLAN N` — write/print the path to Task N's brief.
+- `scripts/review-package BASE HEAD` — write the diff package (commit list +
+  stat + full diff) and print its path. BASE is the commit recorded **before**
+  dispatching the implementer — never `HEAD~1`, which drops all but the last
+  commit of a multi-commit task.
+
+**Pass the diff package path to both review stages** (spec-reviewer, then
+code-quality reviewer) instead of pasting the diff — the large diff stays out
+of the controller's context. This two-stage flow and our named
+`superflowers:code-reviewer` are unchanged; only scratch location and diff
+delivery are.
+
 ## Example Workflow
 
 ```

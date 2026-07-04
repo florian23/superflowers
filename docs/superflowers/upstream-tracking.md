@@ -2,9 +2,9 @@
 
 ## Current Base
 - **Upstream:** obra/superpowers
-- **Base Version:** v5.1.0
-- **Base Commit:** ecbd610fce16d5faabcea997f17031129589b572 (v5.1.0 tag)
-- **Last Sync:** 2026-06-11
+- **Base Version:** v6.0.3
+- **Base Commit:** v6.0.3 tag (obra/superpowers)
+- **Last Sync:** 2026-06-26 (partial — brainstorming/Visual Companion deferred to a follow-up pass)
 
 ## Modified Files (intentional divergence — never blindly overwrite)
 
@@ -84,6 +84,37 @@ deliberate: explicit SemVer gives release control and stays aligned with upstrea
 
 ## Sync History
 
+- **2026-06-26:** Sync to v6.0.3 (major upgrade, v5.1.0 → v6.0.0/6.0.2/6.0.3)
+  - **Adopted:** new harness support — Kimi, Pi, Antigravity (tool-mapping refs,
+    `.kimi-plugin/`, `.pi/extensions/superflowers.ts`, claude-code-tools.md),
+    rebranded to superflowers
+  - **Adopted:** low-risk bundled skills verbatim (dispatching-parallel-agents,
+    receiving-code-review, test-driven-development) + vendor-neutral prose
+  - **Adopted:** writing-skills (incl. CSO → Skill Discovery Optimization rename),
+    re-applied our superflowers rebrand
+  - **Adopted (C4):** writing-plans additive blocks — Task Right-Sizing, Global
+    Constraints (distinct from our org Active Constraints), per-Task Interfaces
+  - **Adopted (C5):** requesting-code-review Read-Only Review guard (kept our
+    named superflowers:code-reviewer + architecture-context block)
+  - **Adapted (C1):** using-git-worktrees — adopted global-dir removal (project-
+    local only), dropped our ~/.config/superflowers/worktrees path; kept Integration
+  - **Adapted (C2):** finishing — followed worktree-cleanup-path simplification;
+    KEPT gh pr create (fork workflow) + Step-1 BDD/fitness gate + Integration (did
+    NOT adopt forge-neutral gh removal)
+  - **Adapted (C3):** SDD — adopted workspace + diff-packaging mechanics
+    (scripts/sdd-workspace, task-brief, review-package → .superflowers/sdd, scratch
+    out of .git/ per v6.0.3 fix, diff-as-file). KEPT two-stage spec→quality review +
+    named reviewer; did NOT consolidate to task-reviewer-prompt.md
+  - **Adopted (infra):** .gitignore (.superflowers/, evals/), scripts/lint-shell.sh
+  - **Vendor-neutral prose:** adopted broadly; exception kept "Ultrathink" in
+    systematic-debugging (functional Claude Code keyword, we are Claude-Code-primary)
+  - **Skipped:** task-reviewer-prompt.md as primary, reviewer-prompt consolidation,
+    Codex-plugin mirroring tooling, contributor guidelines, README/assets, evals
+    submodule
+  - **DEFERRED to a follow-up pass:** brainstorming + Visual Companion (700 LOC/8
+    files: auth-hardening, server scripts) — careful merge vs our Tailscale
+    divergence; hooks/session-start; .opencode/* updates
+  - **Our version:** bumped to 1.2.0 (independent of upstream)
 - **2026-06-11:** Sync to v5.1.0 (single release, v5.0.7 → v5.1.0)
   - **Adapted:** `using-git-worktrees` (worktree rewrite: Step 0 isolation detection, prefer
     native worktree tools like `EnterWorktree`, submodule guard, consent prompt, sandbox fallback —

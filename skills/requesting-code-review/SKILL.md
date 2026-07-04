@@ -29,6 +29,8 @@ BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main
 HEAD_SHA=$(git rev-parse HEAD)
 ```
 
+**Read-Only Review:** The reviewer's pass is read-only on this checkout. It must not mutate the working tree, the index, HEAD, or branch state in any way — only inspect via `git show`, `git diff`, and `git log`. If a working copy of a different revision is needed, check it out into a separate temporary directory (e.g. `git worktree add /tmp/review-[SHA] [SHA]`) — never move HEAD on this checkout.
+
 **2. Dispatch code-reviewer subagent:**
 
 Use Task tool with superflowers:code-reviewer type, fill template at `code-reviewer.md`
