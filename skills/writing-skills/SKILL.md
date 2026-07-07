@@ -660,6 +660,7 @@ Deploying untested skills = deploying untested code. It's a violation of quality
 - [ ] Common mistakes section
 - [ ] No narrative storytelling
 - [ ] Supporting files only for tools or heavy reference
+- [ ] Language consistency: skill text is in the artifact's canonical language (English) even when the conversation runs in another language. Check EMBEDDED strings too — prompt/echo/print/example text, not just prose and docs. Grep the file for stray non-canonical-language words before considering it done.
 
 **Deployment:**
 - [ ] Commit skill to git and push to your fork (if configured)

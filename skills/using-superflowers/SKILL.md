@@ -93,6 +93,7 @@ These thoughts mean STOP—you're rationalizing:
 | "I'll just do this one thing first" | Check BEFORE doing anything. |
 | "This feels productive" | Undisciplined action wastes time. Skills prevent this. |
 | "I know what that means" | Knowing the concept ≠ using the skill. Invoke it. |
+| "I'll just edit this SKILL.md directly" | Editing a skill file = invoke writing-skills. Keep the artifact's language, not the conversation's. |
 
 ## Skill Priority
 
