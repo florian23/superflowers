@@ -187,7 +187,8 @@ You MUST complete each phase before proceeding to the next.
 3. **Verify Fix**
    - Test passes now?
    - No other tests broken?
-   - Issue actually resolved?
+   - Re-run the ORIGINAL reproduction under the ORIGINAL trigger conditions (not a proxy, not just a single run) — the symptom must be gone where it actually occurred.
+   - If investigation surfaced more than one candidate cause, confirm the symptom cannot still occur via an unaddressed one. A fix that removes ONE of several contributing causes is not "fixed."
 
 4. **If Fix Doesn't Work**
    - STOP
