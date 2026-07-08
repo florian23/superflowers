@@ -110,6 +110,8 @@ For each quality goal, create one or more ATAM scenarios. A scenario makes the a
 
 Don't generate scenarios for characteristics that are already fully covered by architecture style fitness functions. Those structural invariants are enforced separately.
 
+**Coverage nudges:** Before finalizing, check `references/coverage-checklist.md` for commonly-missed scenario types (e.g. perceived-progress for interactive/AI-latency features) and add any that apply — even if the architecture goals didn't name them.
+
 ## Step 3: Classify Verification Type
 
 Each scenario gets exactly one verification type. The type is determined by what's being tested, not by what sounds impressive. Here's the decision guide:
@@ -282,3 +284,4 @@ Every architecture characteristic needs a concrete, measurable quality scenario.
 ## Reference Files
 
 - `references/verification-type-guide.md` — Detailed decision tree for classifying scenarios into verification types, with examples per characteristic and language-specific tooling recommendations
+- `references/coverage-checklist.md` — Commonly-missed scenario types (e.g. interactive/AI-latency → performance + perceived-progress) to check during Step 2
