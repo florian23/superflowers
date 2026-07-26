@@ -2,9 +2,10 @@
 
 ## Current Base
 - **Upstream:** obra/superpowers
-- **Base Version:** v6.0.3
-- **Base Commit:** v6.0.3 tag (obra/superpowers)
-- **Last Sync:** 2026-06-26 (v6.0.3 core) + 2026-07-04 (Visual Companion + bootstrap follow-ups). Consciously skipped: Codex-plugin mirroring tooling.
+- **Base Version:** v6.2.0
+- **Base Commit:** v6.2.0 tag (obra/superpowers)
+- **Last Sync:** 2026-07-26 (v6.2.0 quick-wins: writing-good-tests, find-polluter fix, worktree-path bugfix). **Deferred:** SDD plan-scoped redesign (needs re-integration with our Spec Gate + live-evidence). **Consciously skipped:** v6.2.0 skills-compression sweep, Codex plugin tooling, Windows SessionStart fix.
+- **Prior syncs:** 2026-06-26 (v6.0.3 core) + 2026-07-04 (Visual Companion + bootstrap follow-ups).
 
 ## Modified Files (intentional divergence — never blindly overwrite)
 
@@ -83,6 +84,27 @@ deliberate: explicit SemVer gives release control and stays aligned with upstrea
 > obra/superpowers, not this fork. Our `version` is independent.
 
 ## Sync History
+
+- **2026-07-26:** Partial sync to v6.2.0 (from base v6.0.3; branch `upstream-sync/v6.2.0`)
+  - **Adopted:** `writing-good-tests` reframe — replaced `testing-anti-patterns.md` with
+    `writing-good-tests.md` (falsifiability discipline: name the production change that would make
+    a test fail before writing it; assert on real behavior not mocks) + the coherent TDD SKILL.md
+    update. TDD was unmodified vs v6.0.3 → direct file update. Fixed one `superpowers:`→`superflowers:` ref.
+  - **Adopted:** `systematic-debugging/find-polluter.sh` path-matching bugfix (accept `./`-prefixed
+    patterns, collapse `**/`, guard empty result). Our copy was identical to v6.0.3.
+  - **Adapted:** worktree-path capture bugfix in `finishing-a-development-branch` (from upstream
+    0b47219) — we had the same bug: Step 6 recomputed `WORKTREE_PATH` via `--show-toplevel` after
+    Options 1 & 4 had `cd`'d to the main root, so cleanup silently no-oped. Captured it in Step 2
+    instead. Kept our Discard option + Step 1 live-evidence + Step 4 standing-preference.
+  - **Deferred:** SDD plan-scoped workspace + resume-based fix loop (~541-line SKILL.md restructure).
+    High value (fixes stale cross-plan ledger read) but collides with our Spec Verification Gate +
+    live-evidence — needs a dedicated re-integration session.
+  - **Consciously skipped:** v6.2.0 skills-compression sweep (stylistic; collides with our modified
+    skills incl. freshly-merged retro #1–#7; we apply the lean spirit to our own skills deliberately,
+    not by wholesale adoption). Extracted only its one functional fix (worktree path, above). Also
+    skipped: Codex plugin/portal tooling (consistent with prior skip), Windows SessionStart hook fix
+    (no Windows use), forge-agnostic PR change (our workflow is GitHub `gh`), "stop offering discard"
+    (we keep Discard with typed confirmation).
 
 - **2026-07-04:** v6.0.3 bootstrap follow-up (completes the deferred bootstrap piece)
   - **session-start:** dropped the obsolete legacy-skills warning; added `| cat` to the
