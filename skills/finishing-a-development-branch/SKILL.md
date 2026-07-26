@@ -28,6 +28,8 @@ npm test / cargo test / pytest / go test ./...
 - If .feature files exist: verify ALL BDD scenarios pass (superflowers:bdd-testing)
 - If architecture.md exists: verify ALL fitness functions pass (superflowers:fitness-functions)
 
+**Live evidence (beyond green suites):** drive the real system once — start the real backend/process, run one real happy-path end-to-end (on the real target device where a UI ships), observe actual behavior. Green tests against mocks prove wiring, not reality. No live run → not done.
+
 **If ANY verification fails:**
 ```
 Verification failing. Must fix before completing:

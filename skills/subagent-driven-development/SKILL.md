@@ -106,8 +106,9 @@ After the final code review and BEFORE finishing-a-development-branch, run speci
    - Verify EVERY characteristic marked "Fitness Function: Yes" has an implementation
    - Verify EVERY style fitness function has an implementation
    - Run ALL fitness functions → all must pass
-3. ALL checks must pass — partial passage is failure
-4. If ANY check fails: re-dispatch implementer to fix, then re-run ALL checks from step 1
+3. **Live evidence (beyond green suites):** drive the real system once — start the real backend/process, run one real happy-path end-to-end (on the real target device where a UI ships), observe actual behavior. Green tests against mocks prove wiring, not reality. No live run → not done.
+4. ALL checks must pass — partial passage is failure
+5. If ANY check fails: re-dispatch implementer to fix, then re-run ALL checks from step 1
 
 <HARD-GATE>
 Follow the Review-Loop Pattern from agents/reviewer-protocol.md:
