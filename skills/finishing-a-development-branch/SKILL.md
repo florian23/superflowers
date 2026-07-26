@@ -50,6 +50,9 @@ Stop. Don't proceed to Step 2.
 ```bash
 GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
 GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
+# Capture now, while still inside the workspace — Step 5 (Options 1 & 4) cd to
+# the main repo root before Step 6 (Cleanup) needs this value.
+WORKTREE_PATH=$(git rev-parse --show-toplevel)
 ```
 
 This determines which menu to show and how cleanup works:
@@ -180,19 +183,13 @@ git branch -D <feature-branch>
 
 **Only runs for Options 1 and 4.** Options 2 and 3 always preserve the worktree.
 
-```bash
-GIT_DIR=$(cd "$(git rev-parse --git-dir)" 2>/dev/null && pwd -P)
-GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
-WORKTREE_PATH=$(git rev-parse --show-toplevel)
-```
+Both callers (Options 1 & 4) have already changed directory to the main repo root — worktree removal must run from outside the worktree. Use the `GIT_DIR` / `GIT_COMMON` / `WORKTREE_PATH` values captured in Step 2, from before that directory change. Do NOT recompute them here: after the `cd`, `git rev-parse --show-toplevel` returns the main root, the provenance check never matches, and cleanup silently no-ops.
 
 **If `GIT_DIR == GIT_COMMON`:** Normal repo, no worktree to clean up. Done.
 
-**If worktree path is under `.worktrees/` or `worktrees/`:** Superflowers created this worktree — we own cleanup.
+**If `WORKTREE_PATH` is under `.worktrees/` or `worktrees/`:** Superflowers created this worktree — we own cleanup:
 
 ```bash
-MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
-cd "$MAIN_ROOT"
 git worktree remove "$WORKTREE_PATH"
 git worktree prune  # Self-healing: clean up any stale registrations
 ```
