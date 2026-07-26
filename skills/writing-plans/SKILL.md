@@ -53,6 +53,10 @@ If specification skills were used before this plan, the plan MUST reference thei
 - After ALL step definition tasks: run the full BDD suite to verify all scenarios pass
 - The plan's final task MUST be a BDD verification task that runs the complete suite
 
+**ux-design (ux-design.md, wireframes, or designs/ exist):**
+- UI implementation tasks MUST reproduce the approved design — port the confirmed layout, states, and content hierarchy from the wireframes, and (if `designs/` from frontend-design exists) the production design. Never build a generic from-scratch UI when an approved design exists.
+- The plan's final UI task MUST be a **fidelity verification**: run the real UI and compare each screen and state against the approved wireframes/`designs/` (visual review on the real target device). Deviation from the approved design = not done.
+
 **constraint-selection** (docs/superflowers/constraints/ exists):
 - Read the most recent feature constraints file
 - Include constraint compliance verification as explicit tasks in the plan

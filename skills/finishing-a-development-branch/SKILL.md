@@ -71,6 +71,8 @@ Or ask: "This branch split from main - is that correct?"
 
 ### Step 4: Present Options
 
+**Standing preference (skip the menu):** If the user has stated a standing integration preference — this session, or recorded in the project's CLAUDE.md / memory (e.g. "always push + PR", "merge locally on green") — execute that path directly WITHOUT re-presenting the menu. Re-ask only for genuinely irreversible decisions (discard, force-push, or an unresolved merge conflict). The first time you present the menu, after the user chooses, offer once: "Want me to do this automatically next time? I can remember it." If yes, record the preference in CLAUDE.md / memory. Integration mechanics are batchable — only genuine decisions need a prompt.
+
 **Normal repo and named-branch worktree — present exactly these 4 options:**
 
 ```

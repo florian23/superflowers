@@ -22,6 +22,7 @@ Every project goes through this process. A todo list, a single-function utility,
 You MUST create a task for each of these items and complete them in order:
 
 1. **Explore project context** — check files, docs, recent commits
+1b. **Scope the chain (no silent skips)** — Classify the work in one line (greenfield app / single feature / tooling artifact / backend service / UI-heavy). Then state which downstream steps (domain-understanding, market-analysis, bounded-context, constraint-selection, architecture-assessment + style, risk-storming, quality-scenarios, feature-design, UX) you will RUN vs SKIP — each skip with a one-line reason. Show this chain-plan to the user before proceeding (they can object). A skipped step is a stated, reviewable decision — never a silent whole-cluster bypass.
 2. **Domain understanding** — invoke superflowers:domain-understanding to build a domain profile. Analyzes code, asks domain questions, researches externally, incorporates user-provided knowledge sources (Confluence, Wiki, ontologies). Ensures design questions are domain-informed.
 3. **Offer the visual companion just-in-time** — NOT upfront. The first time a question would genuinely be clearer shown than described, offer it then (its own message); on approval its browser tab opens for you. If no visual question ever arises, never offer it. See the Visual Companion section below.
 4. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria. Questions are informed by the domain profile from step 2.
