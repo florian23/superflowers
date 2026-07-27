@@ -473,7 +473,8 @@ run specification checks:
 Follow the Review-Loop Pattern from agents/reviewer-protocol.md:
 - Dispatch verification checks (BDD + fitness functions)
 - If FAIL: dispatch an implementer to fix, then re-run verification (fresh)
-- Repeat until ALL checks pass
+- Repeat until ALL checks pass, up to three fix rounds per check
+- After three failed rounds on the same check: STOP, report BLOCKED. Never park it.
 - Do NOT ask the user whether to fix. Fix automatically.
 - Do NOT skip Step Definitions. Feature files without Step Definitions (Glue Code) = FAIL.
 - Do NOT skip fitness function implementation. FFs in architecture.md without code = FAIL.
