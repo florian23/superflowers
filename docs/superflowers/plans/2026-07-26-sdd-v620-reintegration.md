@@ -26,6 +26,11 @@
 
 **Source of truth for adopted content:** `upstream/main` at tag `v6.2.0` (commit `3dcbd5c`). Every "copy from upstream" step below names the exact `git show` command that produces the content.
 
+**Environment Baseline (verified 2026-07-27, before Task 1):**
+- `shellcheck` 0.11.0 is installed at `~/.local/bin/shellcheck` (static binary — apt would give 0.9.0 and needs root). `shfmt` is absent; `lint-shell.sh` only needs it with `--format`, which this plan never uses.
+- `package.json` has no `scripts` section, and everything under `tests/claude-code/` makes live model calls. There is no fast deterministic full-repo test suite; the tests this plan adds and runs are the verification.
+- `scripts/lint-shell.sh --all` is **already red** on `main`: SC2155/SC2034/SC2064 in `skills/ux-wireframes/scripts/serve-designs.sh`, SC2064/SC2320 in `tests/claude-code/test-document-review-system.sh`, SC2155 in `tests/claude-code/test-helpers.sh`, plus findings in `tests/claude-code/test-subagent-driven-development-integration.sh` and `tests/subagent-driven-dev/run-test.sh`. These are pre-existing and **out of scope** — do not fix them, and never run the linter with `--all` in this plan. Bare `scripts/lint-shell.sh` (changed files only) is the correct invocation everywhere.
+
 ---
 
 ## Decisions this plan encodes
@@ -713,10 +718,14 @@ echo ""
 ```bash
 tests/claude-code/test-subagent-driven-development.sh
 tests/sdd-scripts/test-plan-scoping.sh
-scripts/lint-shell.sh --all
+scripts/lint-shell.sh
 ```
 
 Expected: both test scripts pass; lint is clean.
+
+Note the bare `lint-shell.sh` — its default is "changed shell files", which is what
+this plan is responsible for. Do NOT use `--all`: the repository has pre-existing
+shellcheck findings in five untouched files (see Environment Baseline above).
 
 - [ ] **Step 7: Commit**
 
@@ -818,10 +827,11 @@ git commit -m "chore: bump version to 1.4.0 (SDD v6.2.0 re-integration)"
 tests/sdd-scripts/test-plan-scoping.sh
 tests/claude-code/test-subagent-driven-development.sh
 tests/claude-code/test-subagent-driven-development-integration.sh
-scripts/lint-shell.sh --all
+scripts/lint-shell.sh
 ```
 
-Expected: all pass, lint clean.
+Expected: all pass, lint clean over the changed files. `--all` is deliberately not
+used — see Environment Baseline.
 
 - [ ] **Step 2: Verify no branding or dangling references leaked**
 
