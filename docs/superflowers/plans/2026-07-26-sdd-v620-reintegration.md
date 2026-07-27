@@ -795,10 +795,16 @@ grep -rn 'spec-reviewer-prompt\|code-quality-reviewer-prompt\|two-stage review' 
   --include='*.md' skills/ agents/ references/ CLAUDE.md
 ```
 
-Expected: only two hits, both historical records that must NOT be edited —
-`docs/superflowers/upstream-tracking.md` (rewritten in Task 8) and
-`docs/superflowers/specs/2026-03-23-codex-app-compatibility-design.md:198` (a dated spec).
-Since the grep above excludes `docs/`, expect **no output**.
+Expected: exactly **one** hit — `skills/writing-skills/SKILL.md:156`. Leave it alone. It is a
+historical anecdote from CSO research, written in the past tense, reporting an experiment run
+when SDD was two-stage; its actual claim is about description fields, not about the review
+process, and remains true. (An earlier draft of this plan said "no output" here — that was
+wrong: the hit was visible when the plan was written and got overlooked.)
+
+Two further mentions live under `docs/` and are excluded by the paths above, both deliberately
+preserved: `docs/superflowers/upstream-tracking.md` (rewritten in Task 8) and
+`docs/superflowers/specs/2026-03-23-codex-app-compatibility-design.md:198` (a dated spec
+describing what was true then). Do not edit either.
 
 Also confirm the skill's file list is what the plan intends:
 
