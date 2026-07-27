@@ -567,8 +567,15 @@ Re-reviewer: Missing progress reporting — ADDRESSED (src/recovery.js:41).
 ...
 
 [After all tasks]
-[Run review-package PLAN_FILE MERGE_BASE HEAD; dispatch final code-reviewer, most capable model]
+[Run review-package PLAN_FILE MERGE_BASE HEAD; dispatch the named superflowers:code-reviewer, most capable model]
 Final reviewer: All requirements met. Deferred minors triaged: none block merge.
+
+[Specification Verification Gate]
+  No .feature files and no architecture.md in this project — BDD and
+  fitness-function checks report SKIP with that reason.
+  Live evidence: started the real CLI, ran install-hook end-to-end against a
+  real repo, confirmed the hook fired. Green tests alone would not have
+  closed this gate.
 
 [Delete this plan's workspace — the record now lives in git]
 
