@@ -1056,6 +1056,16 @@ grep -n 'two-stage' docs/superflowers/upstream-tracking.md
 
 Expected: exactly one hit, at the 2026-06-26 entry.
 
+> **Adjudicated at Task 8's editorial review — do not re-open.** The reviewer asked to drop the
+> `Learned during execution` and `Hardened (ours)` labels as a vocabulary break, and to move the
+> staging rule out of the changelog. Overruled on evidence: this file has no fixed taxonomy — it
+> already carries `Vendor-neutral prose`, `OpenCode consolidation`, `Fork branding`,
+> `No-op (already had)`, `Pre-existing, out of scope (noted)`, `Adopted (small)` and `Our version`
+> as one-off descriptive labels. Ad-hoc labels *are* the convention. The staging rule and the
+> script-output clarification also stay: both are divergences from upstream that live in our
+> `SKILL.md`, and the whole point of this file is telling a future sync what it must not
+> overwrite. The entry is longer than its neighbours because this sync was larger than theirs.
+
 - [ ] **Step 5: Bump the version**
 
 ```bash
