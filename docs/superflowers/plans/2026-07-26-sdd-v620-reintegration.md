@@ -401,6 +401,30 @@ lens. The per-task reviewer stays `general-purpose`, because that lens
 would break its "do not crawl the broader codebase" scoping.
 ```
 
+- [ ] **Step 2b: Add the controller staging rule**
+
+Learned the hard way during this plan's own execution: the controller committed a plan-document
+edit with `git add -A` while an implementer was mid-edit in the same working tree, silently
+sweeping the implementer's half-finished work into a commit whose message described only the
+plan change. Upstream's "never fix findings yourself" rule does not cover this, because the
+controller was not fixing findings — it was doing legitimate parallel bookkeeping.
+
+In `### 4. The fix loop`, immediately after the existing line:
+
+```
+Never fix findings yourself in the controller session — your context stays
+clean for coordination, and controller fixes skip review.
+```
+
+append:
+
+```
+The same applies to staging. While any implementer is live in your working
+tree, never `git add -A` or `git add .` — you will sweep its half-finished
+edits into a commit of your own, under a message that does not describe
+them. Stage the explicit paths you are committing, every time.
+```
+
 - [ ] **Step 3: Insert the test-first ordering note**
 
 At the end of `## Setup`, immediately after the paragraph beginning `Before dispatching Task 1, scan the plan once for conflicts:` and its bullet list and closing paragraph, append:
