@@ -484,7 +484,8 @@ in progress — these lines are what make one recoverable.
 3. **Live evidence (beyond green suites):** drive the real system once — start the real
    backend/process, run one real happy-path end-to-end (on the real target device where a
    UI ships), observe actual behavior. Green tests against mocks prove wiring, not reality.
-   No live run → not done.
+   No live run → not done, unless nothing in this plan is startable — then name what
+   is not startable, in the ledger, and move on. "I did not try" is not a reason.
 4. ALL checks must pass — partial passage is failure
 5. If ANY check fails: dispatch an implementer to fix, then re-run ALL checks from step 1, within the round cap below
 
