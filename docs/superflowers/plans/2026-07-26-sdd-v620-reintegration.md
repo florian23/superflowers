@@ -1145,3 +1145,107 @@ Not a command — a read. Check that the Setup → Task Loop → Final Review �
 **Type consistency.** Script signatures are consistent throughout: `sdd-workspace PLAN_FILE`, `task-brief PLAN_FILE N`, `review-package PLAN_FILE BASE HEAD`. File names are consistent: `task-reviewer-prompt.md` and `re-review-prompt.md` are created in Tasks 3 and 4 and referenced by those names in Tasks 5, 6, and 7.
 
 **One known ordering hazard.** Task 5 replaces SKILL.md wholesale, so if Tasks 3 and 4 have not run, the rebuilt SKILL.md references template files that do not exist yet. The task order handles this; do not reorder 3, 4, and 5.
+
+---
+
+### Task 10: Fix the stale integration test and docs
+
+> Found by Task 9's verification, which returned FAIL. This plan's File Structure table listed
+> only `tests/claude-code/test-subagent-driven-development.sh` — there is a **second** test for
+> the same skill, and it instructs the model under test to perform the exact behaviour this plan
+> abolished. Task 9 Step 1 runs it, so the omission was visible in the plan's own checks.
+
+**Files:**
+- Modify: `tests/claude-code/test-subagent-driven-development-integration.sh` (banner, both prompt copies, success summary, one branding comment)
+- Modify: `tests/claude-code/README.md:104-109`
+- Modify: `docs/testing.md:47-53`
+
+- [ ] **Step 1: Fix the integration test's banner**
+
+Lines 14-19 announce what the test verifies. Replace these three:
+
+```
+echo "  2. Full task text provided to subagents"
+echo "  4. Spec compliance review before code quality"
+echo "  6. Spec reviewer reads code independently"
+```
+
+with:
+
+```
+echo "  2. Task brief file handed to subagents (not pasted task text)"
+echo "  4. One task review returning both spec and quality verdicts"
+echo "  6. Task reviewer verifies against the diff, not the report"
+```
+
+- [ ] **Step 2: Fix both copies of the live prompt**
+
+The prompt is duplicated — once in a heredoc, once in a `PROMPT=` assignment. Both contain:
+
+```
+2. Provide full task text to subagents (don't make them read files)
+4. Run spec compliance review before code quality review
+```
+
+Replace, in **both** copies:
+
+```
+2. Hand each subagent its task brief file rather than pasting the task text
+4. Run one task review per task, returning both a spec-compliance and a code-quality verdict
+```
+
+This is the instruction the model under test actually receives. Leaving it stale does not merely
+mis-describe the skill — it tells the agent to do the old thing and then grades it on that.
+
+- [ ] **Step 3: Fix the success summary**
+
+Around lines 300-304, replace:
+
+```
+    echo "  ✓ Provides full task text to subagents"
+    echo "  ✓ Runs spec compliance before code quality"
+    echo "  ✓ Spec reviewer verifies independently"
+```
+
+with:
+
+```
+    echo "  ✓ Hands subagents a task brief file"
+    echo "  ✓ Runs one task review with both verdicts"
+    echo "  ✓ Task reviewer verifies against the diff"
+```
+
+- [ ] **Step 4: Fix the branding remnant**
+
+The comment `# IMPORTANT: Run from superpowers directory so local dev skills are available`
+says `superpowers`. Change it to `superflowers`.
+
+- [ ] **Step 5: Fix the two documentation files**
+
+`tests/claude-code/README.md:104-109` and `docs/testing.md:47-53` describe the same checks in
+prose. Update them to match Steps 1-3 — brief file instead of pasted text, one review with two
+verdicts, reviewer works from the diff. Keep each file's existing voice and numbering.
+
+- [ ] **Step 6: Verify**
+
+```bash
+grep -rn 'spec compliance review before\|full task text\|Spec reviewer reads' \
+  tests/ docs/testing.md
+grep -rn 'superpowers' tests/claude-code/test-subagent-driven-development-integration.sh
+bash -n tests/claude-code/test-subagent-driven-development-integration.sh
+scripts/lint-shell.sh tests/claude-code/test-subagent-driven-development-integration.sh
+```
+
+Expected: first two greps produce no output; the syntax check passes; lint is clean.
+
+Note the linter is invoked with an **explicit path**. Bare `scripts/lint-shell.sh` defaults to
+`git diff HEAD`, which is empty once work is committed — Task 9 found that check running
+vacuously against zero files. Always name the paths when verifying after a commit.
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add tests/claude-code/test-subagent-driven-development-integration.sh \
+        tests/claude-code/README.md docs/testing.md
+git commit -m "test: align the SDD integration test and docs with the consolidated review"
+```
