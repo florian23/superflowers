@@ -891,12 +891,19 @@ else
     exit 1
 fi
 
-if assert_contains "$output" "not.*paste\|never.*paste\|avoid.*paste\|instead of pasting\|context" "Avoids pasting into controller context"; then
+if assert_contains "$output" "not.*paste\|never.*paste\|avoid.*paste\|instead of pasting\|resident.*context\|keep.*context.*clean\|pollut" "Avoids pasting into controller context"; then
     : # pass
 else
     exit 1
 fi
 ```
+
+> **Do not loosen this assertion back to a bare `\|context` alternative.** An earlier draft had
+> one, and it would pass against the *old* skill: a paste-everything controller answers
+> "provides the full text so the implementer has context" and scores a spurious PASS. An
+> assertion that a broken skill satisfies is worse than no assertion — it manufactures
+> confidence. Check against SKILL.md's actual wording ("stays resident in your context",
+> "Hand artifacts over as files") instead.
 
 - [ ] **Step 5: Add a ledger test**
 
