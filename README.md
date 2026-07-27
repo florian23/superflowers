@@ -180,7 +180,7 @@ Every specification artifact is verified by a fresh agent that did not create it
 | bdd-step-reviewer | Step definition quality | bdd-testing |
 | fitness-function-reviewer | FF correctness | fitness-functions |
 | spec-reviewer | Spec completeness, consistency, constraint coverage | brainstorming |
-| code-reviewer | Code quality (final whole-branch review) | subagent-driven-development, executing-plans |
+| code-reviewer | Code quality (final whole-branch review) | subagent-driven-development |
 | ux-reviewer | Usability (Nielsen's 10 heuristics) | ux-wireframes |
 
 All reviewers follow the 4-step loop from `agents/reviewer-protocol.md`: dispatch → verdict → fix → re-dispatch until APPROVED.
