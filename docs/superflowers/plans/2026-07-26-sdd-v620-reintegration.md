@@ -734,6 +734,25 @@ git commit -m "sdd: rebuild SKILL.md on v6.2.0 base with spec gate, live evidenc
 - Modify: `skills/writing-plans/SKILL.md:369`
 - Modify: `skills/using-superflowers/references/codex-tools.md:36`
 
+- [ ] **Step 0: Close a parked finding from Task 5**
+
+Parked with a ruling at Task 5's round cap rather than opening a seventh fix round: real,
+one word, nothing downstream builds on it. The gate's green ledger line assumes a live-evidence
+one-liner and does not say what goes there when live evidence was SKIPped. Both readings leave
+a correct ledger trail, which is why it was parked rather than blocking.
+
+In `skills/subagent-driven-development/SKILL.md`, in the ledger-format block, change:
+
+```
+Gate: green (BDD <n> scenarios, FF <n>, live evidence: <one-liner>)
+```
+
+to:
+
+```
+Gate: green (BDD <n> scenarios, FF <n>, live evidence: <one-liner or SKIP reason>)
+```
+
 - [ ] **Step 1: Delete the two superseded templates**
 
 ```bash
