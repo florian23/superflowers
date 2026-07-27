@@ -343,6 +343,15 @@ This is the task that carries the risk. Work in order: take upstream whole, then
 **Files:**
 - Modify: `skills/subagent-driven-development/SKILL.md` (full replacement + four insertions)
 
+> **Two notes carried over from the Task 2 review:**
+> - The branding substitution is a no-op in the three prompt templates (0 occurrences of
+>   `superpowers` in each upstream file) but **matters here**: upstream's `SKILL.md` contains
+>   11 occurrences. Step 1's greps are the real check, not a formality.
+> - Upstream's prose uses "spec" to mean *a task's own requirements*, whereas this repo's
+>   `CLAUDE.md` reserves "spec" for the brainstorming design-spec artifact in
+>   `docs/superflowers/specs/`. Do not rewrite upstream's usage, but when writing OUR inserted
+>   sections (Steps 3, 4, 7), use this repo's canonical terms.
+
 - [ ] **Step 1: Take upstream's SKILL.md, rebranded**
 
 ```bash
