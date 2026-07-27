@@ -1236,7 +1236,10 @@ bash -n tests/claude-code/test-subagent-driven-development-integration.sh
 scripts/lint-shell.sh tests/claude-code/test-subagent-driven-development-integration.sh
 ```
 
-Expected: first two greps produce no output; the syntax check passes; lint is clean.
+Expected: first two greps produce no output; the syntax check passes; lint reports **only the
+two pre-existing findings** on lines this task does not touch (SC2064 at line 29, SC2320 at
+line 155) — this file is one of the five named in the Environment Baseline. New findings on
+changed lines would be a defect; these two are not.
 
 Note the linter is invoked with an **explicit path**. Bare `scripts/lint-shell.sh` defaults to
 `git diff HEAD`, which is empty once work is committed — Task 9 found that check running
