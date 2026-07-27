@@ -5,7 +5,7 @@ description: Use when executing implementation plans with independent tasks in t
 
 # Subagent-Driven Development
 
-Execute plan by dispatching a fresh implementer subagent per task, a task review (spec compliance + code quality) after each, and a broad whole-branch review at the end.
+Execute plan by dispatching a fresh implementer subagent per task, a task review (spec compliance + code quality) after each, a broad whole-branch review, and a specification verification gate before finishing.
 
 **Why subagents:** You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
 
@@ -482,7 +482,16 @@ Follow the Review-Loop Pattern from agents/reviewer-protocol.md:
 **The fix-loop breaker does not apply here.** The task loop's five-round cap
 lets you park a review finding with a ruling. This gate has no parking: a
 failing scenario or fitness function is not a contestable opinion, it is a
-red suite. Loop until green, or report BLOCKED — never park.
+red suite.
+
+It does have a cap, and it ends differently. Three fix rounds per failing
+check: rounds 1-2 dispatch an implementer to fix, round 3 dispatches a fresh
+one on a more capable model. If the same check still fails after round 3,
+STOP and report BLOCKED to your human partner with the check, its output, and
+what the three rounds tried. A check that survives three attempts is telling
+you the plan or the artifact is wrong, not that it needs a fourth attempt.
+Never park a failing check, and never mark the gate green with one
+outstanding.
 
 This gate is NOT optional when specification artifacts exist.
 
