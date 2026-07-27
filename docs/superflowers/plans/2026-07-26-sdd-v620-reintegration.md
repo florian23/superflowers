@@ -1222,9 +1222,17 @@ says `superpowers`. Change it to `superflowers`.
 
 - [ ] **Step 5: Fix the two documentation files**
 
-`tests/claude-code/README.md:104-109` and `docs/testing.md:47-53` describe the same checks in
-prose. Update them to match Steps 1-3 — brief file instead of pasted text, one review with two
-verdicts, reviewer works from the diff. Keep each file's existing voice and numbering.
+`tests/claude-code/README.md` and `docs/testing.md` describe the same checks in prose. Update
+them to match Steps 1-3 — brief file instead of pasted text, one review with two verdicts,
+reviewer works from the diff. Keep each file's existing voice and numbering.
+
+**The README has TWO stale blocks, not one.** Lines 104-109 describe the integration test;
+lines 88 and 91, in the "Fast Tests" section, describe `test-subagent-driven-development.sh`
+and still say "spec compliance before code quality" / "Spec compliance reviewer skepticism".
+Task 7 rewrote exactly those assertions, so that block must describe what Tests 2 and 5 now
+check. An earlier draft of this step named only 104-109 — the fourth time in this plan that a
+statement living in several places got changed in only some of them. Grep the whole file before
+declaring it done.
 
 - [ ] **Step 6: Verify**
 
