@@ -435,13 +435,17 @@ In `## The Task Loop`, immediately after the opening paragraph ("Everything you 
 dispatch prompt …"), insert:
 
 ```
-**Reading the helper scripts' output.** `sdd-workspace`, `task-brief` and
-`review-package` print `wrote <PATH>: <summary>` on success, not a bare
-path. Wherever this skill says "the path it prints", take the substring
-between `wrote ` and the following `: ` — never paste the whole line into
-a `[BRIEF_FILE]`, `[REPORT_FILE]` or `[DIFF_FILE]` placeholder. A reviewer
-handed a sentence instead of a path cannot open its diff.
+**Reading the helper scripts' output.** `sdd-workspace` prints a bare path.
+`task-brief` and `review-package` print `wrote <PATH>: <summary>` — a
+sentence. Wherever this skill says "the path it prints" for those two, take
+the substring between `wrote ` and the following `: `; never paste the whole
+line into a `[BRIEF_FILE]`, `[REPORT_FILE]` or `[DIFF_FILE]` placeholder. A
+reviewer handed a sentence instead of a path cannot open its diff.
 ```
+
+> The three scripts do **not** behave alike — an earlier draft of this step claimed they did,
+> and applying its substring rule to `sdd-workspace` (which ends in `cd "$dir" && pwd`) yields
+> an empty string. Verify against the scripts before rewording this passage.
 
 - [ ] **Step 2b: Add the controller staging rule**
 
@@ -491,13 +495,13 @@ This is our gate. It goes between `## Final Review` and `## Finish`, as a new to
 After the final whole-branch review is clean and BEFORE finishing-a-development-branch,
 run specification checks:
 
-1. **BDD scenarios** (if `.feature` files exist):
+1. **BDD scenarios** — check with `find . -name '*.feature' -not -path './node_modules/*'`; if any exist:
    - Verify Step Definitions exist for all steps (not just that `.feature` files were written)
    - Run `cucumber --dry-run` (or the project equivalent) to check for undefined steps → if
      undefined: dispatch an implementer to write the missing Step Definitions
    - Run ALL scenarios → all must pass
    - Dispatch superflowers:bdd-step-reviewer to verify the Step Definitions are thin glue
-2. **Fitness functions** (if `architecture.md` exists):
+2. **Fitness functions** — check with `find . -name 'architecture.md' -not -path './node_modules/*'`; if it exists:
    - Verify EVERY characteristic marked "Fitness Function: Yes" has an implementation
    - Verify EVERY style fitness function has an implementation
    - Run ALL fitness functions → all must pass
@@ -512,14 +516,28 @@ run specification checks:
 
 <HARD-GATE>
 Follow the Review-Loop Pattern from agents/reviewer-protocol.md:
-- Dispatch verification checks (BDD + fitness functions)
+- Dispatch verification checks (BDD + fitness functions) and drive the live run yourself
 - If FAIL: dispatch an implementer to fix, then re-run verification (fresh)
 - Repeat until ALL checks pass, up to three fix rounds per check
 - After three failed rounds on the same check: STOP, report BLOCKED. Never park it.
 - Do NOT ask the user whether to fix. Fix automatically.
 - Do NOT skip Step Definitions. Feature files without Step Definitions (Glue Code) = FAIL.
 - Do NOT skip fitness function implementation. FFs in architecture.md without code = FAIL.
+- Do NOT skip the live run. A green suite is not evidence the system ran. No observed
+  real run = FAIL. Where nothing is startable (library, plugin, config-only change),
+  record `Gate: live evidence SKIP — <what is not startable>` in the ledger;
+  "I did not try" is not that reason.
 </HARD-GATE>
+
+**Record the gate in the ledger.** This is the only phase that would otherwise leave no
+trace, and its round counter must survive compaction — read `<R>` from the ledger, never
+from memory. Append as you go:
+
+```
+Gate: <check> fix round <R>/3 — <output one-liner>
+Gate: <check> SKIP — <reason>
+Gate: green (BDD <n> scenarios, FF <n>, live evidence: <one-liner>)
+```
 
 **The fix-loop breaker does not apply here.** The task loop's five-round cap
 lets you park a review finding with a ruling. This gate has no parking: a
@@ -535,8 +553,16 @@ you the plan or the artifact is wrong, not that it needs a fourth attempt.
 Never park a failing check, and never mark the gate green with one
 outstanding.
 
-This gate is NOT optional when specification artifacts exist.
+Checks 1 and 2 are conditional on their artifacts existing. The live-evidence check is
+not: it runs on every plan. This gate is never optional.
 ```
+
+> **Why the live-evidence check has no artifact condition.** Checks 1 and 2 legitimately
+> skip when a project has no `.feature` files or no `architecture.md`. Check 3 has no such
+> escape — a plan that changed nothing runnable still has to say *what* is not runnable, in
+> the ledger, by name. Without that, "this repo has nothing to start" becomes a blanket
+> excuse to declare the whole gate inapplicable, and the one check that catches
+> "green tests, broken system" is the one that never runs.
 
 - [ ] **Step 5+6: Rewire the flowchart and move the deletion behind the gate**
 
