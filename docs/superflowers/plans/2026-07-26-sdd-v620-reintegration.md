@@ -508,7 +508,7 @@ run specification checks:
    UI ships), observe actual behavior. Green tests against mocks prove wiring, not reality.
    No live run → not done.
 4. ALL checks must pass — partial passage is failure
-5. If ANY check fails: dispatch an implementer to fix, then re-run ALL checks from step 1
+5. If ANY check fails: dispatch an implementer to fix, then re-run ALL checks from step 1, within the round cap below
 
 <HARD-GATE>
 Follow the Review-Loop Pattern from agents/reviewer-protocol.md:
@@ -551,7 +551,21 @@ Add the gate node and re-route. Add these node declarations next to the other to
 ```
     "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)" [shape=box];
     "All specification checks pass?" [shape=diamond];
+    "Third failed round on this check?" [shape=diamond];
     "Fix violations (dispatch implementer)" [shape=box];
+```
+
+The gate's failure path must model the three-round cap and end at the **existing**
+`"STOP: report BLOCKED to human partner"` node — do not declare a second one. The gate's
+escalation and the task loop's escalation end in the same place, and the graph should say so.
+Match that node's spelling character for character; an edge to a near-miss name silently
+declares a new node instead of reusing the old one. The failure path is:
+
+```
+    "All specification checks pass?" -> "Third failed round on this check?" [label="no"];
+    "Third failed round on this check?" -> "STOP: report BLOCKED to human partner" [label="yes"];
+    "Third failed round on this check?" -> "Fix violations (dispatch implementer)" [label="no"];
+    "Fix violations (dispatch implementer)" -> "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)";
 ```
 
 and replace the final edge with:
