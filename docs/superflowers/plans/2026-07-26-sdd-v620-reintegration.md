@@ -178,6 +178,8 @@ tests/sdd-scripts/test-plan-scoping.sh
 
 Expected: `PASS: plan-scoping`
 
+(The directory runner arrives in Task 7 Step 5b — at this point it does not exist yet.)
+
 - [ ] **Step 5: Lint the scripts**
 
 ```bash
@@ -713,11 +715,50 @@ fi
 echo ""
 ```
 
+- [ ] **Step 5b: Wire the plan-scoping test into a runner**
+
+Added after Task 1's review: `tests/sdd-scripts/test-plan-scoping.sh` exists but nothing
+invokes it. Every other test directory in this repo has its own runner and there is no CI,
+so an unwired test is one nobody runs. Create `tests/sdd-scripts/run-tests.sh`:
+
+```bash
+#!/usr/bin/env bash
+# Run every deterministic SDD helper-script test in this directory.
+# Unlike tests/claude-code/, these make no model calls — they are fast and hermetic.
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+failed=0
+for t in "$SCRIPT_DIR"/test-*.sh; do
+  [ -f "$t" ] || continue
+  echo "=== $(basename "$t") ==="
+  if "$t"; then
+    echo ""
+  else
+    echo "FAILED: $(basename "$t")" >&2
+    failed=1
+  fi
+done
+
+exit "$failed"
+```
+
+Then:
+
+```bash
+chmod +x tests/sdd-scripts/run-tests.sh
+tests/sdd-scripts/run-tests.sh
+scripts/lint-shell.sh tests/sdd-scripts/run-tests.sh
+```
+
+Expected: the plan-scoping test runs and passes, exit 0, lint clean.
+
 - [ ] **Step 6: Run the full test**
 
 ```bash
 tests/claude-code/test-subagent-driven-development.sh
-tests/sdd-scripts/test-plan-scoping.sh
+tests/sdd-scripts/run-tests.sh
 scripts/lint-shell.sh
 ```
 
@@ -824,7 +865,7 @@ git commit -m "chore: bump version to 1.4.0 (SDD v6.2.0 re-integration)"
 - [ ] **Step 1: Run every test touched by this plan**
 
 ```bash
-tests/sdd-scripts/test-plan-scoping.sh
+tests/sdd-scripts/run-tests.sh
 tests/claude-code/test-subagent-driven-development.sh
 tests/claude-code/test-subagent-driven-development-integration.sh
 scripts/lint-shell.sh
