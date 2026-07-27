@@ -366,7 +366,7 @@ After saving the plan, offer execution choice:
 
 **If Subagent-Driven chosen:**
 - **REQUIRED SUB-SKILL:** Use superflowers:subagent-driven-development
-- Fresh subagent per task + two-stage review
+- Fresh subagent per task + task review (spec + quality) + broad final review
 
 **If Inline Execution chosen:**
 - **REQUIRED SUB-SKILL:** Use superflowers:executing-plans

@@ -459,7 +459,7 @@ plan's `progress.md` as you go:
 
 - `Gate: <check> fix round <R>/3 — <output one-liner>`
 - `Gate: <check> SKIP — <reason>`
-- `Gate: green (BDD <n> scenarios, FF <n>, live evidence: <one-liner>)`
+- `Gate: green (BDD <n> scenarios, FF <n>, live evidence: <one-liner or SKIP reason>)`
 
 Read `<R>` from the ledger, never from memory. A compaction mid-gate leaves
 your context with no record of the rounds already spent: the counter
