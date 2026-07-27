@@ -76,6 +76,7 @@ digraph process {
     "Final review clean" [shape=box];
     "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)" [shape=box];
     "All specification checks pass?" [shape=diamond];
+    "Third failed round on this check?" [shape=diamond];
     "Fix violations (dispatch implementer)" [shape=box];
     "Delete this plan's workspace" [shape=box];
     "Use superflowers:finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
@@ -110,7 +111,9 @@ digraph process {
     "Final review clean" -> "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)";
     "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)" -> "All specification checks pass?";
     "All specification checks pass?" -> "Delete this plan's workspace" [label="yes"];
-    "All specification checks pass?" -> "Fix violations (dispatch implementer)" [label="no"];
+    "All specification checks pass?" -> "Third failed round on this check?" [label="no"];
+    "Third failed round on this check?" -> "STOP: report BLOCKED to human partner" [label="yes"];
+    "Third failed round on this check?" -> "Fix violations (dispatch implementer)" [label="no"];
     "Fix violations (dispatch implementer)" -> "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)";
     "Delete this plan's workspace" -> "Use superflowers:finishing-a-development-branch";
 }
@@ -467,7 +470,7 @@ run specification checks:
    UI ships), observe actual behavior. Green tests against mocks prove wiring, not reality.
    No live run → not done.
 4. ALL checks must pass — partial passage is failure
-5. If ANY check fails: dispatch an implementer to fix, then re-run ALL checks from step 1
+5. If ANY check fails: dispatch an implementer to fix, then re-run ALL checks from step 1, within the round cap below
 
 <HARD-GATE>
 Follow the Review-Loop Pattern from agents/reviewer-protocol.md:
