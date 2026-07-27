@@ -569,6 +569,50 @@ Then remove the now-contradictory `"Final review clean: delete this plan's works
 
 (replacing the direct `"All specification checks pass?" -> "Use superflowers:finishing-a-development-branch"` edge added in Step 5).
 
+- [ ] **Step 6b: Make the Example Workflow show the gate**
+
+Steps 4–6 change the end of the process in three places (the gate section, the flowchart, and
+`## Finish`). Upstream demonstrates that same ending a **fourth** time, in prose, in
+`## Example Workflow` — and this plan originally forgot it, leaving the file contradicting
+itself. Also note Step 1's `sed` does not catch `~/.config/superpowers/hooks/` in this section
+(no `superpowers:`, no leading dot, no `docs/` prefix); complete that substitution by hand, or
+Step 1's and Step 8's "no output" greps cannot both hold.
+
+Replace the closing sequence of `## Example Workflow`:
+
+```
+[After all tasks]
+[Run review-package PLAN_FILE MERGE_BASE HEAD; dispatch final code-reviewer, most capable model]
+Final reviewer: All requirements met. Deferred minors triaged: none block merge.
+
+[Delete this plan's workspace — the record now lives in git]
+
+Done! Using superflowers:finishing-a-development-branch.
+```
+
+with:
+
+```
+[After all tasks]
+[Run review-package PLAN_FILE MERGE_BASE HEAD; dispatch the named superflowers:code-reviewer, most capable model]
+Final reviewer: All requirements met. Deferred minors triaged: none block merge.
+
+[Specification Verification Gate]
+  No .feature files and no architecture.md in this project — BDD and
+  fitness-function checks report SKIP with that reason.
+  Live evidence: started the real CLI, ran install-hook end-to-end against a
+  real repo, confirmed the hook fired. Green tests alone would not have
+  closed this gate.
+
+[Delete this plan's workspace — the record now lives in git]
+
+Done! Using superflowers:finishing-a-development-branch.
+```
+
+This deliberately teaches two things: BDD and fitness-function checks SKIP **with a stated
+reason** when the artifacts do not exist, and live evidence applies anyway — it is the one
+gate item with no escape hatch.
+
 - [ ] **Step 7: Add the Integration section**
 
 Upstream's SKILL.md has no Integration section; ours did, and the workflow chain depends on it. Append at the end of the file:
