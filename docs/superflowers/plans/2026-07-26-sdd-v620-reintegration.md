@@ -379,6 +379,26 @@ grep -rn 'superpowers' skills/subagent-driven-development/SKILL.md
 
 Expected: the last grep produces no output.
 
+- [ ] **Step 1a: Fix the opening summary's description of the ending**
+
+Added after Task 5's spec review. Line 8 of upstream's file summarises the process as ending
+with the whole-branch review — true upstream, false here once Step 4 inserts the gate after it.
+It is the first line an agent reads. Replace, in that line:
+
+```
+and a broad whole-branch review at the end.
+```
+
+with:
+
+```
+a broad whole-branch review, and a specification verification gate before finishing.
+```
+
+Leave the similar phrasings at lines 12 and 42 alone: line 12 states a quality principle rather
+than an ordering, and line 42 contrasts this skill against executing-plans rather than
+enumerating the finish sequence. Neither misleads about where the process ends.
+
 - [ ] **Step 2: Route the per-task and final reviews to the right agents**
 
 In `## The Task Loop` → `### 3. Review the task`, the reviewer is dispatched `general-purpose`. Leave that. In `## Final Review`, upstream already points at `superflowers:requesting-code-review`'s `code-reviewer.md` — make the agent type explicit. Replace the sentence:
@@ -503,7 +523,16 @@ Follow the Review-Loop Pattern from agents/reviewer-protocol.md:
 **The fix-loop breaker does not apply here.** The task loop's five-round cap
 lets you park a review finding with a ruling. This gate has no parking: a
 failing scenario or fitness function is not a contestable opinion, it is a
-red suite. Loop until green, or report BLOCKED — never park.
+red suite.
+
+It does have a cap, and it ends differently. Three fix rounds per failing
+check: rounds 1-2 dispatch an implementer to fix, round 3 dispatches a fresh
+one on a more capable model. If the same check still fails after round 3,
+STOP and report BLOCKED to your human partner with the check, its output, and
+what the three rounds tried. A check that survives three attempts is telling
+you the plan or the artifact is wrong, not that it needs a fourth attempt.
+Never park a failing check, and never mark the gate green with one
+outstanding.
 
 This gate is NOT optional when specification artifacts exist.
 ```
