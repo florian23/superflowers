@@ -538,7 +538,7 @@ outstanding.
 This gate is NOT optional when specification artifacts exist.
 ```
 
-- [ ] **Step 5: Wire the gate into the process flowchart**
+- [ ] **Step 5+6: Rewire the flowchart and move the deletion behind the gate**
 
 In the `digraph process` block, the final edge currently reads:
 
@@ -546,41 +546,50 @@ In the `digraph process` block, the final edge currently reads:
     "Final review clean: delete this plan's workspace" -> "Use superflowers:finishing-a-development-branch";
 ```
 
-Add the gate node and re-route. Add these node declarations next to the other top-level nodes (after the `"Final review clean: delete this plan's workspace"` declaration):
+**Do this as ONE edit to the `digraph process` block, not as a sequence.** An earlier draft of
+this plan split it into two steps that partly undid each other, then a review finding added a
+third — three overlapping etappen for one block. What follows is the end state; produce it
+directly.
+
+Two things change beyond adding the gate: the node `"Final review clean: delete this plan's
+workspace"` loses its deletion clause (becoming just `"Final review clean"`), because the gate
+runs *after* the final review and may dispatch fixes that still need the workspace; and the
+deletion becomes its own node after the gate. The gate's failure path ends at the **existing**
+`"STOP: report BLOCKED to human partner"` node — do not declare a second one. The gate's
+escalation and the task loop's escalation end in the same place, and the graph should say so.
+Match that node's spelling character for character; an edge to a near-miss name silently
+declares a new node instead of reusing the old one.
+
+Node declarations — replace the old `"Final review clean: delete this plan's workspace"`
+declaration with these:
 
 ```
+    "Final review clean" [shape=box];
     "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)" [shape=box];
     "All specification checks pass?" [shape=diamond];
     "Third failed round on this check?" [shape=diamond];
     "Fix violations (dispatch implementer)" [shape=box];
+    "Delete this plan's workspace" [shape=box];
 ```
 
-The gate's failure path must model the three-round cap and end at the **existing**
-`"STOP: report BLOCKED to human partner"` node — do not declare a second one. The gate's
-escalation and the task loop's escalation end in the same place, and the graph should say so.
-Match that node's spelling character for character; an edge to a near-miss name silently
-declares a new node instead of reusing the old one. The failure path is:
+Edges — the tail of the graph, from the final-review fix wave through to finishing, becomes
+exactly this:
 
 ```
+    "Final findings? ONE fix dispatch, one scoped re-review, adjudicate residuals" -> "Final review clean";
+    "Final review clean" -> "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)";
+    "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)" -> "All specification checks pass?";
+    "All specification checks pass?" -> "Delete this plan's workspace" [label="yes"];
     "All specification checks pass?" -> "Third failed round on this check?" [label="no"];
     "Third failed round on this check?" -> "STOP: report BLOCKED to human partner" [label="yes"];
     "Third failed round on this check?" -> "Fix violations (dispatch implementer)" [label="no"];
     "Fix violations (dispatch implementer)" -> "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)";
+    "Delete this plan's workspace" -> "Use superflowers:finishing-a-development-branch";
 ```
 
-and replace the final edge with:
+No edge may still reference `"Final review clean: delete this plan's workspace"` afterwards.
 
-```
-    "Final review clean: delete this plan's workspace" -> "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)";
-    "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)" -> "All specification checks pass?";
-    "All specification checks pass?" -> "Use superflowers:finishing-a-development-branch" [label="yes"];
-    "All specification checks pass?" -> "Fix violations (dispatch implementer)" [label="no"];
-    "Fix violations (dispatch implementer)" -> "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)";
-```
-
-- [ ] **Step 6: Move the workspace deletion behind the gate**
-
-`## Finish` currently deletes the workspace when the final review is clean. The gate runs after that review and may need to dispatch fixes, which need the workspace. In `## Finish`, replace:
+Then the matching prose. In `## Finish`, replace:
 
 ```
 When the final whole-branch review is clean and its fixes are merged,
@@ -596,22 +605,10 @@ Specification Verification Gate is green, delete this plan's workspace
 (`rm -rf <workspace>`) — the git history is the record now.
 ```
 
-Then remove the now-contradictory `"Final review clean: delete this plan's workspace"` phrasing by renaming that flowchart node to `"Final review clean"` in both its declaration and the two edges that reference it, and add the deletion to the `finishing` edge label context — simplest correct form:
-
-```
-    "Final review clean" [shape=box];
-```
-```
-    "Final findings? ONE fix dispatch, one scoped re-review, adjudicate residuals" -> "Final review clean";
-    "Final review clean" -> "Run Specification Verification Gate\n(BDD + fitness functions + live evidence)";
-```
-```
-    "All specification checks pass?" -> "Delete this plan's workspace" [label="yes"];
-    "Delete this plan's workspace" [shape=box];
-    "Delete this plan's workspace" -> "Use superflowers:finishing-a-development-branch";
-```
-
-(replacing the direct `"All specification checks pass?" -> "Use superflowers:finishing-a-development-branch"` edge added in Step 5).
+**Verify before moving on:** the graph's gate cycle, the `<HARD-GATE>` block, and the gate's
+prose paragraph must state one rule between them — three representations, no divergence. Every
+node used in an edge is declared, quotes balanced, statements `;`-terminated. Graphviz is not
+installed; verify by reading.
 
 - [ ] **Step 6b: Make the Example Workflow show the gate**
 
