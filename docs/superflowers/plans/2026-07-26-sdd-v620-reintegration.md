@@ -401,6 +401,28 @@ lens. The per-task reviewer stays `general-purpose`, because that lens
 would break its "do not crawl the broader codebase" scoping.
 ```
 
+- [ ] **Step 2a: Add the script-output clarification**
+
+The three helper scripts print `wrote <PATH>: <summary>` on success — a sentence, not a bare
+path. Upstream's prose repeatedly calls it "the path it prints", and `re-review-prompt.md:103`
+describes `[DIFF_FILE]` as "the path `scripts/review-package PLAN_FILE FIX_BASE HEAD` printed".
+A controller following that literally can substitute the whole sentence into a `[DIFF_FILE]`
+placeholder, and the reviewer's "Read the diff file" step then fails on a non-path string.
+This exact assumption already produced a broken test text in Task 1 of this plan. Upstream's
+templates are off-limits, so the compensating instruction goes here, once, centrally.
+
+In `## The Task Loop`, immediately after the opening paragraph ("Everything you paste into a
+dispatch prompt …"), insert:
+
+```
+**Reading the helper scripts' output.** `sdd-workspace`, `task-brief` and
+`review-package` print `wrote <PATH>: <summary>` on success, not a bare
+path. Wherever this skill says "the path it prints", take the substring
+between `wrote ` and the following `: ` — never paste the whole line into
+a `[BRIEF_FILE]`, `[REPORT_FILE]` or `[DIFF_FILE]` placeholder. A reviewer
+handed a sentence instead of a path cannot open its diff.
+```
+
 - [ ] **Step 2b: Add the controller staging rule**
 
 Learned the hard way during this plan's own execution: the controller committed a plan-document
