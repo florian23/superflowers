@@ -113,20 +113,26 @@ Subagent (general-purpose):
     **Superflowers artifacts (flag only — do not deep-review):**
 
     If the diff touches any of the following, say so in one line each under
-    Spec Compliance. Do not evaluate their internal quality — dedicated
-    reviewers do that in the Specification Verification Gate at the end of
-    the plan.
+    Spec Compliance. Their internal quality is not yours to judge — naming,
+    style, coverage breadth, and structure belong to the dedicated reviewers
+    that run in the Specification Verification Gate at the end of the plan.
+    The two checks marked **structural** below are yours to make anyway:
+    they are violations of how these artifacts must be produced, not
+    assessments of how well they were written.
 
     - Step Definitions (BDD glue binding `.feature` scenarios to application
-      code): name the file and the `.feature` file it binds. If a scenario's
-      steps were added but the diff contains no application code they call,
-      that IS a finding — Step Definitions must fail against real code, not
-      pass against stubs.
+      code): name the file and the `.feature` file it binds — identify it
+      from the diff's own references (path, import, or step text); opening
+      that file to confirm the binding is exactly the kind of named-risk
+      check this template permits. **Structural:** if a scenario's steps were
+      added but the diff contains no application code they call, that IS a
+      finding — Step Definitions must fail against real code, not pass
+      against stubs.
     - Fitness functions (executable architecture checks): name the file and
       the characteristic it verifies.
-    - Any `.feature` file modified by this diff: that is a finding — feature
-      files are acceptance criteria written before implementation and are not
-      the implementer's to edit.
+    - Any `.feature` file modified by this diff — **structural:** that is a
+      finding. Feature files are acceptance criteria written before
+      implementation and are not the implementer's to edit.
     - Constraint verification criteria the brief names as binding: state
       whether the diff satisfies each, or ⚠️ if you cannot tell from the diff.
 
