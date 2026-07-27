@@ -4,7 +4,7 @@
 - **Upstream:** obra/superpowers
 - **Base Version:** v6.2.0
 - **Base Commit:** v6.2.0 tag (obra/superpowers)
-- **Last Sync:** 2026-07-26 (v6.2.0 quick-wins: writing-good-tests, find-polluter fix, worktree-path bugfix). **Consciously skipped:** v6.2.0 skills-compression sweep, Codex plugin tooling, Windows SessionStart fix.
+- **Last Sync:** 2026-07-26 (v6.2.0 quick-wins: writing-good-tests, find-polluter fix, worktree-path bugfix) + 2026-07-27 (SDD v6.2.0 re-integration). **Consciously skipped:** v6.2.0 skills-compression sweep, Codex plugin tooling, Windows SessionStart fix.
 - **Prior syncs:** 2026-06-26 (v6.0.3 core) + 2026-07-04 (Visual Companion + bootstrap follow-ups).
 
 ## Modified Files (intentional divergence — never blindly overwrite)
@@ -85,7 +85,7 @@ deliberate: explicit SemVer gives release control and stays aligned with upstrea
 
 ## Sync History
 
-- **2026-07-26 (follow-up):** SDD v6.2.0 re-integration — the piece deferred earlier the same day
+- **2026-07-27:** SDD v6.2.0 re-integration — the piece deferred the day before
   - **Adopted:** plan-scoped workspace (`.superflowers/sdd/<plan-basename>/`, fixes the stale
     cross-plan ledger read), compaction-proof progress ledger, brief-in/report-out implementer
     contract (our copy predated v6.0.3 — the scripts were present but no template called them),
