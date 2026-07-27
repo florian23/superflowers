@@ -85,10 +85,10 @@ echo "=== All tests passed ==="
 #### test-subagent-driven-development.sh
 Tests skill content and requirements (~2 minutes):
 - Skill loading and accessibility
-- Workflow ordering (spec compliance before code quality)
+- Task review consolidation (one dispatch returns both verdicts)
 - Self-review requirements documented
 - Plan reading efficiency documented
-- Spec compliance reviewer skepticism documented
+- Task reviewer skepticism toward the diff, not the report, documented
 - Review loops documented
 - Task context provision documented
 
