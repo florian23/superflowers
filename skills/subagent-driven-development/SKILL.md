@@ -217,12 +217,12 @@ Everything you paste into a dispatch prompt — and everything a subagent
 prints back — stays resident in your context for the rest of the session
 and is re-read on every later turn. Hand artifacts over as files.
 
-**Reading the helper scripts' output.** `sdd-workspace`, `task-brief` and
-`review-package` print `wrote <PATH>: <summary>` on success, not a bare
-path. Wherever this skill says "the path it prints", take the substring
-between `wrote ` and the following `: ` — never paste the whole line into
-a `[BRIEF_FILE]`, `[REPORT_FILE]` or `[DIFF_FILE]` placeholder. A reviewer
-handed a sentence instead of a path cannot open its diff.
+**Reading the helper scripts' output.** `sdd-workspace` prints a bare
+directory path — use it as is. `task-brief` and `review-package` print
+`wrote <PATH>: <summary>`, a sentence: where this skill says "the path it
+prints", take the substring between `wrote ` and the following `: `. Never
+paste a whole `wrote` line into a `[BRIEF_FILE]`, `[REPORT_FILE]` or
+`[DIFF_FILE]` placeholder — a reviewer handed a sentence cannot open its diff.
 
 ### 1. Dispatch the implementer
 
@@ -255,6 +255,11 @@ and fix-round diffs need it.
 - Record the implementer's agent identity from the dispatch result —
   fix-loop rounds 1-3 resume this agent.
 - Never dispatch multiple implementation subagents in parallel (conflicts).
+
+The same applies to staging. While any implementer is live in your working
+tree, never `git add -A` or `git add .` — you will sweep its half-finished
+edits into a commit of your own, under a message that does not describe
+them. Stage the explicit paths you are committing, every time.
 
 Template: [implementer-prompt.md](implementer-prompt.md)
 
@@ -381,10 +386,6 @@ minors — they never extend the loop.
 
 Never fix findings yourself in the controller session — your context stays
 clean for coordination, and controller fixes skip review.
-The same applies to staging. While any implementer is live in your working
-tree, never `git add -A` or `git add .` — you will sweep its half-finished
-edits into a commit of your own, under a message that does not describe
-them. Stage the explicit paths you are committing, every time.
 
 **The breaker.** When round 5's re-review still leaves findings open, stop
 dispatching. Adjudicate each open finding yourself — you hold the plan and
@@ -451,15 +452,30 @@ finishing-a-development-branch presents the options.
 ## Specification Verification Gate
 
 After the final whole-branch review is clean and BEFORE finishing-a-development-branch,
-run specification checks:
+run specification checks.
 
-1. **BDD scenarios** (if `.feature` files exist):
+**The gate writes to the ledger like every other phase.** Append to this
+plan's `progress.md` as you go:
+
+- `Gate: <check> fix round <R>/3 — <output one-liner>`
+- `Gate: <check> SKIP — <reason>`
+- `Gate: green (BDD <n> scenarios, FF <n>, live evidence: <one-liner>)`
+
+Read `<R>` from the ledger, never from memory. A compaction mid-gate leaves
+your context with no record of the rounds already spent: the counter
+restarts at zero and the three-round cap silently becomes unbounded. Setup's
+resume rule recognises completed tasks and mid-loop fix rounds, not a gate
+in progress — these lines are what make one recoverable.
+
+1. **BDD scenarios** — run `find . -name '*.feature' -not -path './node_modules/*'`;
+   no output → SKIP this check, recording that reason. Otherwise:
    - Verify Step Definitions exist for all steps (not just that `.feature` files were written)
    - Run `cucumber --dry-run` (or the project equivalent) to check for undefined steps → if
      undefined: dispatch an implementer to write the missing Step Definitions
    - Run ALL scenarios → all must pass
    - Dispatch superflowers:bdd-step-reviewer to verify the Step Definitions are thin glue
-2. **Fitness functions** (if `architecture.md` exists):
+2. **Fitness functions** — run `find . -name architecture.md -not -path './node_modules/*'`;
+   no output → SKIP this check, recording that reason. Otherwise:
    - Verify EVERY characteristic marked "Fitness Function: Yes" has an implementation
    - Verify EVERY style fitness function has an implementation
    - Run ALL fitness functions → all must pass
@@ -474,13 +490,14 @@ run specification checks:
 
 <HARD-GATE>
 Follow the Review-Loop Pattern from agents/reviewer-protocol.md:
-- Dispatch verification checks (BDD + fitness functions)
+- Dispatch verification checks (BDD + fitness functions) and drive the live run yourself
 - If FAIL: dispatch an implementer to fix, then re-run verification (fresh)
 - Repeat until ALL checks pass, up to three fix rounds per check
 - After three failed rounds on the same check: STOP, report BLOCKED. Never park it.
 - Do NOT ask the user whether to fix. Fix automatically.
 - Do NOT skip Step Definitions. Feature files without Step Definitions (Glue Code) = FAIL.
 - Do NOT skip fitness function implementation. FFs in architecture.md without code = FAIL.
+- Do NOT skip the live run. A green suite is not evidence the system ran. No observed real run = FAIL. Where nothing is startable (library, plugin, config-only change), record `Gate: live evidence SKIP — <what is not startable>` in the ledger; "I did not try" is not that reason.
 </HARD-GATE>
 
 **The fix-loop breaker does not apply here.** The task loop's five-round cap
@@ -497,7 +514,8 @@ you the plan or the artifact is wrong, not that it needs a fourth attempt.
 Never park a failing check, and never mark the gate green with one
 outstanding.
 
-This gate is NOT optional when specification artifacts exist.
+Checks 1 and 2 are conditional on their artifacts existing. The live-evidence
+check is not: it runs on every plan. This gate is never optional.
 
 ## Finish
 
