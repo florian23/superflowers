@@ -129,7 +129,7 @@ Implementation (TDD) ──► BDD Testing ──► Fitness Functions ──►
 ### Phase 3: Implementation
 
 11. **using-git-worktrees** — Create isolated workspace on a new branch
-12. **subagent-driven-development** or **executing-plans** — Execute plan with two-stage review per task
+12. **subagent-driven-development** or **executing-plans** — Fresh subagent per task + task review (spec + quality) + broad final review
 13. **test-driven-development** — RED-GREEN-REFACTOR cycle
 14. **bdd-testing** — Wire `.feature` files to step definitions
 15. **fitness-functions** — Implement and verify architecture compliance checks
@@ -179,8 +179,8 @@ Every specification artifact is verified by a fresh agent that did not create it
 | plan-reviewer | Plan completeness | writing-plans |
 | bdd-step-reviewer | Step definition quality | bdd-testing |
 | fitness-function-reviewer | FF correctness | fitness-functions |
-| spec-reviewer | Code matches spec | subagent-driven-development |
-| code-reviewer | Code quality | subagent-driven-development |
+| spec-reviewer | Spec completeness, consistency, constraint coverage | brainstorming |
+| code-reviewer | Code quality (final whole-branch review) | subagent-driven-development |
 | ux-reviewer | Usability (Nielsen's 10 heuristics) | ux-wireframes |
 
 All reviewers follow the 4-step loop from `agents/reviewer-protocol.md`: dispatch → verdict → fix → re-dispatch until APPROVED.

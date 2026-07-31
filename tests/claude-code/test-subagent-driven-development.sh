@@ -28,12 +28,18 @@ fi
 
 echo ""
 
-# Test 2: Verify skill describes correct workflow order
-echo "Test 2: Workflow ordering..."
+# Test 2: Verify task review consolidation
+echo "Test 2: Task review consolidation..."
 
-output=$(run_claude "In the subagent-driven-development skill, what comes first: spec compliance review or code quality review? Be specific about the order." 30)
+output=$(run_claude "In the subagent-driven-development skill, how many reviewer dispatches happen per task, and what does the reviewer return?" 30)
 
-if assert_order "$output" "spec.*compliance" "code.*quality" "Spec compliance before code quality"; then
+if assert_contains "$output" "one\|single\|1 " "One reviewer dispatch per task"; then
+    : # pass
+else
+    exit 1
+fi
+
+if assert_contains "$output" "spec.*quality\|both verdicts\|two verdicts\|compliance.*quality" "Returns both verdicts"; then
     : # pass
 else
     exit 1
@@ -79,10 +85,10 @@ fi
 
 echo ""
 
-# Test 5: Verify spec compliance reviewer is skeptical
-echo "Test 5: Spec compliance reviewer mindset..."
+# Test 5: Verify task reviewer is skeptical
+echo "Test 5: Task reviewer mindset..."
 
-output=$(run_claude "What is the spec compliance reviewer's attitude toward the implementer's report in subagent-driven-development?" 30)
+output=$(run_claude "What is the task reviewer's attitude toward the implementer's report in subagent-driven-development?" 30)
 
 if assert_contains "$output" "not trust\|don't trust\|skeptical\|verify.*independently\|suspiciously" "Reviewer is skeptical"; then
     : # pass
@@ -90,7 +96,7 @@ else
     exit 1
 fi
 
-if assert_contains "$output" "read.*code\|inspect.*code\|verify.*code" "Reviewer reads code"; then
+if assert_contains "$output" "diff\|review package\|unverified claims" "Reviewer works from the diff package"; then
     : # pass
 else
     exit 1
@@ -117,18 +123,18 @@ fi
 
 echo ""
 
-# Test 7: Verify full task text is provided
+# Test 7: Verify the controller hands over a brief file, not pasted text
 echo "Test 7: Task context provision..."
 
-output=$(run_claude "In subagent-driven-development, how does the controller provide task information to the implementer subagent? Does it make them read a file or provide it directly?" 30)
+output=$(run_claude "In subagent-driven-development, how does the controller give an implementer subagent its task requirements?" 30)
 
-if assert_contains "$output" "provide.*directly\|full.*text\|paste\|include.*prompt" "Provides text directly"; then
+if assert_contains "$output" "brief\|task-brief\|file path\|BRIEF_FILE" "Uses a task brief file"; then
     : # pass
 else
     exit 1
 fi
 
-if assert_not_contains "$output" "read.*file\|open.*file" "Doesn't make subagent read file"; then
+if assert_contains "$output" "not.*paste\|never.*paste\|avoid.*paste\|instead of pasting\|resident.*context\|keep.*context.*clean\|pollut" "Avoids pasting into controller context"; then
     : # pass
 else
     exit 1
@@ -155,6 +161,25 @@ echo "Test 9: Main branch red flag..."
 output=$(run_claude "In subagent-driven-development, is it okay to start implementation directly on the main branch?" 30)
 
 if assert_contains "$output" "worktree\|feature.*branch\|not.*main\|never.*main\|avoid.*main\|don't.*main\|consent\|permission" "Warns against main branch"; then
+    : # pass
+else
+    exit 1
+fi
+
+echo ""
+
+# Test 10: Verify the progress ledger
+echo "Test 10: Progress ledger..."
+
+output=$(run_claude "In subagent-driven-development, how does the controller track which tasks are already done, and why not just todos?" 30)
+
+if assert_contains "$output" "ledger\|progress.md" "Mentions the ledger file"; then
+    : # pass
+else
+    exit 1
+fi
+
+if assert_contains "$output" "compact\|context.*lost\|survive\|re-dispatch" "Ledger survives compaction"; then
     : # pass
 else
     exit 1

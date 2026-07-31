@@ -4,7 +4,7 @@
 - **Upstream:** obra/superpowers
 - **Base Version:** v6.2.0
 - **Base Commit:** v6.2.0 tag (obra/superpowers)
-- **Last Sync:** 2026-07-26 (v6.2.0 quick-wins: writing-good-tests, find-polluter fix, worktree-path bugfix). **Deferred:** SDD plan-scoped redesign (needs re-integration with our Spec Gate + live-evidence). **Consciously skipped:** v6.2.0 skills-compression sweep, Codex plugin tooling, Windows SessionStart fix.
+- **Last Sync:** 2026-07-26 (v6.2.0 quick-wins: writing-good-tests, find-polluter fix, worktree-path bugfix) + 2026-07-27 (SDD v6.2.0 re-integration). **Consciously skipped:** v6.2.0 skills-compression sweep, Codex plugin tooling, Windows SessionStart fix.
 - **Prior syncs:** 2026-06-26 (v6.0.3 core) + 2026-07-04 (Visual Companion + bootstrap follow-ups).
 
 ## Modified Files (intentional divergence — never blindly overwrite)
@@ -21,7 +21,7 @@
 |---|---|---|
 | brainstorming | Integrated domain-understanding, architecture chain, constraint-selection, bounded-context-design into workflow | Section-by-section merge — preserve our workflow steps |
 | writing-plans | Added FF-first + BDD-first task ordering, Step Definition templates, Task Ordering section | Merge upstream task templates, keep our TDD-first ordering |
-| subagent-driven-development | Added Specification Verification Gate, test-first task ordering note | Merge, preserve gate and ordering |
+| subagent-driven-development | v6.2.0 base + our Specification Verification Gate (BDD/FF/live evidence, no parking), test-first ordering note, named reviewer at the final review only, Integration section | Merge upstream task-loop/ledger/fix-loop mechanics; preserve the gate, the ordering note, and the final-review agent routing |
 | executing-plans | Removed batch-and-stop, added worktree requirement | Merge cautiously — structural changes |
 | finishing-a-development-branch | v5.1.0 environment-detection base + our Step 1 BDD/fitness verification gate + Integration section | Keep our Step 1 gate + Integration; adopt upstream env/cleanup improvements |
 | requesting-code-review | Uses our named `superflowers:code-reviewer` agent (upstream switched to general-purpose) | Keep named reviewer — do NOT adopt general-purpose switch |
@@ -84,6 +84,46 @@ deliberate: explicit SemVer gives release control and stays aligned with upstrea
 > obra/superpowers, not this fork. Our `version` is independent.
 
 ## Sync History
+
+- **2026-07-27:** SDD v6.2.0 re-integration — the piece deferred the day before
+  - **Adopted:** plan-scoped workspace (`.superflowers/sdd/<plan-basename>/`, fixes the stale
+    cross-plan ledger read), compaction-proof progress ledger, brief-in/report-out implementer
+    contract (our copy predated v6.0.3 — the scripts were present but no template called them),
+    capped fix loop (5 rounds, resume 1-3 / fresh+escalated 4-5) with breaker and ledger-recorded
+    adjudication, scoped re-reviews, pre-flight plan-conflict scan, sharpened Model Selection
+    (explicit model per dispatch; turn count beats token price), one fix dispatch after the final
+    review, Common Rationalizations table.
+  - **Adopted (reversal):** consolidated `task-reviewer` replacing our separate spec-then-quality
+    dispatch. Verified first that upstream's template already carries both of our contributions
+    verbatim — all four Structure checks and the "do not trust the report" stance — so the
+    consolidation loses no content. It also gives the fix loop a single findings set per task,
+    which two stages would have re-fragmented. `spec-reviewer-prompt.md` and
+    `code-quality-reviewer-prompt.md` deleted.
+  - **Kept:** Specification Verification Gate (BDD + fitness functions + live evidence), test-first
+    ordering note, Integration section — still exempt from the fix-loop breaker: review findings
+    may be parked with a ruling, a red suite may not.
+  - **Hardened (ours):** the gate gained its own cap — three fix rounds per failing check, then
+    STOP and report BLOCKED, never park it — plus ledger lines (`Gate: <check> fix round <R>/3`,
+    `Gate: <check> SKIP — <reason>`, `Gate: green (...)`) so the round counter and SKIP reasons
+    survive compaction. Live evidence gained a satisfiable SKIP path (named, ledger-recorded) for
+    plans with nothing startable, since otherwise the gate was formally unpassable in a library or
+    plugin repo.
+  - **Adapted:** the named `superflowers:code-reviewer` now runs the final whole-branch review
+    only; per-task review is `general-purpose`. Its agent profile (plan alignment, SOLID,
+    scalability) is a merge-review lens that fights the task reviewer's "do not crawl the broader
+    codebase" scoping. `requesting-code-review` is untouched — its named-reviewer divergence
+    from upstream stands.
+  - **Added (ours):** the task reviewer flags Step Definitions, fitness functions, modified
+    `.feature` files, and constraint criteria touched by a task — flag only, with two checks
+    marked structural rather than quality judgments: Step Definitions with no application code
+    behind them, and any `.feature` file the diff modifies (not the implementer's to edit). The
+    dedicated reviewers still run in the gate at the end.
+  - **Learned during execution:** a controller staging rule — never `git add -A` or `git add .`
+    while an implementer is live in the working tree, so its half-finished edits can't be swept
+    into an unrelated commit — and a clarification that the helper scripts don't share an output
+    format (`sdd-workspace` prints a bare path; `task-brief` and `review-package` print
+    `wrote <PATH>: <summary>`). Both went into `SKILL.md` directly, since upstream's templates are
+    off-limits to edit.
 
 - **2026-07-26:** Partial sync to v6.2.0 (from base v6.0.3; branch `upstream-sync/v6.2.0`)
   - **Adopted:** `writing-good-tests` reframe — replaced `testing-anti-patterns.md` with
